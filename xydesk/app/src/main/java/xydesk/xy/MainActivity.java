@@ -23,7 +23,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            //activity跟fragment通讯
             OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
         }
     };
@@ -33,7 +32,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
-        test = (TextView) findViewById(R.id.test);
+        test = (TextView) findViewById(R.id.all_app);
         test.setOnClickListener(this);
         setDefaultFargment();
     }
@@ -49,7 +48,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.test:
+            case R.id.all_app:
                 Intent intent = new Intent(MainActivity.this, AllAppShowUI.class);
                 startActivity(intent);
                 break;
