@@ -1,11 +1,12 @@
 package xydesk.xy;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,8 +35,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         instance = this;
         test = (TextView) findViewById(R.id.test);
         test.setOnClickListener(this);
-        FragmentManager fm = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction transaction = fm.beginTransaction();
+        setDefaultFargment();
+    }
+
+    private void setDefaultFargment() {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
         oneAppFragment = new OneAppFragment();
         transaction.replace(R.id.add_app, oneAppFragment);
         transaction.commit();
