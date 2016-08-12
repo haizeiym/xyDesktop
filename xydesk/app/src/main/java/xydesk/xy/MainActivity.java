@@ -22,6 +22,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            //activity跟fragment通讯
             OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
         }
     };
