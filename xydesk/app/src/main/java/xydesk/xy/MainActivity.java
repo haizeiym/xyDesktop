@@ -13,17 +13,28 @@ import android.widget.TextView;
 
 import xydesk.xy.appAll.ui.AllAppShowUI;
 import xydesk.xy.contant.XYContant;
+import xydesk.xy.utils.Utils;
 import xydesk.xy.viewFragment.OneAppFragment;
 import xydesk.xy.xydesk.R;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
-    TextView test;
+    TextView all_app;
     OneAppFragment oneAppFragment;
     public static MainActivity instance;
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
+            switch (msg.what) {
+                case XYContant.ADD_APP:
+                    OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
+                    Utils.getInstance().toast(instance, "已应用到添加桌面");
+                    break;
+                case XYContant.DELETER_APP:
+                    OneAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    Utils.getInstance().toast(instance, "应用已删除");
+                    break;
+            }
+
         }
     };
 
@@ -32,8 +43,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         instance = this;
-        test = (TextView) findViewById(R.id.all_app);
-        test.setOnClickListener(this);
+        all_app = (TextView) findViewById(R.id.all_app);
+        all_app.setOnClickListener(this);
         setDefaultFargment();
     }
 

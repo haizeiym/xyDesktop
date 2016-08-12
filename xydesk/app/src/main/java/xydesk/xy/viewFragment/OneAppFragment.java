@@ -32,10 +32,12 @@ public class OneAppFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case XYContant.DELETER_APP:
                 case XYContant.ADD_APP:
                     xyAppInfoInDesks = deskDB.getAllApp(XYContant.ONE_FRAGMENT);
                     xyFragmentAdapter.refresh(xyAppInfoInDesks);
                     break;
+
             }
         }
     };

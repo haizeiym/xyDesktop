@@ -18,7 +18,7 @@ public class XYAllAppModel implements Serializable {
     public Drawable appIcon;
     //APP包名
     public String appPackageName;
-//    //程序主类名
+    //    //程序主类名
 //    public String activityMainName;
     //显示数据拼音的首字母
     public String sortLetters;

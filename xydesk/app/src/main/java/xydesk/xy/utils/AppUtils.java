@@ -1,20 +1,21 @@
 package xydesk.xy.utils;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAllAppModel;
+import xydesk.xy.model.XYAppInfoInDesk;
 
 /**
  * Created by haizeiym
@@ -33,6 +34,8 @@ public class AppUtils {
         private static final AppUtils instance = new AppUtils();
     }
 
+    public final String APP_PACKAGE = "xydesk.xy.xydesk";
+
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
         List<XYAllAppModel> xyModels = new ArrayList<>();
@@ -42,11 +45,14 @@ public class AppUtils {
             for (int i = 0; i < apps.size(); i++) {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
-                xyModel.appPackageName = resolveInfo.activityInfo.packageName;
+                if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
+                    xyModel.appPackageName = resolveInfo.activityInfo.packageName;
 //                xyModel.activityMainName = resolveInfo.activityInfo.name;
-                xyModel.appName = resolveInfo.loadLabel(packageManager).toString();
-                xyModel.appIcon = resolveInfo.loadIcon(packageManager);
-                xyModels.add(xyModel);
+                    xyModel.appName = resolveInfo.loadLabel(packageManager).toString();
+                    xyModel.appIcon = resolveInfo.loadIcon(packageManager);
+                    xyModels.add(xyModel);
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,6 +76,7 @@ public class AppUtils {
     public void openApp(Context context, String appPackageName) {
         //应用包名
         if (appPackageName.isEmpty()) {
+            Utils.getInstance().toast(context, "应用已不存在");
             return;
         }
 //        //应用的主类名
@@ -100,6 +107,15 @@ public class AppUtils {
             }
         }
         return icon;
+    }
+
+    String[] uApp = {"com.ca.tongxunlu", "com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
+
+    //常用APP集锦
+    public Set<XYAppInfoInDesk> getAppU() {
+        Set<XYAppInfoInDesk> deskSet = new HashSet<>();
+
+        return deskSet;
     }
 
 }

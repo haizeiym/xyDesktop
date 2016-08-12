@@ -39,6 +39,8 @@ public class AllAppShowUI extends XYBaseActivity {
     AllAppAdapter adapter;
     List<XYAllAppModel> xyModels;
     DeskDB deskDB;
+    //要删除app的包名
+    private String delePackageName;
 
     @Override
     public void initView() {
@@ -79,14 +81,19 @@ public class AllAppShowUI extends XYBaseActivity {
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
                         break;
                     case XYContant.ADD_DESK:
-                        XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                        xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                        xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                        xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
-                        deskDB.addAppInfo(xyAppInfoInDesk);
-                        MainActivity.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
+                        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
+                            Utils.getInstance().toast(instance, "桌面已添加");
+                        } else {
+                            XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                            xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
+                            xyAppInfoInDesk.appName = xyAllAppModel.appName;
+                            xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
+                            deskDB.addAppInfo(xyAppInfoInDesk);
+                            MainActivity.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
+                        }
                         break;
                     case XYContant.DELE_APP:
+                        delePackageName = xyAllAppModel.appPackageName;
                         AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
                 }
@@ -108,6 +115,8 @@ public class AllAppShowUI extends XYBaseActivity {
             case XYContant.DELETER_APP:
                 setAppData();
                 adapter.refresh(xyAllAppModelList);
+                deskDB.deleApp(delePackageName);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
                 break;
         }
     }

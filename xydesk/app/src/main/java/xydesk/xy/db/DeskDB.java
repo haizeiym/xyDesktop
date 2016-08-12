@@ -24,26 +24,46 @@ public class DeskDB {
     //添加app信息
     public void addAppInfo(XYAppInfoInDesk xyAppInfoInDesk) {
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(deskHelp.APP_PACKAGE_NAME, xyAppInfoInDesk.appPackageName);
-        cv.put(deskHelp.APP_NAME, xyAppInfoInDesk.appName);
-        cv.put(deskHelp.APP_MAIN_ACTIVITY, xyAppInfoInDesk.appMainActivity);
-        cv.put(deskHelp.APP_POINT_PARENTS, xyAppInfoInDesk.appPonitParents);
-        cv.put(deskHelp.APP_POINT_ONE, xyAppInfoInDesk.appPonitOne);
-        cv.put(deskHelp.APP_POINT_TWO, xyAppInfoInDesk.appPonitTwo);
-        sd.insert(deskHelp.TABLE_Name, null, cv);
+        if (!isExits(xyAppInfoInDesk.appPackageName)) {
+            ContentValues cv = new ContentValues();
+            cv.put(deskHelp.APP_PACKAGE_NAME, xyAppInfoInDesk.appPackageName);
+            cv.put(deskHelp.APP_NAME, xyAppInfoInDesk.appName);
+            cv.put(deskHelp.APP_MAIN_ACTIVITY, xyAppInfoInDesk.appMainActivity);
+            cv.put(deskHelp.APP_POINT_PARENTS, xyAppInfoInDesk.appPonitParents);
+            cv.put(deskHelp.APP_POINT_ONE, xyAppInfoInDesk.appPonitOne);
+            cv.put(deskHelp.APP_POINT_TWO, xyAppInfoInDesk.appPonitTwo);
+            sd.insert(deskHelp.TABLE_Name, null, cv);
+        }
     }
 
     //删除屏幕上app
     public void deleApp(String appPackage) {
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
-        sd.delete(deskHelp.TABLE_Name, deskHelp.APP_PACKAGE_NAME + "=?", new String[]{appPackage});
+        sd.execSQL("delete from " + deskHelp.TABLE_Name + " where " + deskHelp.APP_PACKAGE_NAME + "=?", new String[]{appPackage});
     }
 
     //修改app名称
     public void updateAppName(String newName) {
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
         sd.execSQL("update " + deskHelp.TABLE_Name + " set " + "where " + deskHelp.APP_NAME + "=?", new String[]{newName});
+    }
+
+    //判断应用是否存在
+    public boolean isExits(String packageName) {
+        SQLiteDatabase sd = deskHelp.getReadableDatabase();
+        Cursor cs = null;
+        boolean isExits = false;
+        try {
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_Name + " where " + deskHelp.APP_PACKAGE_NAME + "=?", new String[]{packageName});
+            isExits = cs != null && cs.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                cs.close();
+            }
+        }
+        return isExits;
     }
 
     //根据pointParents获取所有app信息
