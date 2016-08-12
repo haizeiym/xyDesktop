@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="7dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/chart_index"
+        android:layout_width="match_parent"
+        android:layout_height="23dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginTop="9dp"
+        android:gravity="center|left"
+        android:text="A" />
+
+    <View
+        android:id="@+id/chart_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="3dp"
+        android:background="@android:color/darker_gray" />
+
+    <View
+        android:id="@+id/item_lineTwo"
+        android:layout_width="211dp"
+        android:layout_height="0.5dp"
+        android:layout_gravity="center"
+        android:background="#cccccc" />
+
+    <ImageView
+        android:id="@+id/app_icon"
+        android:layout_width="69dp"
+        android:layout_height="69dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="3dp"
+        android:scaleType="center"
+        android:src="@mipmap/ic_allapps" />
+
+    <TextView
+        android:id="@+id/app_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:gravity="center"
+        android:text="sd" />
+
+</LinearLayout>
