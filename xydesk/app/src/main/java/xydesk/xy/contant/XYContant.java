@@ -36,4 +36,14 @@ public class XYContant {
     public static final String THREE_FRAGMENT = "three_parents";
     //fourFragment
     public static final String FOUR_FRAGMENT = "four_parents";
+
+    /**
+     * 长按item
+     */
+    //修改应用名
+    public static final String NEW_APP_NAME = "修改应用名";
+    //在桌面删除
+    public static final String DELE_APP_IN_FRAGMENT = "在桌面删除";
+    //卸载此应用
+    public static final String DELE_APP_IN_PHONE = "卸载此应用";
 }

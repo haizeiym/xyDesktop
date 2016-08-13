@@ -5,10 +5,11 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/item_long_pressed"
+    <LinearLayout
+        android:id="@+id/add_view_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="9dp"
-        android:background="@android:color/holo_blue_light" />
+        android:background="@android:color/holo_blue_light"
+        android:orientation="vertical" />
 </LinearLayout>

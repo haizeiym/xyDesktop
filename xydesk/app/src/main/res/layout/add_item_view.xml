@@ -5,16 +5,15 @@
     android:orientation="vertical">
 
     <View
-        android:id="@+id/item_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
 
     <TextView
-        android:id="@+id/long_item"
+        android:id="@+id/add_item_view"
         android:layout_width="match_parent"
         android:layout_height="69dp"
         android:gravity="center"
-        android:text="长按Item" />
+        android:text="Item" />
 
 </LinearLayout>

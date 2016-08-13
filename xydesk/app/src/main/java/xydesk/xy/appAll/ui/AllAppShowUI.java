@@ -21,7 +21,6 @@ import xydesk.xy.utils.CharacterParser;
 import xydesk.xy.utils.PinyinComparator;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
-import xydesk.xy.viewFragment.OneAppFragment;
 import xydesk.xy.xydesk.R;
 
 /**
@@ -71,12 +70,11 @@ public class AllAppShowUI extends XYBaseActivity {
 
     @Override
     public void onItemClick(View view, final int position) {
-        final String[] item = ItemView.getInstance().item;
-        ItemView.getInstance().showLongView(instance, item, new ViewI() {
+        ItemView.getInstance().showLongView(instance, ItemView.getInstance().itemAll, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
                 XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
-                switch (item[itemPosition]) {
+                switch ((String) view.getTag()) {
                     case XYContant.OPEN_APP:
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
                         break;

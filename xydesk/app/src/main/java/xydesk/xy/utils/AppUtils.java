@@ -9,11 +9,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import xydesk.xy.contant.XYContant;
+import xydesk.xy.db.DeskDB;
 import xydesk.xy.model.XYAllAppModel;
 import xydesk.xy.model.XYAppInfoInDesk;
 
@@ -35,6 +34,7 @@ public class AppUtils {
     }
 
     public final String APP_PACKAGE = "xydesk.xy.xydesk";
+    private final String[] uApp = {"com.ca.tongxunlu", "com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
@@ -109,13 +109,20 @@ public class AppUtils {
         return icon;
     }
 
-    String[] uApp = {"com.ca.tongxunlu", "com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
-
-    //常用APP集锦
-    public Set<XYAppInfoInDesk> getAppU() {
-        Set<XYAppInfoInDesk> deskSet = new HashSet<>();
-
-        return deskSet;
+    //常用APP
+    public void getAppU(Context context) {
+        DeskDB deskDB = new DeskDB(context);
+        for (XYAllAppModel xyAllAppModel : getAllAppList(context)) {
+            for (String appPackageName : uApp) {
+                if (!deskDB.isExits(appPackageName) && xyAllAppModel.appPackageName.equals(appPackageName)) {
+                    XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                    xyAppInfoInDesk.appName = xyAllAppModel.appName;
+                    xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
+                    xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
+                    deskDB.addAppInfo(xyAppInfoInDesk);
+                }
+            }
+        }
     }
 
 }

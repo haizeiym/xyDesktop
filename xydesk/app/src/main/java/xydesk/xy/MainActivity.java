@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import xydesk.xy.appAll.ui.AllAppShowUI;
 import xydesk.xy.contant.XYContant;
+import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.viewFragment.OneAppFragment;
 import xydesk.xy.xydesk.R;
@@ -45,6 +46,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         instance = this;
         all_app = (TextView) findViewById(R.id.all_app);
         all_app.setOnClickListener(this);
+        AppUtils.getInstance().getAllAppList(instance);
+        AppUtils.getInstance().getAppU(instance);
         setDefaultFargment();
     }
 

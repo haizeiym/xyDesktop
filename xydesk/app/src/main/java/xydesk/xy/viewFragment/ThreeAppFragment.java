@@ -2,6 +2,7 @@ package xydesk.xy.viewFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import xydesk.xy.base.XYBaseFragment;
 
@@ -11,7 +12,7 @@ import xydesk.xy.base.XYBaseFragment;
  */
 public class ThreeAppFragment extends XYBaseFragment{
     @Override
-    public View initCreateView(LayoutInflater inflater) {
+    public View initCreateView(LayoutInflater inflater, ViewGroup container) {
         return null;
     }
 }
