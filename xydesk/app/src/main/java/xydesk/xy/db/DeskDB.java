@@ -99,6 +99,36 @@ public class DeskDB {
         return xyAppInfoInDesks;
     }
 
+    //记录常用APP的删除
+    public void addDeleApp(String appPackageName) {
+        if (!isExistApp(appPackageName)) {
+            SQLiteDatabase sd = deskHelp.getWritableDatabase();
+            sd.execSQL("insert into " + deskHelp.TABLE_DELE_REC_NAME + " values(?)", new String[]{appPackageName});
+        }
+    }
+    
+    //常用删除记录里是否有原纪录
+    public boolean isExistApp(String appPackageName) {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        boolean isExits = false;
+        try {
+            sd = deskHelp.getReadableDatabase();
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_DELE_REC_NAME + " where=?", new String[]{appPackageName});
+            isExits = cs != null && cs.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                cs.close();
+            }
+            if (sd != null) {
+                sd.close();
+            }
+        }
+        return isExits;
+    }
+
     private String getString(Cursor cs, String index) {
         return cs.getString(cs.getColumnIndex(index));
     }

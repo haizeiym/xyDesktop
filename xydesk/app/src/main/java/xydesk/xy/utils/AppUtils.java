@@ -52,7 +52,6 @@ public class AppUtils {
                     xyModel.appIcon = resolveInfo.loadIcon(packageManager);
                     xyModels.add(xyModel);
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,11 +114,13 @@ public class AppUtils {
         for (XYAllAppModel xyAllAppModel : getAllAppList(context)) {
             for (String appPackageName : uApp) {
                 if (!deskDB.isExits(appPackageName) && xyAllAppModel.appPackageName.equals(appPackageName)) {
-                    XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                    xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                    xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
-                    xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                    deskDB.addAppInfo(xyAppInfoInDesk);
+                    if (!deskDB.isExistApp(appPackageName)) {
+                        XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                        xyAppInfoInDesk.appName = xyAllAppModel.appName;
+                        xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
+                        xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
+                        deskDB.addAppInfo(xyAppInfoInDesk);
+                    }
                 }
             }
         }
