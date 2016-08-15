@@ -54,7 +54,7 @@
             android:background="#cccccc"
             android:clickable="true"
             android:gravity="center"
-            android:text=" " />
+            android:text="心阳通讯" />
 
         <TextView
             android:id="@+id/add_three"

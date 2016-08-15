@@ -8,6 +8,7 @@ import android.widget.GridView;
 
 import java.util.List;
 
+import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
@@ -25,7 +26,6 @@ import xydesk.xy.xydesk.R;
 public class OneAppFragment extends XYBaseFragment {
     GridView fragmentApp;
     List<XYAppInfoInDesk> xyAppInfoInDesks;
-    DeskDB deskDB;
     public static OneAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
@@ -40,8 +40,7 @@ public class OneAppFragment extends XYBaseFragment {
     public View initCreateView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
-        deskDB = new DeskDB(getActivity());
-        xyAppInfoInDesks = deskDB.getAllApp(XYContant.ONE_FRAGMENT);
+        xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.ONE_FRAGMENT);
         xyFragmentAdapter = new XYFragmentAdapter(getActivity(), xyAppInfoInDesks);
         setAdapter();
         return view;
@@ -69,7 +68,7 @@ public class OneAppFragment extends XYBaseFragment {
                         Utils.getInstance().toast(getActivity(), "后续版本会集成语音，此版本暂不做处理");
                         break;
                     case XYContant.DELE_APP_IN_FRAGMENT:
-                        deskDB.deleApp(xyAllAppModel.appPackageName);
+                        AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
                         Utils.getInstance().toast(getActivity(), "删除成功");
                         break;
@@ -86,7 +85,12 @@ public class OneAppFragment extends XYBaseFragment {
         switch (msg.what) {
             case XYContant.DELETER_APP:
             case XYContant.ADD_APP:
-                xyAppInfoInDesks = deskDB.getAllApp(XYContant.ONE_FRAGMENT);
+                if (AppUtils.getInstance().delePackageName.equals("")) {
+                    DeskDB deskDB = new DeskDB(getActivity());
+                    deskDB.deleApp(AppUtils.getInstance().delePackageName);
+                    AppUtils.getInstance().delePackageName = "";
+                }
+                xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.ONE_FRAGMENT);
                 xyFragmentAdapter.refresh(xyAppInfoInDesks);
                 break;
         }

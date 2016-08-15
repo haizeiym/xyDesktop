@@ -3,6 +3,7 @@ package xydesk.xy;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,13 +14,14 @@ import android.widget.TextView;
 
 import xydesk.xy.appAll.ui.AllAppShowUI;
 import xydesk.xy.contant.XYContant;
+import xydesk.xy.db.DeskDB;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.viewFragment.OneAppFragment;
 import xydesk.xy.xydesk.R;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
-    TextView all_app;
+    TextView all_app, xyCall;
     OneAppFragment oneAppFragment;
     public static MainActivity instance;
     public Handler handler = new Handler() {
@@ -35,7 +37,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     Utils.getInstance().toast(instance, "应用已删除");
                     break;
             }
-
         }
     };
 
@@ -45,6 +46,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         instance = this;
         all_app = (TextView) findViewById(R.id.all_app);
+        xyCall = (TextView) findViewById(R.id.add_four);
+        xyCall.setOnClickListener(this);
         all_app.setOnClickListener(this);
         AppUtils.getInstance().getAllAppList(instance);
         AppUtils.getInstance().getAppU(instance);
@@ -63,15 +66,28 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.all_app:
-                Intent intent = new Intent(MainActivity.this, AllAppShowUI.class);
+                Intent intent = new Intent(instance, AllAppShowUI.class);
                 startActivity(intent);
+                break;
+            case R.id.add_four:
+                DeskDB deskDB = new DeskDB(instance);
+                if (deskDB.isExits(AppUtils.getInstance().xyPakcageName)) {
+                    AppUtils.getInstance().openApp(instance, AppUtils.getInstance().xyPakcageName);
+                } else {
+                    Intent systemPhoneNum = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"));
+                    systemPhoneNum.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(systemPhoneNum);
+                    Utils.getInstance().toast(instance, "暂未安装该应用，为您跳转至系统拨号界面");
+                }
                 break;
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == XYContant.DELETER_APP) {
+            handler.sendEmptyMessage(XYContant.DELETER_APP);
+        }
     }
 }

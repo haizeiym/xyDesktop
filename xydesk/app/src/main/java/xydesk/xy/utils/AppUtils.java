@@ -35,6 +35,9 @@ public class AppUtils {
 
     public final String APP_PACKAGE = "xydesk.xy.xydesk";
     private final String[] uApp = {"com.ca.tongxunlu", "com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
+    public boolean isXYCall = false;
+    public String xyPakcageName = "com.ca.tongxunlu";
+    public String delePackageName = "";
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
@@ -46,6 +49,9 @@ public class AppUtils {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
                 if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
+                    if (resolveInfo.activityInfo.packageName.equals("com.ca.tongxunlu")) {
+                        isXYCall = true;
+                    }
                     xyModel.appPackageName = resolveInfo.activityInfo.packageName;
 //                xyModel.activityMainName = resolveInfo.activityInfo.name;
                     xyModel.appName = resolveInfo.loadLabel(packageManager).toString();
@@ -64,6 +70,7 @@ public class AppUtils {
         if (packageName.isEmpty()) {
             return;
         }
+        delePackageName = packageName;
         Uri uri = Uri.parse("package:" + packageName);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DELETE);
@@ -73,11 +80,6 @@ public class AppUtils {
 
     //根据包名打开APP
     public void openApp(Context context, String appPackageName) {
-        //应用包名
-        if (appPackageName.isEmpty()) {
-            Utils.getInstance().toast(context, "应用已不存在");
-            return;
-        }
 //        //应用的主类名
 //        String cls = xyAllAppModel.activityMainName;
 //        ComponentName componentName = new ComponentName(pkg, cls);
@@ -86,7 +88,12 @@ public class AppUtils {
 //        context.startActivity(intent);
         PackageManager pm = context.getPackageManager();
         Intent i = pm.getLaunchIntentForPackage(appPackageName);
-        context.startActivity(i);
+        //应用是否存在
+        if (i != null) {
+            context.startActivity(i);
+        } else {
+            Utils.getInstance().toast(context, "应用已不存在");
+        }
     }
 
     //获取所有应用
@@ -120,9 +127,23 @@ public class AppUtils {
                         xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
                         xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
                         deskDB.addAppInfo(xyAppInfoInDesk);
+                    } else {
+                        deskDB.deleApp(appPackageName);
                     }
                 }
             }
         }
+    }
+
+    //删除屏幕上APP
+    public void deleAtFragment(Context context, String appPakcageName) {
+        DeskDB deskDB = new DeskDB(context);
+        deskDB.deleApp(appPakcageName);
+    }
+
+    //根据pointParents获取所有app信息
+    public List<XYAppInfoInDesk> getAllApp(Context context, String parentPoint) {
+        DeskDB deskDB = new DeskDB(context);
+        return deskDB.getAllApp(parentPoint);
     }
 }

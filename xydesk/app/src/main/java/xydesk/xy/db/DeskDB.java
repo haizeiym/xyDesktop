@@ -132,20 +132,6 @@ public class DeskDB {
         return isExits;
     }
 
-    //清空常用APP
-    public void cleanUApp() {
-        SQLiteDatabase sd = null;
-        Cursor cs = null;
-        try {
-            sd = deskHelp.getWritableDatabase();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-
-        }
-    }
-
     private String getString(Cursor cs, String index) {
         return cs.getString(cs.getColumnIndex(index));
     }
