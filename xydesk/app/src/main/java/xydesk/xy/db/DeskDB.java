@@ -38,6 +38,7 @@ public class DeskDB {
 
     //删除屏幕上app
     public void deleApp(String appPackage) {
+        addDeleApp(appPackage);
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
         sd.execSQL("delete from " + deskHelp.TABLE_Name + " where " + deskHelp.APP_PACKAGE_NAME + "=?", new String[]{appPackage});
     }
@@ -99,14 +100,16 @@ public class DeskDB {
         return xyAppInfoInDesks;
     }
 
-    //记录常用APP的删除
+    //记录已删除的APP
     public void addDeleApp(String appPackageName) {
         if (!isExistApp(appPackageName)) {
             SQLiteDatabase sd = deskHelp.getWritableDatabase();
-            sd.execSQL("insert into " + deskHelp.TABLE_DELE_REC_NAME + " values(?)", new String[]{appPackageName});
+            ContentValues cv = new ContentValues();
+            cv.put(deskHelp.DELE_APP_PACKAGE_NAME, appPackageName);
+            sd.insert(deskHelp.TABLE_DELE_REC_NAME, null, cv);
         }
     }
-    
+
     //常用删除记录里是否有原纪录
     public boolean isExistApp(String appPackageName) {
         SQLiteDatabase sd = null;
@@ -127,6 +130,20 @@ public class DeskDB {
             }
         }
         return isExits;
+    }
+
+    //清空常用APP
+    public void cleanUApp() {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        try {
+            sd = deskHelp.getWritableDatabase();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+
+        }
     }
 
     private String getString(Cursor cs, String index) {

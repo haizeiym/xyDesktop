@@ -66,7 +66,7 @@ public class OneAppFragment extends XYBaseFragment {
                 XYAppInfoInDesk xyAllAppModel = xyAppInfoInDesks.get(position);
                 switch ((String) view.getTag()) {
                     case XYContant.NEW_APP_NAME:
-
+                        Utils.getInstance().toast(getActivity(), "后续版本会集成语音，此版本暂不做处理");
                         break;
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         deskDB.deleApp(xyAllAppModel.appPackageName);

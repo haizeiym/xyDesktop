@@ -25,6 +25,7 @@ public class XYContant {
     public static final String ADD_DESK = "添加桌面";
     //删除应用
     public static final String DELE_APP = "删除应用";
+
     /**
      * whatFragment
      */
