@@ -9,7 +9,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
@@ -24,6 +28,8 @@ public class AppUtils {
     public static AppUtils getInstance() {
         return UtilsInstance.instance;
     }
+
+    public static Map<String, String> allAppName = new HashMap<>();
 
     private AppUtils() {
 
@@ -41,6 +47,7 @@ public class AppUtils {
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
+        allAppName.clear();
         List<XYAllAppModel> xyModels = new ArrayList<>();
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -52,9 +59,12 @@ public class AppUtils {
                     if (resolveInfo.activityInfo.packageName.equals("com.ca.tongxunlu")) {
                         isXYCall = true;
                     }
-                    xyModel.appPackageName = resolveInfo.activityInfo.packageName;
 //                xyModel.activityMainName = resolveInfo.activityInfo.name;
-                    xyModel.appName = resolveInfo.loadLabel(packageManager).toString();
+                    String p = resolveInfo.activityInfo.packageName;
+                    String n = resolveInfo.loadLabel(packageManager).toString();
+                    xyModel.appPackageName = p;
+                    xyModel.appName = n;
+                    allAppName.put(n, p);
                     xyModel.appIcon = resolveInfo.loadIcon(packageManager);
                     xyModels.add(xyModel);
                 }

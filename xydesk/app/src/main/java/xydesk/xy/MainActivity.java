@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,7 +20,6 @@ import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
-import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.sunflower.FlowerCollector;
 
 import org.json.JSONException;
@@ -35,6 +35,7 @@ import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.viewFragment.OneAppFragment;
 import xydesk.xy.voice.JsonParser;
+import xydesk.xy.voice.VoiceType;
 import xydesk.xy.xydesk.R;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
@@ -45,7 +46,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     int ret = 0; // 函数调用返回值
     public static MainActivity instance;
     // 用HashMap存储听写结果
-    private HashMap<String, String> mIatResults = new LinkedHashMap<String, String>();
+    private HashMap<String, String> mIatResults = new LinkedHashMap<>();
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -119,7 +120,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
                 break;
             case R.id.add_three:
-                FlowerCollector.onEvent(instance, "iat_recognize");
+                FlowerCollector.onEvent(MainActivity.this, "iat_recognize");
                 mIatResults.clear();
                 // 设置参数
                 setParam();
@@ -164,7 +165,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         @Override
         public void onBeginOfSpeech() {
             // 此回调表示：sdk内部录音机已经准备好了，用户可以开始语音输入
-            // showTip("开始说话");
+            Utils.getInstance().toast(instance, "开始说话");
         }
 
         @Override
@@ -172,26 +173,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             // Tips：
             // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
             // 如果使用本地功能（语记）需要提示用户开启语记的录音权限。
+            if (error.getErrorCode() == 10118) {
+                Utils.getInstance().toast(instance, "您没有说话,可能是录音机权限被禁");
+            }
         }
 
         @Override
         public void onEndOfSpeech() {
             // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
-            // showTip("结束说话");
+//            Utils.getInstance().toast(instance, "结束说话");
         }
 
         @Override
         public void onResult(RecognizerResult results, boolean isLast) {
             printResult(results);
-
-            if (isLast) {
-                // TODO 最后的结果
-            }
         }
 
         @Override
         public void onVolumeChanged(int volume, byte[] data) {
-            // showTip("当前正在说话，音量大小：" + volume);
+            // Utils.getInstance().toast(instance, "当前正在说话，音量大小：" + volume);
         }
 
         @Override
@@ -207,7 +207,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private void printResult(RecognizerResult results) {
         String text = JsonParser.parseIatResult(results.getResultString());
-
         String sn = null;
         // 读取json结果中的sn字段
         try {
@@ -221,7 +220,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         for (String key : mIatResults.keySet()) {
             resultBuffer.append(mIatResults.get(key));
         }
-        add_three.setText(resultBuffer.toString());
+        String userString = resultBuffer.toString();
+        add_three.setText("上次记录：" + userString);
+        VoiceType.isIn(instance, userString);
     }
 
     @Override
@@ -230,6 +231,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (requestCode == XYContant.DELETER_APP) {
             handler.sendEmptyMessage(XYContant.DELETER_APP);
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        return KeyEvent.KEYCODE_BACK != keyCode && super.onKeyDown(keyCode, event);
     }
 
     @Override

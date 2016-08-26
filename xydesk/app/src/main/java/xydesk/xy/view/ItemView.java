@@ -32,7 +32,7 @@ public class ItemView {
     //点击应用
     public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK, XYContant.DELE_APP};
     //长按应用
-    public String[] itemLong = {XYContant.NEW_APP_NAME, XYContant.DELE_APP_IN_FRAGMENT, XYContant.DELE_APP_IN_PHONE};
+    public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT};
 
     public void showLongView(Context context, String[] item, final ViewI viewI) {
         final Dialog alertDialog = new Dialog(context);

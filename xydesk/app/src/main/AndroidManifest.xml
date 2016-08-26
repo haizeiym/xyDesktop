@@ -27,8 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
 
         </activity>
@@ -36,7 +34,7 @@
         <!-- 移动统计分析 -->
         <meta-data
             android:name="IFLYTEK_APPKEY"
-            android:value="57befb15" />
+            android:value="572c70c8" />
         <meta-data
             android:name="IFLYTEK_CHANNEL"
             android:value="xydesk" />
