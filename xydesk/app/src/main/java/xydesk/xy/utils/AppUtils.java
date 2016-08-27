@@ -10,10 +10,8 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
@@ -59,7 +57,7 @@ public class AppUtils {
                     if (resolveInfo.activityInfo.packageName.equals("com.ca.tongxunlu")) {
                         isXYCall = true;
                     }
-//                xyModel.activityMainName = resolveInfo.activityInfo.name;
+//                  xyModel.activityMainName = resolveInfo.activityInfo.name;
                     String p = resolveInfo.activityInfo.packageName;
                     String n = resolveInfo.loadLabel(packageManager).toString();
                     xyModel.appPackageName = p;
