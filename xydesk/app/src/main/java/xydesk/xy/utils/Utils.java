@@ -5,14 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import xydesk.xy.model.XYAllAppModel;
+import xydesk.xy.xydesk.R;
 
 /**
  * Created by haizeiym
@@ -79,5 +83,36 @@ public class Utils {
             listC.add(xyAllAppModel1);
         }
         return listC;
+    }
+
+    //音频播放
+    public void playOgg(Context context) {
+        try {
+//            MediaPlayer mediaPlayer01 = MediaPlayer.create(context, R.raw.start_end);
+//            mediaPlayer01.start();
+//            mediaPlayer01.seekTo(0);
+            InitSounds(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 初始化声音
+     */
+    private void InitSounds(Context context) {
+        SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 100);
+        int loadId = soundPool.load(context, R.raw.start_end, 1);
+        soundPool.play(loadId, 13, 13, 1, 0, 1f);
+
+    }
+
+    /**
+     * soundPool播放
+     *
+     * @param sound 播放第一个
+     * @param loop  是否循环
+     */
+    private void PlaySound(Context context, SoundPool mSound, HashMap<Integer, Integer> soundPoolMap, int sound, int loop) {
     }
 }
