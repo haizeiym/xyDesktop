@@ -22,24 +22,46 @@ public class DeskHelp extends SQLiteOpenHelper {
     public final String TABLE_DELE_REC_NAME = "dele_rec_name";
     public final String DELE_APP_PACKAGE_NAME = "dele_app_package_name";
 
+    //语音查找应用设置
+    public final String TABLE_APP_NAME_SET_NAME = "table_app_name_set_name";
+    public final String APP_SET_NAME = "app_set_name";
+    public final String APP_SET_PACKAGE_NAME = "app_set_package_name";
+    //语音查找联系人设置
+    public final String TABLE_CONTACT_NAME_SET_NAME = "table_contact_name_set_name";
+    public final String CONTACT_NAME = "contact_name";
+    public final String CONTACT_NUMBER = "contact_number";
+
     public DeskHelp(Context context) {
         super(context, "xyDesk.db", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        String CREATE = "create table if not exists ";
         String _ID = "_id INTEGER PRIMARY KEY AUTOINCREMENT,";
-        db.execSQL("create table if not exists " + TABLE_Name + "(" +
+        String TEXT = " TEXT,";
+        String TEXT_ = " TEXT);";
+        db.execSQL(CREATE + TABLE_Name + " (" +
                 _ID +
-                APP_NAME + " TEXT," +
-                APP_PACKAGE_NAME + " TEXT," +
-                APP_MAIN_ACTIVITY + " TEXT," +
-                APP_POINT_PARENTS + " TEXT," +
-                APP_POINT_ONE + " TEXT," +
-                APP_POINT_TWO + " TEXT);");
-        db.execSQL("create table if not exists " + TABLE_DELE_REC_NAME + "(" +
+                APP_NAME + TEXT +
+                APP_PACKAGE_NAME + TEXT +
+                APP_MAIN_ACTIVITY + TEXT +
+                APP_POINT_PARENTS + TEXT +
+                APP_POINT_ONE + TEXT +
+                APP_POINT_TWO + TEXT_);
+        db.execSQL(CREATE + TABLE_DELE_REC_NAME + " (" +
                 _ID +
-                DELE_APP_PACKAGE_NAME + " TEXT);");
+                DELE_APP_PACKAGE_NAME + TEXT_);
+        //语音APP名称设置
+        db.execSQL(CREATE + TABLE_APP_NAME_SET_NAME + " (" +
+                _ID +
+                APP_SET_NAME + TEXT +
+                APP_SET_PACKAGE_NAME + TEXT_);
+        //联系人
+        db.execSQL(CREATE + TABLE_CONTACT_NAME_SET_NAME + " (" +
+                _ID +
+                CONTACT_NAME + TEXT +
+                CONTACT_NUMBER + TEXT_);
     }
 
     @Override

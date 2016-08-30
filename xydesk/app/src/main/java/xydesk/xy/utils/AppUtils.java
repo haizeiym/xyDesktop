@@ -38,9 +38,8 @@ public class AppUtils {
     }
 
     public final String APP_PACKAGE = "xydesk.xy.xydesk";
-    private final String[] uApp = {"com.ca.tongxunlu", "com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
+    private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
     public boolean isXYCall = false;
-    public String xyPakcageName = "com.ca.tongxunlu";
     public String delePackageName = "";
 
     //获取所有APP列表
@@ -57,7 +56,7 @@ public class AppUtils {
                     if (resolveInfo.activityInfo.packageName.equals("com.ca.tongxunlu")) {
                         isXYCall = true;
                     }
-//                  xyModel.activityMainName = resolveInfo.activityInfo.name;
+                    /*xyModel.activityMainName = resolveInfo.activityInfo.name;*/
                     String p = resolveInfo.activityInfo.packageName;
                     String n = resolveInfo.loadLabel(packageManager).toString();
                     xyModel.appPackageName = p;
@@ -88,19 +87,19 @@ public class AppUtils {
 
     //根据包名打开APP
     public void openApp(Context context, String appPackageName) {
-//        //应用的主类名
-//        String cls = xyAllAppModel.activityMainName;
-//        ComponentName componentName = new ComponentName(pkg, cls);
-//        Intent intent = new Intent();
-//        intent.setComponent(componentName);
-//        context.startActivity(intent);
+        /*//应用的主类名
+        String cls = xyAllAppModel.activityMainName;
+        ComponentName componentName = new ComponentName(pkg, cls);
+        Intent intent = new Intent();
+        intent.setComponent(componentName);
+        context.startActivity(intent);*/
         PackageManager pm = context.getPackageManager();
         Intent i = pm.getLaunchIntentForPackage(appPackageName);
         //应用是否存在
         if (i != null) {
             context.startActivity(i);
         } else {
-            Utils.getInstance().toast(context, "应用已不存在");
+            Utils.getInstance().toast(context, "应用不存在");
         }
     }
 

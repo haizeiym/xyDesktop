@@ -25,7 +25,8 @@ public class XYContant {
     public static final String ADD_DESK = "添加桌面";
     //删除应用
     public static final String DELE_APP = "删除应用";
-
+    //设置语音名称
+    public static final String XFNAME = "设置语音名称";
     /**
      * whatFragment
      */
@@ -47,4 +48,8 @@ public class XYContant {
     public static final String DELE_APP_IN_FRAGMENT = "在桌面删除";
     //卸载此应用
 //    public static final String DELE_APP_IN_PHONE = "卸载此应用";
+    /**
+     * 语音设置
+     */
+    public static final String F = "FUCK";
 }

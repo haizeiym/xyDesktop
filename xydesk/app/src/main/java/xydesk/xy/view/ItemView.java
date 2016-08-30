@@ -30,7 +30,7 @@ public class ItemView {
     }
 
     //点击应用
-    public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK, XYContant.DELE_APP};
+    public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK, XYContant.DELE_APP, XYContant.XFNAME};
     //长按应用
     public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT};
 

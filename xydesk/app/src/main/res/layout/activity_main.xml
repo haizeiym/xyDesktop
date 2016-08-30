@@ -54,7 +54,7 @@
             android:background="#cccccc"
             android:clickable="true"
             android:gravity="center"
-            android:text="心阳通讯" />
+            android:text="语音拨打" />
 
         <TextView
             android:id="@+id/add_three"
@@ -65,7 +65,7 @@
             android:background="#cccccc"
             android:clickable="true"
             android:gravity="center"
-            android:text="语音查找" />
+            android:text="语音" />
 
         <TextView
             android:id="@+id/all_app"

@@ -94,6 +94,9 @@ public class AllAppShowUI extends XYBaseActivity {
                         delePackageName = xyAllAppModel.appPackageName;
                         AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
+                    case XYContant.XFNAME:
+
+                        break;
                 }
             }
         });

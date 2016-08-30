@@ -8,7 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAppInfoInDesk;
+import xydesk.xy.model.XYXFNameSetModel;
+import xydesk.xy.utils.Utils;
 
 /**
  * Created by haizeiym
@@ -41,12 +44,6 @@ public class DeskDB {
         addDeleApp(appPackage);
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
         sd.execSQL("delete from " + deskHelp.TABLE_Name + " where " + deskHelp.APP_PACKAGE_NAME + "=?", new String[]{appPackage});
-    }
-
-    //修改app名称
-    public void updateAppName(String newName) {
-        SQLiteDatabase sd = deskHelp.getWritableDatabase();
-        sd.execSQL("update " + deskHelp.TABLE_Name + " set " + "where " + deskHelp.APP_NAME + "=?", new String[]{newName});
     }
 
     //判断应用是否存在
@@ -117,7 +114,7 @@ public class DeskDB {
         boolean isExits = false;
         try {
             sd = deskHelp.getReadableDatabase();
-            cs = sd.rawQuery("select * from " + deskHelp.TABLE_DELE_REC_NAME + " where=?", new String[]{appPackageName});
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_DELE_REC_NAME + " where" + deskHelp.DELE_APP_PACKAGE_NAME + "=?", new String[]{appPackageName});
             isExits = cs != null && cs.moveToFirst();
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,6 +128,181 @@ public class DeskDB {
         }
         return isExits;
     }
+
+    /**
+     * APP语音
+     */
+    //添加语音设置的APP名称
+    public void addSetAppName(XYXFNameSetModel xyxfNameSetModel) {
+        if (isExistAppName(xyxfNameSetModel.set_app_name)) {
+            return;
+        }
+        SQLiteDatabase sd = null;
+        ContentValues contentValues;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            contentValues = new ContentValues();
+            contentValues.put(deskHelp.APP_SET_NAME, xyxfNameSetModel.set_app_name);
+            contentValues.put(deskHelp.APP_SET_PACKAGE_NAME, xyxfNameSetModel.set_app_package_name);
+            sd.insert(deskHelp.TABLE_APP_NAME_SET_NAME, null, contentValues);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
+    }
+
+    //修改语音设置的APP名称
+    public void updateAppName(XYXFNameSetModel xyxfNameSetModel) {
+        SQLiteDatabase sd = null;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            sd.rawQuery("update " + deskHelp.TABLE_APP_NAME_SET_NAME + " set " + deskHelp.APP_SET_NAME + "=?" + " where " + deskHelp.APP_SET_PACKAGE_NAME + "=?",
+                    new String[]{xyxfNameSetModel.set_app_name, xyxfNameSetModel.set_app_package_name});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
+    }
+
+    //根据名称获取包名
+    public String getAppPackageName(String appName) {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        String packageName = XYContant.F;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where" + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
+            if (cs != null && cs.moveToFirst()) {
+                packageName = getString(cs, deskHelp.APP_SET_PACKAGE_NAME);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+            if (cs != null) {
+                cs.close();
+            }
+        }
+        return packageName;
+    }
+
+    //查询是否有这个app名字
+    private boolean isExistAppName(String appName) {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        boolean isExits = false;
+        try {
+            sd = deskHelp.getReadableDatabase();
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where " + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
+            isExits = cs != null && cs.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                cs.close();
+            }
+            if (sd != null) {
+                sd.close();
+            }
+        }
+        return isExits;
+    }
+
+    /**
+     * APP联系人
+     */
+    //添加语音设置的联系人的名字
+    public void addSetContactName(XYXFNameSetModel xyxfNameSetModel) {
+        if (isExistContactName(xyxfNameSetModel.set_contact_name)) {
+            return;
+        }
+        SQLiteDatabase sd = null;
+        ContentValues contentValues;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            contentValues = new ContentValues();
+            contentValues.put(deskHelp.CONTACT_NAME, xyxfNameSetModel.set_contact_name);
+            contentValues.put(deskHelp.CONTACT_NUMBER, xyxfNameSetModel.set_contact_number);
+            sd.insert(deskHelp.TABLE_CONTACT_NAME_SET_NAME, null, contentValues);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
+    }
+
+    //修改语音设置的联系人的名字
+    public void updateContactName(XYXFNameSetModel xyxfNameSetModel) {
+        SQLiteDatabase sd = null;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            sd.rawQuery("update " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " set " + deskHelp.CONTACT_NAME + "=?" + " where " + deskHelp.CONTACT_NUMBER + "=?",
+                    new String[]{xyxfNameSetModel.set_contact_name, xyxfNameSetModel.set_contact_number});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
+    }
+
+    //查询是否有这个名字
+    private boolean isExistContactName(String contactName) {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        boolean isExits = false;
+        try {
+            sd = deskHelp.getReadableDatabase();
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where " + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});
+            isExits = cs != null && cs.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                cs.close();
+            }
+            if (sd != null) {
+                sd.close();
+            }
+        }
+        return isExits;
+    }
+
+    //根据名称获取电话号码
+    public String getContactNum(String contactName) {
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        String packageName = XYContant.F;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where" + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});
+            if (cs != null && cs.moveToFirst()) {
+                packageName = getString(cs, deskHelp.CONTACT_NUMBER);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+            if (cs != null) {
+                cs.close();
+            }
+        }
+        return packageName;
+    }
+
 
     private String getString(Cursor cs, String index) {
         return cs.getString(cs.getColumnIndex(index));

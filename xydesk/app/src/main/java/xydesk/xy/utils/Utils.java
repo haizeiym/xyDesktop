@@ -1,22 +1,20 @@
 package xydesk.xy.utils;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.SoundPool;
+import android.media.MediaPlayer;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import xydesk.xy.model.XYAllAppModel;
-import xydesk.xy.xydesk.R;
 
 /**
  * Created by haizeiym
@@ -67,7 +65,7 @@ public class Utils {
             XYAllAppModel xyAllAppModel = xyAllAppModelList.get(i);
             String appName = xyAllAppModel.appName;
             String appPackage = xyAllAppModel.appPackageName;
-//            String appMainActivity = xyAllAppModel.activityMainName;
+            /*String appMainActivity = xyAllAppModel.activityMainName;*/
             Drawable appIcon = xyAllAppModel.appIcon;
             //汉字转换成拼音
             String pinyin = characterParser.getSelling(appName);
@@ -88,31 +86,27 @@ public class Utils {
     //音频播放
     public void playOgg(Context context) {
         try {
-//            MediaPlayer mediaPlayer01 = MediaPlayer.create(context, R.raw.start_end);
-//            mediaPlayer01.start();
-//            mediaPlayer01.seekTo(0);
-            InitSounds(context);
+            AssetFileDescriptor fileDescriptor = context.getAssets().openFd("start_end.ogg");
+            final MediaPlayer mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(
+                        fileDescriptor.getFileDescriptor(),
+                        fileDescriptor.getStartOffset(),
+                        fileDescriptor.getLength());
+                mediaPlayer.setOnPreparedListener(preparedListener);
+                mediaPlayer.prepareAsync();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /**
-     * 初始化声音
-     */
-    private void InitSounds(Context context) {
-        SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 100);
-        int loadId = soundPool.load(context, R.raw.start_end, 1);
-        soundPool.play(loadId, 13, 13, 1, 0, 1f);
-
-    }
-
-    /**
-     * soundPool播放
-     *
-     * @param sound 播放第一个
-     * @param loop  是否循环
-     */
-    private void PlaySound(Context context, SoundPool mSound, HashMap<Integer, Integer> soundPoolMap, int sound, int loop) {
-    }
+    private MediaPlayer.OnPreparedListener preparedListener = new MediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(MediaPlayer mp) {
+            mp.start();
+        }
+    };
 }
