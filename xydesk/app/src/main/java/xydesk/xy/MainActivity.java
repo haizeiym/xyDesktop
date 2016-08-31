@@ -2,7 +2,9 @@ package xydesk.xy;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +19,7 @@ import xydesk.xy.i.VoiceI;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.viewFragment.OneAppFragment;
-import xydesk.xy.voice.VoiceType;
+import xydesk.xy.voice.VoiceData;
 import xydesk.xy.voice.VoiceUtils;
 import xydesk.xy.xydesk.R;
 
@@ -32,11 +34,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             switch (msg.what) {
                 case XYContant.ADD_APP:
                     OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
-                    Utils.getInstance().toast(instance, "已应用到添加桌面");
+                    Utils.getInstance().toast("已应用到添加桌面");
                     break;
                 case XYContant.DELETER_APP:
                     OneAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    Utils.getInstance().toast(instance, "应用已删除");
+                    Utils.getInstance().toast("应用已删除");
                     break;
             }
         }
@@ -53,12 +55,39 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         xyCall.setOnClickListener(this);
         all_app.setOnClickListener(this);
         add_three.setOnClickListener(this);
+        initData();
+    }
+
+    /**
+     * 清除默认桌面（采用先设置一个空的桌面为默认然后在将该空桌面禁用的方式来实现）
+     * 默认桌面设置
+     *
+     * @param
+     *//*
+    public void clearDefaultLauncher() {
+        PackageManager pm = getPackageManager();
+        String pn = getPackageName();
+        String hn = MainActivity.class.getName();
+        ComponentName mhCN = new ComponentName(pn, hn);
+        Intent homeIntent = new Intent("android.intent.action.MAIN");
+        homeIntent.addCategory("android.intent.category.HOME");
+        homeIntent.addCategory("android.intent.category.DEFAULT");
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        pm.setComponentEnabledSetting(mhCN, 1, 1);
+        startActivity(homeIntent);
+        pm.setComponentEnabledSetting(mhCN, 0, 1);
+    }*/
+
+    //初始化数据
+    private void initData() {
         AppUtils.getInstance().getAllAppList(instance);
         AppUtils.getInstance().getAppU(instance);
+        VoiceData.getInstance().addSysApp(instance);
         setDefaultFargment();
         voiceUtils = new VoiceUtils(instance);
     }
 
+    //默认Fragment
     private void setDefaultFargment() {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -76,14 +105,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.add_four:
                 //语音拨打电话
-
+                Utils.getInstance().toast("形式待定");
                 break;
             case R.id.add_three:
                 voiceUtils.startVoice(new VoiceI() {
                     @Override
                     public void findApp(String lastRec) {
                         add_three.setText("记录：" + lastRec);
-                        VoiceType.isIn(instance, lastRec);
+                        VoiceData.getInstance().openApp(instance, lastRec);
                     }
 
                     @Override

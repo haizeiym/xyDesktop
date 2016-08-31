@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 
-import butterknife.ButterKnife;
 
 /**
  * Created by haizeiym
@@ -28,7 +27,6 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             instance = this;
-            ButterKnife.bind(instance);
             initView();
             initData();
             setAdapter();
@@ -84,7 +82,6 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         instance = this;
-        ButterKnife.bind(instance);
         initView();
         initData();
         setAdapter();

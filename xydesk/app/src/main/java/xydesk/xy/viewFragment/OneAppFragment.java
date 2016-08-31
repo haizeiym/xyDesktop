@@ -8,7 +8,6 @@ import android.widget.GridView;
 
 import java.util.List;
 
-import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
@@ -64,17 +63,11 @@ public class OneAppFragment extends XYBaseFragment {
             public void click(View view, int itemPosition) {
                 XYAppInfoInDesk xyAllAppModel = xyAppInfoInDesks.get(position);
                 switch ((String) view.getTag()) {
-//                    case XYContant.NEW_APP_NAME:
-//                        Utils.getInstance().toast(getActivity(), "后续版本会集成语音，此版本暂不做处理");
-//                        break;
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast(getActivity(), "删除成功");
+                        Utils.getInstance().toast("删除成功");
                         break;
-//                    case XYContant.DELE_APP_IN_PHONE:
-//                        AppUtils.getInstance().delApp(getActivity(), xyAllAppModel.appPackageName);
-//                        break;
                 }
             }
         });

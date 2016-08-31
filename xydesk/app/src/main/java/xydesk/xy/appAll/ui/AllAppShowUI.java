@@ -28,7 +28,6 @@ import xydesk.xy.xydesk.R;
  * on 2016/7/27
  */
 public class AllAppShowUI extends XYBaseActivity {
-    // @Bind(R.id.all_app)
     private ListView all_app;
     private List<XYAllAppModel> xyAllAppModelList;
     //根据拼音来排列ListView里面的数据类
@@ -80,7 +79,7 @@ public class AllAppShowUI extends XYBaseActivity {
                         break;
                     case XYContant.ADD_DESK:
                         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-                            Utils.getInstance().toast(instance, "桌面已添加");
+                            Utils.getInstance().toast("桌面已添加");
                         } else {
                             XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
                             xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
@@ -95,7 +94,9 @@ public class AllAppShowUI extends XYBaseActivity {
                         AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
                     case XYContant.XFNAME:
-
+                        Intent intent = new Intent(instance, AppXFNameSetUI.class);
+                        intent.putExtra(XYContant.ADD_APP_NAME, xyAllAppModel.appPackageName);
+                        startActivity(intent);
                         break;
                 }
             }

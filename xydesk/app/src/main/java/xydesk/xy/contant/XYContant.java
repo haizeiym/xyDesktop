@@ -26,7 +26,7 @@ public class XYContant {
     //删除应用
     public static final String DELE_APP = "删除应用";
     //设置语音名称
-    public static final String XFNAME = "设置语音名称";
+    public static final String XFNAME = "添加语音名称";
     /**
      * whatFragment
      */
@@ -42,14 +42,14 @@ public class XYContant {
     /**
      * 长按item
      */
-    //修改应用名
-//    public static final String NEW_APP_NAME = "修改应用名";
     //在桌面删除
     public static final String DELE_APP_IN_FRAGMENT = "在桌面删除";
-    //卸载此应用
-//    public static final String DELE_APP_IN_PHONE = "卸载此应用";
     /**
      * 语音设置
      */
+    //常量
     public static final String F = "FUCK";
+    //添加语音名称
+    public static final String ADD_APP_NAME = "add_app_name";
+
 }

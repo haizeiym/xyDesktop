@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import xydesk.xy.MyApplication;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.model.XYXFNameSetModel;
@@ -114,7 +115,7 @@ public class DeskDB {
         boolean isExits = false;
         try {
             sd = deskHelp.getReadableDatabase();
-            cs = sd.rawQuery("select * from " + deskHelp.TABLE_DELE_REC_NAME + " where" + deskHelp.DELE_APP_PACKAGE_NAME + "=?", new String[]{appPackageName});
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_DELE_REC_NAME + " where " + deskHelp.DELE_APP_PACKAGE_NAME + "=?", new String[]{appPackageName});
             isExits = cs != null && cs.moveToFirst();
         } catch (Exception e) {
             e.printStackTrace();
@@ -135,6 +136,7 @@ public class DeskDB {
     //添加语音设置的APP名称
     public void addSetAppName(XYXFNameSetModel xyxfNameSetModel) {
         if (isExistAppName(xyxfNameSetModel.set_app_name)) {
+            Utils.getInstance().toast("名称已被占用");
             return;
         }
         SQLiteDatabase sd = null;
@@ -154,7 +156,7 @@ public class DeskDB {
         }
     }
 
-    //修改语音设置的APP名称
+    /*//修改语音设置的APP名称
     public void updateAppName(XYXFNameSetModel xyxfNameSetModel) {
         SQLiteDatabase sd = null;
         try {
@@ -168,7 +170,7 @@ public class DeskDB {
                 sd.close();
             }
         }
-    }
+    }*/
 
     //根据名称获取包名
     public String getAppPackageName(String appName) {
@@ -177,7 +179,7 @@ public class DeskDB {
         String packageName = XYContant.F;
         try {
             sd = deskHelp.getWritableDatabase();
-            cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where" + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where " + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
             if (cs != null && cs.moveToFirst()) {
                 packageName = getString(cs, deskHelp.APP_SET_PACKAGE_NAME);
             }
@@ -241,7 +243,7 @@ public class DeskDB {
         }
     }
 
-    //修改语音设置的联系人的名字
+    /*//修改语音设置的联系人的名字
     public void updateContactName(XYXFNameSetModel xyxfNameSetModel) {
         SQLiteDatabase sd = null;
         try {
@@ -255,7 +257,7 @@ public class DeskDB {
                 sd.close();
             }
         }
-    }
+    }*/
 
     //查询是否有这个名字
     private boolean isExistContactName(String contactName) {
@@ -286,7 +288,7 @@ public class DeskDB {
         String packageName = XYContant.F;
         try {
             sd = deskHelp.getWritableDatabase();
-            cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where" + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});
+            cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where " + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});
             if (cs != null && cs.moveToFirst()) {
                 packageName = getString(cs, deskHelp.CONTACT_NUMBER);
             }

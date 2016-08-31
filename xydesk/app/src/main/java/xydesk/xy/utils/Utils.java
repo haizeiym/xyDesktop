@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import xydesk.xy.MyApplication;
 import xydesk.xy.model.XYAllAppModel;
 
 /**
@@ -45,8 +48,8 @@ public class Utils {
     }
 
     //Toast工具
-    public void toast(Context context, String content) {
-        final Toast toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+    public void toast(String content) {
+        final Toast toast = Toast.makeText(MyApplication.myInstance.getApplicationContext(), content, Toast.LENGTH_SHORT);
         toast.show();
         Timer timer = new Timer();
         TimerTask t = new TimerTask() {
@@ -83,8 +86,22 @@ public class Utils {
         return listC;
     }
 
+    //判断网络是否可用
+    public boolean isNetAvailable(Context context) {
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+        return (info != null && info.isAvailable());
+    }
+
     //音频播放
     public void playOgg(Context context) {
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        }, 50);
         try {
             AssetFileDescriptor fileDescriptor = context.getAssets().openFd("start_end.ogg");
             final MediaPlayer mediaPlayer = new MediaPlayer();

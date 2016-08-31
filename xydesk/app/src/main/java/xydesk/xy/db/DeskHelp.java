@@ -41,6 +41,7 @@ public class DeskHelp extends SQLiteOpenHelper {
         String _ID = "_id INTEGER PRIMARY KEY AUTOINCREMENT,";
         String TEXT = " TEXT,";
         String TEXT_ = " TEXT);";
+        /**两张表可以合成一张，待处理*/
         db.execSQL(CREATE + TABLE_Name + " (" +
                 _ID +
                 APP_NAME + TEXT +

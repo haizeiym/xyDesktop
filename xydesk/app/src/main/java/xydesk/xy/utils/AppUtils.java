@@ -39,7 +39,6 @@ public class AppUtils {
 
     public final String APP_PACKAGE = "xydesk.xy.xydesk";
     private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
-    public boolean isXYCall = false;
     public String delePackageName = "";
 
     //获取所有APP列表
@@ -53,9 +52,6 @@ public class AppUtils {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
                 if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
-                    if (resolveInfo.activityInfo.packageName.equals("com.ca.tongxunlu")) {
-                        isXYCall = true;
-                    }
                     /*xyModel.activityMainName = resolveInfo.activityInfo.name;*/
                     String p = resolveInfo.activityInfo.packageName;
                     String n = resolveInfo.loadLabel(packageManager).toString();
@@ -98,8 +94,6 @@ public class AppUtils {
         //应用是否存在
         if (i != null) {
             context.startActivity(i);
-        } else {
-            Utils.getInstance().toast(context, "应用不存在");
         }
     }
 
