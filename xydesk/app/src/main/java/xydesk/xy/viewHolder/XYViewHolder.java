@@ -24,12 +24,10 @@ public class XYViewHolder {
     public View chart_line;
     //item 分割线
     public View item_lineTwo;
+
     /**
-     * 点击Item显示的条目
+     * item分割线
      */
-    //点击显示的Item
-    public TextView long_press_item;
-    //item分割线
     public View item_line;
 
     /**
@@ -39,5 +37,9 @@ public class XYViewHolder {
     public TextView fragment_app_name;
     //应用图标
     public ImageView fragment_app_icon;
+    /**
+     * 联系人名字
+     */
+    public TextView contactName;
 }
 

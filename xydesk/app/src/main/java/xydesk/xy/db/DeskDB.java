@@ -305,7 +305,6 @@ public class DeskDB {
         return packageName;
     }
 
-
     private String getString(Cursor cs, String index) {
         return cs.getString(cs.getColumnIndex(index));
     }

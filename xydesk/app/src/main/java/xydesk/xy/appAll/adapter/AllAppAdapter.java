@@ -37,8 +37,8 @@ public class AllAppAdapter extends XYBaseAdapter implements SectionIndexer {
     }
 
     @Override
-    public View setHolderViewInit(XYViewHolder holder, int position, View convertView, ViewGroup parent) {
-        convertView = LayoutInflater.from(context).inflate(R.layout.all_app_item, parent, false);
+    public View setHolderViewInit(XYViewHolder holder, int position, ViewGroup parent) {
+        View convertView = LayoutInflater.from(context).inflate(R.layout.all_app_item, parent, false);
         holder.app_name = (TextView) convertView.findViewById(R.id.app_name);
         holder.app_icon = (ImageView) convertView.findViewById(R.id.app_icon);
         holder.chart_index = (TextView) convertView.findViewById(R.id.chart_index);

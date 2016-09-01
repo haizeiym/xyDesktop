@@ -5,7 +5,5 @@ package xydesk.xy.i;
  * on 2016/8/30
  */
 public interface VoiceI {
-    void findApp(String lastRec);
-
-    void findNum(String lastRec);
+    void voiceResult(String lastRec);
 }

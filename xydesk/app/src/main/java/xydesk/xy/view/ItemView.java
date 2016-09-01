@@ -30,7 +30,7 @@ public class ItemView {
     }
 
     //点击应用
-    public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK, XYContant.DELE_APP, XYContant.XFNAME};
+    public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK_ONE, XYContant.ADD_DESK_TWO, XYContant.ADD_DESK_THREE, XYContant.ADD_DESK_FOUR, XYContant.DELE_APP, XYContant.XFNAME};
     //长按应用
     public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT};
 
@@ -48,7 +48,7 @@ public class ItemView {
         itemList.removeAllViews();
         for (String i : item) {
             View view = View.inflate(context, R.layout.add_item_view, null);
-            TextView clickItem = (TextView) view.findViewById(R.id.add_item_view);
+            TextView clickItem = (TextView) view.findViewById(R.id.add_item_view_text);
             clickItem.setTag(i);
             clickItem.setText(i);
             clickItem.setOnClickListener(new View.OnClickListener() {

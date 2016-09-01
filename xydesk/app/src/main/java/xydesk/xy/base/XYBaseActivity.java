@@ -12,7 +12,7 @@ import android.widget.AdapterView;
  * Created by haizeiym
  * on 2016/7/27
  */
-public abstract class XYBaseActivity extends FragmentActivity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public abstract class XYBaseActivity extends FragmentActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     public XYBaseActivity instance;
     public Handler handler = new Handler() {
@@ -25,12 +25,10 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            instance = this;
-            initView();
-            initData();
-            setAdapter();
-        }
+        instance = this;
+        initView();
+        initData();
+        setAdapter();
     }
 
     //初始化视图
@@ -38,10 +36,6 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
 
     //初始化数据
     public void initData() {
-    }
-
-    //设置点击事件
-    public void setOnclick(View v) {
     }
 
     //设置adapter
@@ -52,38 +46,17 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
     public void onItemClick(View view, int position) {
     }
 
-    //设置Item长按事件
-    public void onItemLongPressed(View view, int position) {
-
-    }
-
     //handler
     public void handler(Message msg) {
     }
 
     @Override
     public void onClick(View v) {
-        setOnclick(v);
+        
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         onItemClick(view, position);
-    }
-
-
-    @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        onItemLongPressed(view, position);
-        return false;
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        instance = this;
-        initView();
-        initData();
-        setAdapter();
     }
 }

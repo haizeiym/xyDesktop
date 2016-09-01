@@ -37,7 +37,6 @@ public class VoiceUtils {
     int ret = 0; // 函数调用返回值
     boolean isClickDouble = false;
     VoiceI voiceI;
-    boolean isApp;
 
     public VoiceUtils(final Context context) {
         this.context = context;
@@ -59,13 +58,12 @@ public class VoiceUtils {
         setParam();
     }
 
-    public void startVoice(VoiceI voiceI, boolean isApp) {
+    public void startVoice(VoiceI voiceI) {
         if (!Utils.getInstance().isNetAvailable(context)) {
             Utils.getInstance().toast("网络不可用");
             return;
         }
         this.voiceI = voiceI;
-        this.isApp = isApp;
         if (!isClickDouble) {
             isClickDouble = true;
             Utils.getInstance().toast("开始说话");
@@ -176,10 +174,7 @@ public class VoiceUtils {
             resultBuffer.append(mIatResults.get(key));
         }
         String userString = resultBuffer.toString();
-        if (isApp) {
-            voiceI.findApp(userString);
-        } else {
-            voiceI.findNum(userString);
-        }
+        //语音结果返回
+        voiceI.voiceResult(userString);
     }
 }

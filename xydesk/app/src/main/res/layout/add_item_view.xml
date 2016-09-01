@@ -5,12 +5,13 @@
     android:orientation="vertical">
 
     <View
+        android:id="@+id/item_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray" />
 
     <TextView
-        android:id="@+id/add_item_view"
+        android:id="@+id/add_item_view_text"
         android:layout_width="match_parent"
         android:layout_height="69dp"
         android:gravity="center"

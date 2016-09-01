@@ -22,7 +22,10 @@ public class XYContant {
     //打开应用
     public static final String OPEN_APP = "打开应用";
     //添加到桌面
-    public static final String ADD_DESK = "添加桌面";
+    public static final String ADD_DESK_ONE = "添加第一屏";
+    public static final String ADD_DESK_TWO = "添加第二屏";
+    public static final String ADD_DESK_THREE = "添加第三屏";
+    public static final String ADD_DESK_FOUR = "添加第四屏";
     //删除应用
     public static final String DELE_APP = "删除应用";
     //设置语音名称
@@ -50,6 +53,7 @@ public class XYContant {
     //常量
     public static final String F = "FUCK";
     //添加语音名称
-    public static final String ADD_APP_NAME = "add_app_name";
-
+    public static final String NAME_SET = "name_set";
+    //是否为语音设置
+    public static final String IS_VOICE = "isVoice";
 }

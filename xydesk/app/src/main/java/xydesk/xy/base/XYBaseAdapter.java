@@ -31,7 +31,7 @@ public abstract class XYBaseAdapter extends android.widget.BaseAdapter {
         XYViewHolder baseViewHolder;
         if (convertView == null) {
             baseViewHolder = new XYViewHolder();
-            convertView = setHolderViewInit(baseViewHolder, position, convertView, parent);
+            convertView = setHolderViewInit(baseViewHolder, position, parent);
             convertView.setTag(baseViewHolder);
         } else {
             baseViewHolder = (XYViewHolder) convertView.getTag();
@@ -44,7 +44,7 @@ public abstract class XYBaseAdapter extends android.widget.BaseAdapter {
     public abstract int setCount();
 
     //初始化Holder
-    public abstract View setHolderViewInit(XYViewHolder holder, int position, View convertView, ViewGroup parent);
+    public abstract View setHolderViewInit(XYViewHolder holder, int position, ViewGroup parent);
 
     //holder设置数据
     public abstract void setHolderViewData(XYViewHolder holder, int position);

@@ -8,6 +8,9 @@ import android.widget.ListView;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import xydesk.xy.MainActivity;
 import xydesk.xy.appAll.adapter.AllAppAdapter;
 import xydesk.xy.base.XYBaseActivity;
@@ -28,7 +31,8 @@ import xydesk.xy.xydesk.R;
  * on 2016/7/27
  */
 public class AllAppShowUI extends XYBaseActivity {
-    private ListView all_app;
+    @Bind(R.id.all_app)
+    ListView allApp;
     private List<XYAllAppModel> xyAllAppModelList;
     //根据拼音来排列ListView里面的数据类
     private PinyinComparator pinyinComparator;
@@ -42,11 +46,10 @@ public class AllAppShowUI extends XYBaseActivity {
 
     @Override
     public void initView() {
-        setContentView(R.layout.allapp_show_ui);
+        setContentView(R.layout.allsome_show_ui);
+        ButterKnife.bind(this);
         pinyinComparator = new PinyinComparator();
         characterParser = CharacterParser.getInstance();
-        all_app = (ListView) findViewById(R.id.all_app);
-        all_app.setOnItemClickListener(this);
         deskDB = new DeskDB(instance);
     }
 
@@ -64,10 +67,10 @@ public class AllAppShowUI extends XYBaseActivity {
 
     @Override
     public void setAdapter() {
-        all_app.setAdapter(adapter);
+        allApp.setAdapter(adapter);
     }
 
-    @Override
+    @OnItemClick(R.id.all_app)
     public void onItemClick(View view, final int position) {
         ItemView.getInstance().showLongView(instance, ItemView.getInstance().itemAll, new ViewI() {
             @Override
@@ -77,7 +80,7 @@ public class AllAppShowUI extends XYBaseActivity {
                     case XYContant.OPEN_APP:
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
                         break;
-                    case XYContant.ADD_DESK:
+                    case XYContant.ADD_DESK_ONE:
                         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
                             Utils.getInstance().toast("桌面已添加");
                         } else {
@@ -89,13 +92,23 @@ public class AllAppShowUI extends XYBaseActivity {
                             MainActivity.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
                         }
                         break;
+                    case XYContant.ADD_DESK_TWO:
+
+                        break;
+                    case XYContant.ADD_DESK_THREE:
+
+                        break;
+                    case XYContant.ADD_DESK_FOUR:
+
+                        break;
                     case XYContant.DELE_APP:
                         delePackageName = xyAllAppModel.appPackageName;
                         AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
                     case XYContant.XFNAME:
-                        Intent intent = new Intent(instance, AppXFNameSetUI.class);
-                        intent.putExtra(XYContant.ADD_APP_NAME, xyAllAppModel.appPackageName);
+                        Intent intent = new Intent(instance, NameSetUI.class);
+                        intent.putExtra(XYContant.IS_VOICE, true);
+                        intent.putExtra(XYContant.NAME_SET, xyAllAppModel.appPackageName);
                         startActivity(intent);
                         break;
                 }
