@@ -178,7 +178,7 @@ public class DeskDB {
         Cursor cs = null;
         String packageName = XYContant.F;
         try {
-            sd = deskHelp.getWritableDatabase();
+            sd = deskHelp.getReadableDatabase();
             cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where " + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
             if (cs != null && cs.moveToFirst()) {
                 packageName = getString(cs, deskHelp.APP_SET_PACKAGE_NAME);
@@ -224,6 +224,7 @@ public class DeskDB {
     //添加语音设置的联系人的名字
     public void addSetContactName(XYXFNameSetModel xyxfNameSetModel) {
         if (isExistContactName(xyxfNameSetModel.set_contact_name)) {
+            Utils.getInstance().toast("名称已被占用");
             return;
         }
         SQLiteDatabase sd = null;
@@ -287,7 +288,7 @@ public class DeskDB {
         Cursor cs = null;
         String packageName = XYContant.F;
         try {
-            sd = deskHelp.getWritableDatabase();
+            sd = deskHelp.getReadableDatabase();
             cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where " + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});
             if (cs != null && cs.moveToFirst()) {
                 packageName = getString(cs, deskHelp.CONTACT_NUMBER);

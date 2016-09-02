@@ -28,6 +28,10 @@ public class AppUtils {
     }
 
     public static Map<String, String> allAppName = new HashMap<>();
+    public static List<XYAppInfoInDesk> one_xyAppInfoInDesks = new ArrayList<>();
+    public static List<XYAppInfoInDesk> two_xyAppInfoInDesks = new ArrayList<>();
+    public static List<XYAppInfoInDesk> three_xyAppInfoInDesks = new ArrayList<>();
+    public static List<XYAppInfoInDesk> four_xyAppInfoInDesks = new ArrayList<>();
 
     private AppUtils() {
 
@@ -146,5 +150,17 @@ public class AppUtils {
     public List<XYAppInfoInDesk> getAllApp(Context context, String parentPoint) {
         DeskDB deskDB = new DeskDB(context);
         return deskDB.getAllApp(parentPoint);
+    }
+
+    //屏幕APP
+    public void PingApp(Activity activity) {
+        one_xyAppInfoInDesks.clear();
+        two_xyAppInfoInDesks.clear();
+        three_xyAppInfoInDesks.clear();
+        four_xyAppInfoInDesks.clear();
+        one_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.ONE_FRAGMENT);
+        two_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.TWO_FRAGMENT);
+        three_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.THREE_FRAGMENT);
+        four_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.FOUR_FRAGMENT);
     }
 }

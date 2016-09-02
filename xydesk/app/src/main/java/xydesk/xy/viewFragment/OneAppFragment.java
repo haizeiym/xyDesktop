@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 
-import java.util.List;
-
+import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
@@ -24,7 +24,8 @@ import xydesk.xy.xydesk.R;
  */
 public class OneAppFragment extends XYBaseFragment {
     GridView fragmentApp;
-    List<XYAppInfoInDesk> xyAppInfoInDesks;
+    //显示第几屏
+    TextView what_ottf;
     public static OneAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
@@ -33,14 +34,15 @@ public class OneAppFragment extends XYBaseFragment {
         if (instance == null) {
             instance = this;
         }
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.one_xyAppInfoInDesks);
     }
 
     @Override
     public View initCreateView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
-        xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.ONE_FRAGMENT);
-        xyFragmentAdapter = new XYFragmentAdapter(getActivity(), xyAppInfoInDesks);
+        what_ottf = (TextView) view.findViewById(R.id.what_ottf);
+        what_ottf.setText("第一屏");
         setAdapter();
         return view;
     }
@@ -53,7 +55,7 @@ public class OneAppFragment extends XYBaseFragment {
 
     @Override
     public void itemClick(View view, int position) {
-        AppUtils.getInstance().openApp(getActivity(), xyAppInfoInDesks.get(position).appPackageName);
+        AppUtils.getInstance().openApp(getActivity(), AppUtils.one_xyAppInfoInDesks.get(position).appPackageName);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class OneAppFragment extends XYBaseFragment {
         ItemView.getInstance().showLongView(getActivity(), ItemView.getInstance().itemLong, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                XYAppInfoInDesk xyAllAppModel = xyAppInfoInDesks.get(position);
+                XYAppInfoInDesk xyAllAppModel = AppUtils.one_xyAppInfoInDesks.get(position);
                 switch ((String) view.getTag()) {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
@@ -83,8 +85,8 @@ public class OneAppFragment extends XYBaseFragment {
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";
                 }
-                xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.ONE_FRAGMENT);
-                xyFragmentAdapter.refresh(xyAppInfoInDesks);
+                AppUtils.one_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.ONE_FRAGMENT);
+                xyFragmentAdapter.refresh(AppUtils.one_xyAppInfoInDesks);
                 break;
         }
     }

@@ -9,9 +9,6 @@ import android.provider.ContactsContract;
 
 import java.util.HashMap;
 
-import xydesk.xy.db.DeskDB;
-import xydesk.xy.utils.Utils;
-
 /**
  * Created by haizeiym
  * on 2016/9/1
@@ -48,15 +45,5 @@ public class ContactManUtils {
         callIntent.addCategory("android.intent.category.DEFAULT");
         callIntent.setData(Uri.parse("tel:" + num));
         activity.startActivity(callIntent);
-    }
-
-    //拨打设置的名称
-    public static void callSQL(Activity activity, String num, DeskDB deskDB, String name) {
-        String number = deskDB.getContactNum(name);
-        if (!number.isEmpty()) {
-            callPhone(activity, number.substring(2, number.length()));
-        } else {
-            Utils.getInstance().toast("未查到此人");
-        }
     }
 }
