@@ -56,10 +56,18 @@ public class MainActivity extends XYBaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case XYContant.DELETER_APP:
-                    OneAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    TwoAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    ThreeAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    FourAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    if (OneAppFragment.instance != null) {
+                        OneAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    }
+                    if (TwoAppFragment.instance != null) {
+                        TwoAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    }
+                    if (ThreeAppFragment.instance != null) {
+                        ThreeAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    }
+                    if (FourAppFragment.instance != null) {
+                        FourAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                    }
                     Utils.getInstance().toast("应用已删除");
                     break;
             }

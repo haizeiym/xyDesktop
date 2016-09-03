@@ -1,5 +1,6 @@
 package xydesk.xy.viewFragment;
 
+import android.content.Intent;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,14 @@ public class ThreeAppFragment extends XYBaseFragment {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == XYContant.DELETER_APP) {
+            handler.sendEmptyMessage(XYContant.DELETER_APP);
+        }
+    }
+
+    @Override
     public void longpressItem(View view, final int position) {
         ItemView.getInstance().showLongView(getActivity(), ItemView.getInstance().itemLong, new ViewI() {
             @Override
@@ -80,7 +89,7 @@ public class ThreeAppFragment extends XYBaseFragment {
         switch (msg.what) {
             case XYContant.DELETER_APP:
             case XYContant.ADD_APP:
-                if (AppUtils.getInstance().delePackageName.equals("")) {
+                if (!AppUtils.getInstance().delePackageName.equals("")) {
                     DeskDB deskDB = new DeskDB(getActivity());
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";

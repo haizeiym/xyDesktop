@@ -154,7 +154,7 @@ public class AllAppShowUI extends XYBaseActivity {
                         break;
                     case XYContant.DELE_APP:
                         delePackageName = xyAllAppModel.appPackageName;
-                        AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
+                        AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
                         break;
                     case XYContant.XFNAME:
                         Intent intent = new Intent(instance, NameSetUI.class);

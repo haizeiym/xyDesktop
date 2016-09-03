@@ -1,5 +1,6 @@
 package xydesk.xy.viewFragment;
 
+import android.content.Intent;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,9 @@ public class OneAppFragment extends XYBaseFragment {
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
                         Utils.getInstance().toast("删除成功");
                         break;
+                    case XYContant.DELE_APP:
+                        AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
+                        break;
                 }
             }
         });
@@ -80,7 +84,7 @@ public class OneAppFragment extends XYBaseFragment {
         switch (msg.what) {
             case XYContant.DELETER_APP:
             case XYContant.ADD_APP:
-                if (AppUtils.getInstance().delePackageName.equals("")) {
+                if (!AppUtils.getInstance().delePackageName.equals("")) {
                     DeskDB deskDB = new DeskDB(getActivity());
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";

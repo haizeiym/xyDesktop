@@ -26,8 +26,8 @@ public class XYContant {
     public static final String ADD_DESK_TWO = "添加第二屏";
     public static final String ADD_DESK_THREE = "添加第三屏";
     public static final String ADD_DESK_FOUR = "添加第四屏";
-    //删除应用
-    public static final String DELE_APP = "删除应用";
+    //应用卸载
+    public static final String DELE_APP = "卸载应用";
     //设置语音名称
     public static final String XFNAME = "添加语音名称";
     /**

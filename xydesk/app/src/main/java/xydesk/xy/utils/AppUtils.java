@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import xydesk.xy.MainActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
 import xydesk.xy.model.XYAllAppModel;
@@ -73,7 +74,7 @@ public class AppUtils {
     }
 
     //App删除
-    public void delApp(Activity activity, String packageName) {
+    public void delApp(String packageName) {
         if (packageName.isEmpty()) {
             return;
         }
@@ -82,7 +83,7 @@ public class AppUtils {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DELETE);
         intent.setData(uri);
-        activity.startActivityForResult(intent, XYContant.DELETER_APP);
+        MainActivity.instance.startActivityForResult(intent, XYContant.DELETER_APP);
     }
 
     //根据包名打开APP
