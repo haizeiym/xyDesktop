@@ -1,4 +1,4 @@
-package xydesk.xy.viewFragment;
+package xydesk.xy.fragmentf;
 
 import android.content.Intent;
 import android.os.Message;
@@ -19,15 +19,16 @@ import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
 import xydesk.xy.xydesk.R;
 
+
 /**
  * Created by haizeiym
  * on 2016/8/8
  */
-public class ThreeAppFragment extends XYBaseFragment {
+public class TwoAppFragment extends XYBaseFragment {
     GridView fragmentApp;
     //显示第几屏
     TextView what_ottf;
-    public static ThreeAppFragment instance;
+    public static TwoAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
     @Override
@@ -35,7 +36,7 @@ public class ThreeAppFragment extends XYBaseFragment {
         if (instance == null) {
             instance = this;
         }
-        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.three_xyAppInfoInDesks);
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class ThreeAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         what_ottf = (TextView) view.findViewById(R.id.what_ottf);
-        what_ottf.setText("第三屏");
+        what_ottf.setText("第二屏");
         setAdapter();
         return view;
     }
@@ -56,7 +57,7 @@ public class ThreeAppFragment extends XYBaseFragment {
 
     @Override
     public void itemClick(View view, int position) {
-        AppUtils.getInstance().openApp(getActivity(), AppUtils.three_xyAppInfoInDesks.get(position).appPackageName);
+        AppUtils.getInstance().openApp(getActivity(), AppUtils.two_xyAppInfoInDesks.get(position).appPackageName);
     }
 
     @Override
@@ -72,7 +73,7 @@ public class ThreeAppFragment extends XYBaseFragment {
         ItemView.getInstance().showLongView(getActivity(), ItemView.getInstance().itemLong, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                XYAppInfoInDesk xyAllAppModel = AppUtils.three_xyAppInfoInDesks.get(position);
+                XYAppInfoInDesk xyAllAppModel = AppUtils.two_xyAppInfoInDesks.get(position);
                 switch ((String) view.getTag()) {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
@@ -94,8 +95,8 @@ public class ThreeAppFragment extends XYBaseFragment {
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";
                 }
-                AppUtils.three_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.THREE_FRAGMENT);
-                xyFragmentAdapter.refresh(AppUtils.three_xyAppInfoInDesks);
+                AppUtils.two_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.TWO_FRAGMENT);
+                xyFragmentAdapter.refresh(AppUtils.two_xyAppInfoInDesks);
                 break;
         }
     }

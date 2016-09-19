@@ -1,4 +1,4 @@
-package xydesk.xy.viewFragment;
+package xydesk.xy.fragmentf;
 
 import android.content.Context;
 import android.view.LayoutInflater;

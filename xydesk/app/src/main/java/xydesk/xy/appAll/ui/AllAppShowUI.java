@@ -24,10 +24,10 @@ import xydesk.xy.utils.CharacterParser;
 import xydesk.xy.utils.PinyinComparator;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
-import xydesk.xy.viewFragment.FourAppFragment;
-import xydesk.xy.viewFragment.OneAppFragment;
-import xydesk.xy.viewFragment.ThreeAppFragment;
-import xydesk.xy.viewFragment.TwoAppFragment;
+import xydesk.xy.fragmentf.FourAppFragment;
+import xydesk.xy.fragmentf.OneAppFragment;
+import xydesk.xy.fragmentf.ThreeAppFragment;
+import xydesk.xy.fragmentf.TwoAppFragment;
 import xydesk.xy.xydesk.R;
 
 /**

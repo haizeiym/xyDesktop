@@ -1,4 +1,4 @@
-package xydesk.xy.viewFragment;
+package xydesk.xy.fragmentf;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

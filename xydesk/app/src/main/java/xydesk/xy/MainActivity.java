@@ -1,9 +1,13 @@
 package xydesk.xy;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -21,14 +25,14 @@ import xydesk.xy.contact.AddContactNameUI;
 import xydesk.xy.contact.ContactManUtils;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
+import xydesk.xy.fragmentf.FourAppFragment;
+import xydesk.xy.fragmentf.FragmentViewAdapter;
+import xydesk.xy.fragmentf.OneAppFragment;
+import xydesk.xy.fragmentf.ThreeAppFragment;
+import xydesk.xy.fragmentf.TwoAppFragment;
 import xydesk.xy.i.VoiceI;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
-import xydesk.xy.viewFragment.FourAppFragment;
-import xydesk.xy.viewFragment.FragmentViewAdapter;
-import xydesk.xy.viewFragment.OneAppFragment;
-import xydesk.xy.viewFragment.ThreeAppFragment;
-import xydesk.xy.viewFragment.TwoAppFragment;
 import xydesk.xy.voice.VoiceData;
 import xydesk.xy.voice.VoiceUtils;
 import xydesk.xy.xydesk.R;
@@ -50,6 +54,7 @@ public class MainActivity extends XYBaseActivity {
     VoiceUtils voiceUtils;
     DeskDB deskDB;
     FragmentViewAdapter adapter;
+
     public static MainActivity instance;
     public Handler handler = new Handler() {
         @Override
@@ -86,6 +91,8 @@ public class MainActivity extends XYBaseActivity {
         fragments.add(new ThreeAppFragment());
         fragments.add(new FourAppFragment());
         AppUtils.getInstance().PingApp(instance);
+        /**Home键监听*/
+        initHomeListen();
     }
 
     @Override
@@ -93,6 +100,12 @@ public class MainActivity extends XYBaseActivity {
         super.onResume();
         //更新联系人
         ContactManUtils.getPeopleInPhone(instance);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        mHomeListen.stop();
     }
 
     //初始化数据
@@ -196,4 +209,33 @@ public class MainActivity extends XYBaseActivity {
                 break;
         }
     }
+
+    private void initHomeListen() {
+        //注册广播
+        registerReceiver(mHomeKeyEventReceiver, new IntentFilter(
+                Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+    }
+
+    /**
+     * 监听是否点击了home键将客户端推到后台
+     */
+    private BroadcastReceiver mHomeKeyEventReceiver = new BroadcastReceiver() {
+        String SYSTEM_REASON = "reason";
+        String SYSTEM_HOME_KEY = "homekey";
+        String SYSTEM_HOME_KEY_LONG = "recentapps";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+                String reason = intent.getStringExtra(SYSTEM_REASON);
+                if (TextUtils.equals(reason, SYSTEM_HOME_KEY) || TextUtils.equals(reason, SYSTEM_HOME_KEY_LONG)) {
+                    //表示按了home键,程序到了后台
+                    if (addApp != null) {
+                        addApp.setCurrentItem(0);
+                    }
+                }
+            }
+        }
+    };
 }
