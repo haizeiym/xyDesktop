@@ -1,13 +1,17 @@
 package xydesk.xy.utils;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,9 +61,11 @@ public class AppUtils {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
                 if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
-                    /*xyModel.activityMainName = resolveInfo.activityInfo.name;*/
                     String p = resolveInfo.activityInfo.packageName;
                     String n = resolveInfo.loadLabel(packageManager).toString();
+                    PackageInfo packageInfo = packageManager.getPackageInfo(p, 0);
+                    xyModel.appVersion = packageInfo.versionName + ": " + packageInfo.versionCode;
+                    xyModel.activityMainName = resolveInfo.activityInfo.name;
                     xyModel.appPackageName = p;
                     xyModel.appName = n;
                     allAppName.put(n, p);
@@ -163,5 +169,19 @@ public class AppUtils {
         two_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.TWO_FRAGMENT);
         three_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.THREE_FRAGMENT);
         four_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.FOUR_FRAGMENT);
+    }
+
+    //强制停止应用程序
+    public void forceStopPackage(String pkgName, Context context) throws Exception {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        Method method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
+        method.invoke(am, pkgName);
+    }
+
+    public void appIsSave(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("bottomName", 1);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isSave", true);
+        editor.commit();
     }
 }

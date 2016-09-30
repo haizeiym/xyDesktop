@@ -18,16 +18,20 @@ public class XYAllAppModel implements Serializable {
     public Drawable appIcon;
     //APP包名
     public String appPackageName;
-    //    //程序主类名
-//    public String activityMainName;
+    //程序主类名
+    public String activityMainName;
     //显示数据拼音的首字母
     public String sortLetters;
+    //版本号
+    public String appVersion;
 
-    public XYAllAppModel(String appName, String appPackageName, Drawable appIcon, String sortLetters) {
+    public XYAllAppModel(String appName, String appPackageName, Drawable appIcon, String sortLetters, String activityMainName, String appVersion) {
         this.appName = appName;
         this.appIcon = appIcon;
         this.appPackageName = appPackageName;
+        this.activityMainName = activityMainName;
         this.sortLetters = sortLetters;
+        this.appVersion = appVersion;
     }
 
     public XYAllAppModel() {

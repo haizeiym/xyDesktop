@@ -68,7 +68,8 @@ public class Utils {
             XYAllAppModel xyAllAppModel = xyAllAppModelList.get(i);
             String appName = xyAllAppModel.appName;
             String appPackage = xyAllAppModel.appPackageName;
-            /*String appMainActivity = xyAllAppModel.activityMainName;*/
+            String appMainActivity = xyAllAppModel.activityMainName;
+            String version = xyAllAppModel.appVersion;
             Drawable appIcon = xyAllAppModel.appIcon;
             //汉字转换成拼音
             String pinyin = characterParser.getSelling(appName);
@@ -80,7 +81,7 @@ public class Utils {
             } else {
                 sortLetter = "#";
             }
-            XYAllAppModel xyAllAppModel1 = new XYAllAppModel(appName, appPackage, appIcon, sortLetter);
+            XYAllAppModel xyAllAppModel1 = new XYAllAppModel(appName, appPackage, appIcon, sortLetter, appMainActivity, version);
             listC.add(xyAllAppModel1);
         }
         return listC;
@@ -95,13 +96,7 @@ public class Utils {
 
     //音频播放
     public void playOgg(Context context) {
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
 //
-//            }
-//        }, 50);
         try {
             AssetFileDescriptor fileDescriptor = context.getAssets().openFd("start_end.ogg");
             final MediaPlayer mediaPlayer = new MediaPlayer();

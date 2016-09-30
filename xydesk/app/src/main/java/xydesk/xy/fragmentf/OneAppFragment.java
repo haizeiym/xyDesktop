@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
@@ -24,8 +23,6 @@ import xydesk.xy.xydesk.R;
  */
 public class OneAppFragment extends XYBaseFragment {
     GridView fragmentApp;
-    //显示第几屏
-    TextView what_ottf;
     public static OneAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
@@ -41,8 +38,6 @@ public class OneAppFragment extends XYBaseFragment {
     public View initCreateView(LayoutInflater inflater, ViewGroup container) {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
-        what_ottf = (TextView) view.findViewById(R.id.what_ottf);
-        what_ottf.setText("第一屏");
         setAdapter();
         return view;
     }
@@ -76,6 +71,12 @@ public class OneAppFragment extends XYBaseFragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Utils.getInstance().toast("当前屏幕共" + AppUtils.one_xyAppInfoInDesks.size() + "项");
     }
 
     @Override

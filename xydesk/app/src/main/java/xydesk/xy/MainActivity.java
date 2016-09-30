@@ -7,10 +7,10 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,32 +30,31 @@ import xydesk.xy.fragmentf.FragmentViewAdapter;
 import xydesk.xy.fragmentf.OneAppFragment;
 import xydesk.xy.fragmentf.ThreeAppFragment;
 import xydesk.xy.fragmentf.TwoAppFragment;
+import xydesk.xy.i.ViewI;
 import xydesk.xy.i.VoiceI;
+import xydesk.xy.model.XYAppInfoInDesk;
+import xydesk.xy.set.LoveAppAdapter;
+import xydesk.xy.set.VoiceSetUI;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
+import xydesk.xy.view.ItemView;
 import xydesk.xy.voice.VoiceData;
 import xydesk.xy.voice.VoiceUtils;
 import xydesk.xy.xydesk.R;
 
 public class MainActivity extends XYBaseActivity {
-    @Bind(R.id.add_two)
-    TextView addTwo;
-    @Bind(R.id.add_one)
-    TextView addOne;
-    @Bind(R.id.add_four)
-    TextView addFour;
-    @Bind(R.id.all_app)
-    TextView allApp;
-    @Bind(R.id.add_three)
-    TextView addThree;
+
     @Bind(R.id.add_app)
     ViewPager addApp;
+    @Bind(R.id.love_app)
+    GridView loveApp;
+    LoveAppAdapter loveAppAdapter;
     public List<XYBaseFragment> fragments = new ArrayList<>();
     VoiceUtils voiceUtils;
     DeskDB deskDB;
     FragmentViewAdapter adapter;
-
     public static MainActivity instance;
+    private List<XYAppInfoInDesk> bottomList = new ArrayList<>();
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -75,10 +74,13 @@ public class MainActivity extends XYBaseActivity {
                     }
                     Utils.getInstance().toast("应用已删除");
                     break;
+                case XYContant.REFRESH_BOTTOM_APP:
+                    bottomList = deskDB.bottomAllApp();
+                    loveAppAdapter.refresh(bottomList);
+                    break;
             }
         }
     };
-
 
     @Override
     public void initView() {
@@ -105,7 +107,6 @@ public class MainActivity extends XYBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        mHomeListen.stop();
     }
 
     //初始化数据
@@ -115,13 +116,40 @@ public class MainActivity extends XYBaseActivity {
         AppUtils.getInstance().getAppU(instance);
         VoiceData.getInstance().addSysApp(instance);
         voiceUtils = new VoiceUtils(instance);
+        deskDB.addAupdateBottomApp(instance);
+        loveApp.setOnItemClickListener(bottomItemClick);
     }
 
     @Override
     public void setAdapter() {
+        bottomList = deskDB.bottomAllApp();
+        loveAppAdapter = new LoveAppAdapter(instance, bottomList);
         adapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
+        loveApp.setAdapter(loveAppAdapter);
         addApp.setAdapter(adapter);
     }
+
+    AdapterView.OnItemClickListener bottomItemClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            boolean isVoice = false;
+            String packName = "";
+            for (XYAppInfoInDesk xyAppInfoInDesk : bottomList) {
+                if ((position + 1 + "").equals("3") && xyAppInfoInDesk.appName.equals("语音")) {
+                    isVoice = true;
+                    break;
+                } else if ((position + 1 + "").equals(xyAppInfoInDesk.appBottomPosition)) {
+                    packName = xyAppInfoInDesk.appPackageName;
+                    isVoice = false;
+                }
+            }
+            if (isVoice) {
+                initVoice();
+            } else {
+                AppUtils.getInstance().openApp(instance, packName);
+            }
+        }
+    };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -136,7 +164,7 @@ public class MainActivity extends XYBaseActivity {
         return KeyEvent.KEYCODE_BACK != keyCode && super.onKeyDown(keyCode, event);
     }
 
-    @OnClick({R.id.add_four, R.id.add_three, R.id.all_app, R.id.up_ping, R.id.down_ping})
+    @OnClick({R.id.all_app, R.id.up_ping, R.id.down_ping})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.up_ping:
@@ -156,80 +184,92 @@ public class MainActivity extends XYBaseActivity {
                 }
                 break;
             case R.id.all_app:
-                Intent intent = new Intent(instance, AllAppShowUI.class);
-                startActivity(intent);
-                break;
-            case R.id.add_four:
-                //语音拨打电话
-                Intent intent2 = new Intent(instance, AddContactNameUI.class);
-                startActivity(intent2);
-                break;
-            case R.id.add_three:
-                voiceUtils.startVoice(new VoiceI() {
+                ItemView.getInstance().showLongView(instance, ItemView.getInstance().menu_click, new ViewI() {
                     @Override
-                    public void voiceResult(String lastRec) {
-                        addThree.setText("记录：" + lastRec);
-                        if (lastRec.length() > 2) {
-                            if (lastRec.contains("打开") && !lastRec.contains("拨打")) {
-                                VoiceData.getInstance().openApp(instance, lastRec);
-                            } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
-                                if (ContactManUtils.allContact.isEmpty()) {
-                                    Utils.getInstance().toast("暂无联系人");
-                                    return;
-                                }
-                                String number = deskDB.getContactNum(lastRec);
-                                if (!number.equals(XYContant.F)) {
-                                    ContactManUtils.callPhone(instance, number);
-                                    return;
-                                }
-                                boolean isHave = false;
-                                String num = "";
-                                for (String name : ContactManUtils.allContact.keySet()) {
-                                    if (lastRec.contains(name)) {
-                                        isHave = true;
-                                        num = name;
-                                        break;
-                                    } else {
-                                        isHave = false;
-                                    }
-                                }
-                                if (isHave) {
-                                    ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
-                                } else {
-                                    Utils.getInstance().toast("无此联系人");
-                                }
-                            } else {
-                                Utils.getInstance().toast("无法识别开头语请说打开或拨打");
-                            }
-                        } else {
-                            Utils.getInstance().toast("语句太短");
+                    public void click(View view, int itemPosition) {
+                        Intent intent = new Intent();
+                        switch ((String) view.getTag()) {
+                            case XYContant.ALL_APP_IN_MENU:
+                                intent.setClass(instance, AllAppShowUI.class);
+                                break;
+                            case XYContant.APP_SET_IN_MENU:
+                                intent.setClass(instance, VoiceSetUI.class);
+                                break;
+                            case XYContant.CONTACT_NAME_SET:
+                                intent.setClass(instance, AddContactNameUI.class);
+                                break;
                         }
+                        startActivity(intent);
                     }
                 });
                 break;
         }
     }
 
+    //语音初始化
+    private void initVoice() {
+        voiceUtils.startVoice(new VoiceI() {
+            @Override
+            public void voiceResult(String lastRec) {
+                if (lastRec.length() > 2) {
+                    if (lastRec.contains("打开") && !lastRec.contains("拨打")) {
+                        VoiceData.getInstance().openApp(instance, lastRec);
+                    } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
+                        if (ContactManUtils.allContact.isEmpty()) {
+                            Utils.getInstance().toast("暂无联系人");
+                            return;
+                        }
+                        String number = deskDB.getContactNum(lastRec);
+                        if (!number.equals(XYContant.F)) {
+                            ContactManUtils.callPhone(instance, number);
+                            return;
+                        }
+                        boolean isHave = false;
+                        String num = "";
+                        for (String name : ContactManUtils.allContact.keySet()) {
+                            if (lastRec.contains(name)) {
+                                isHave = true;
+                                num = name;
+                                break;
+                            } else {
+                                isHave = false;
+                            }
+                        }
+                        if (isHave) {
+                            ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
+                        } else {
+                            Utils.getInstance().toast("无此联系人");
+                        }
+                    } else {
+                        Utils.getInstance().toast("无法识别开头语请说打开或拨打");
+                    }
+                } else {
+                    Utils.getInstance().toast("语句太短");
+                }
+            }
+        });
+    }
+
+    //桌面默认
     private void initHomeListen() {
         //注册广播
-        registerReceiver(mHomeKeyEventReceiver, new IntentFilter(
-                Intent.ACTION_CLOSE_SYSTEM_DIALOGS));
+        IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mHomeKeyEventReceiver, homeFilter);
     }
 
     /**
      * 监听是否点击了home键将客户端推到后台
      */
     private BroadcastReceiver mHomeKeyEventReceiver = new BroadcastReceiver() {
-        String SYSTEM_REASON = "reason";
-        String SYSTEM_HOME_KEY = "homekey";
-        String SYSTEM_HOME_KEY_LONG = "recentapps";
+        final String SYS_KEY = "reason"; //标注下这里必须是这么一个字符串值
+        final String SYS_HOME_KEY = "homekey";//标注下这里必须是这么一个字符串值
 
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
-                String reason = intent.getStringExtra(SYSTEM_REASON);
-                if (TextUtils.equals(reason, SYSTEM_HOME_KEY) || TextUtils.equals(reason, SYSTEM_HOME_KEY_LONG)) {
+                String reason = intent.getStringExtra(SYS_KEY);
+                if (reason != null && reason.equals(SYS_HOME_KEY)) {
                     //表示按了home键,程序到了后台
                     if (addApp != null) {
                         addApp.setCurrentItem(0);

@@ -19,4 +19,6 @@ public class XYAppInfoInDesk implements Serializable {
     public String appPonitOne;
     //app在屏幕的纵向位置
     public String appPonitTwo;
+    //app在屏幕底部的位置
+    public String appBottomPosition;
 }

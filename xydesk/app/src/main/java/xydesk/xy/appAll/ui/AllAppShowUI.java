@@ -16,18 +16,16 @@ import xydesk.xy.appAll.adapter.AllAppAdapter;
 import xydesk.xy.base.XYBaseActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
+import xydesk.xy.fragmentf.TwoAppFragment;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.model.XYAllAppModel;
 import xydesk.xy.model.XYAppInfoInDesk;
+import xydesk.xy.set.SetUI;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.CharacterParser;
 import xydesk.xy.utils.PinyinComparator;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
-import xydesk.xy.fragmentf.FourAppFragment;
-import xydesk.xy.fragmentf.OneAppFragment;
-import xydesk.xy.fragmentf.ThreeAppFragment;
-import xydesk.xy.fragmentf.TwoAppFragment;
 import xydesk.xy.xydesk.R;
 
 /**
@@ -79,78 +77,59 @@ public class AllAppShowUI extends XYBaseActivity {
         ItemView.getInstance().showLongView(instance, ItemView.getInstance().itemAll, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
+                final XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
                 switch ((String) view.getTag()) {
                     case XYContant.OPEN_APP:
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
                         break;
-                    case XYContant.ADD_DESK_ONE:
-                        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-                            Utils.getInstance().toast("桌面已添加");
-                        } else {
-                            if (AppUtils.one_xyAppInfoInDesks.size() >= 16) {
-                                Utils.getInstance().toast("屏幕空间不足");
-                            } else {
-                                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                                xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                                xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                                xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
-                                deskDB.addAppInfo(xyAppInfoInDesk);
-                                OneAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
-                                Utils.getInstance().toast("应用已添加到桌面");
-                            }
-                        }
+                    case XYContant.APP_INFO:
+                        Intent intentSet = new Intent(instance, SetUI.class);
+                        startActivity(intentSet);
                         break;
-                    case XYContant.ADD_DESK_TWO:
-                        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-                            Utils.getInstance().toast("桌面已添加");
-                        } else {
-                            if (AppUtils.two_xyAppInfoInDesks.size() >= 16) {
-                                Utils.getInstance().toast("屏幕空间不足");
-                            } else {
-                                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                                xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                                xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                                xyAppInfoInDesk.appPonitParents = XYContant.TWO_FRAGMENT;
-                                deskDB.addAppInfo(xyAppInfoInDesk);
-                                TwoAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
-                                Utils.getInstance().toast("应用已添加到桌面");
+                    case XYContant.DESK_APP:
+                        ItemView.getInstance().showLongView(instance, ItemView.getInstance().deskApp, new ViewI() {
+                            @Override
+                            public void click(View view, int itemPosition) {
+                                switch ((String) view.getTag()) {
+                                    case XYContant.ADD_DESK_ONE:
+                                        addAppToDesk(xyAllAppModel, XYContant.ONE_FRAGMENT);
+                                        break;
+                                    case XYContant.ADD_DESK_TWO:
+                                        addAppToDesk(xyAllAppModel, XYContant.TWO_FRAGMENT);
+                                        break;
+                                    case XYContant.ADD_DESK_THREE:
+                                        addAppToDesk(xyAllAppModel, XYContant.THREE_FRAGMENT);
+                                        break;
+                                    case XYContant.ADD_DESK_FOUR:
+                                        addAppToDesk(xyAllAppModel, XYContant.FOUR_FRAGMENT);
+                                        break;
+                                }
                             }
-                        }
+                        });
                         break;
-                    case XYContant.ADD_DESK_THREE:
-                        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-                            Utils.getInstance().toast("桌面已添加");
-                        } else {
-                            if (AppUtils.three_xyAppInfoInDesks.size() >= 16) {
-                                Utils.getInstance().toast("屏幕空间不足");
-                            } else {
-                                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                                xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                                xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                                xyAppInfoInDesk.appPonitParents = XYContant.THREE_FRAGMENT;
-                                deskDB.addAppInfo(xyAppInfoInDesk);
-                                ThreeAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
-                                Utils.getInstance().toast("应用已添加到桌面");
+                    case XYContant.BOTTOM_APP:
+                        ItemView.getInstance().showLongView(instance, ItemView.getInstance().bottomApp, new ViewI() {
+                            @Override
+                            public void click(View view, int itemPosition) {
+                                switch ((String) view.getTag()) {
+                                    case XYContant.BOTTOM_ONE:
+                                        addAppToBottom(xyAllAppModel, "1");
+                                        break;
+                                    case XYContant.BOTTOM_TWO:
+                                        addAppToBottom(xyAllAppModel, "2");
+                                        break;
+                                    case XYContant.BOTTOM_THREE:
+                                        addAppToBottom(xyAllAppModel, "3");
+                                        break;
+                                    case XYContant.BOTTOM_FOUR:
+                                        addAppToBottom(xyAllAppModel, "4");
+                                        break;
+                                    case XYContant.BOTTOM_FIVE:
+                                        addAppToBottom(xyAllAppModel, "5");
+                                        break;
+                                }
                             }
-                        }
-                        break;
-                    case XYContant.ADD_DESK_FOUR:
-                        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-                            Utils.getInstance().toast("桌面已添加");
-                        } else {
-                            if (AppUtils.four_xyAppInfoInDesks.size() >= 16) {
-                                Utils.getInstance().toast("屏幕空间不足");
-                            } else {
-                                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
-                                xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
-                                xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                                xyAppInfoInDesk.appPonitParents = XYContant.FOUR_FRAGMENT;
-                                deskDB.addAppInfo(xyAppInfoInDesk);
-                                FourAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
-                                Utils.getInstance().toast("应用已添加到桌面");
-                            }
-                        }
+                        });
                         break;
                     case XYContant.DELE_APP:
                         delePackageName = xyAllAppModel.appPackageName;
@@ -165,6 +144,35 @@ public class AllAppShowUI extends XYBaseActivity {
                 }
             }
         });
+    }
+
+    //添加到那个FRAGMENT
+    private void addAppToDesk(XYAllAppModel xyAllAppModel, String whatWhere) {
+        if (deskDB.isExits(xyAllAppModel.appPackageName)) {
+            Utils.getInstance().toast("桌面已添加");
+        } else {
+            if (AppUtils.two_xyAppInfoInDesks.size() >= 16) {
+                Utils.getInstance().toast("屏幕空间不足");
+            } else {
+                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
+                xyAppInfoInDesk.appName = xyAllAppModel.appName;
+                xyAppInfoInDesk.appPonitParents = whatWhere;
+                deskDB.addAppInfo(xyAppInfoInDesk);
+                TwoAppFragment.instance.handler.sendEmptyMessage(XYContant.ADD_APP);
+                Utils.getInstance().toast("应用已添加到桌面");
+            }
+        }
+    }
+
+    //添加到托盘位置
+    private void addAppToBottom(XYAllAppModel xyAllAppModel, String position) {
+        XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+        xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
+        xyAppInfoInDesk.appName = xyAllAppModel.appName;
+        xyAppInfoInDesk.appBottomPosition = position;
+        deskDB.updateBottomApp(xyAppInfoInDesk);
+        MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_BOTTOM_APP);
     }
 
     @Override

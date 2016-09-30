@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import xydesk.xy.MyApplication;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.model.XYXFNameSetModel;
@@ -304,6 +303,80 @@ public class DeskDB {
             }
         }
         return packageName;
+    }
+
+    /**
+     * 底部APP
+     */
+    //添加底部APP
+    public void addAupdateBottomApp(Context context) {
+        if (bottomAllApp().size() >= 5) {
+            return;
+        }
+        SQLiteDatabase sd = null;
+        ContentValues contentValues;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            for (int i = 0; i < 5; i++) {
+                contentValues = new ContentValues();
+                contentValues.put(deskHelp.BOTTOM_APP_POSITION, i + 1 + "");
+                contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, "   ");
+                contentValues.put(deskHelp.BOTTOM_APP_APPNAME, "   ");
+                sd.insert(deskHelp.BOTTOM_APP_TABLENAME, null, contentValues);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
+    }
+
+    //获取底部所有APP
+    public List<XYAppInfoInDesk> bottomAllApp() {
+        List<XYAppInfoInDesk> xyAppInfoInDesks = new ArrayList<>();
+        SQLiteDatabase sd = null;
+        Cursor cs = null;
+        try {
+            sd = deskHelp.getReadableDatabase();
+            cs = sd.query(deskHelp.BOTTOM_APP_TABLENAME, null, null, null, null, null, null);
+            if (cs != null) {
+                while (cs.moveToNext()) {
+                    XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                    xyAppInfoInDesk.appName = getString(cs, deskHelp.BOTTOM_APP_APPNAME);
+                    xyAppInfoInDesk.appPackageName = getString(cs, deskHelp.BOTTOM_APP_PACKNAME);
+                    xyAppInfoInDesk.appBottomPosition = getString(cs, deskHelp.BOTTOM_APP_POSITION);
+                    xyAppInfoInDesks.add(xyAppInfoInDesk);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cs != null) {
+                cs.close();
+            }
+            if (sd != null) {
+                sd.close();
+            }
+        }
+        return xyAppInfoInDesks;
+    }
+
+    //根据位置更新底部APP
+    public void updateBottomApp(XYAppInfoInDesk xyAppInfoInDesk) {
+        SQLiteDatabase sd = null;
+        try {
+            sd = deskHelp.getWritableDatabase();
+            sd.rawQuery("update " + deskHelp.BOTTOM_APP_TABLENAME + " set " + deskHelp.BOTTOM_APP_PACKNAME + "=?" + "," + deskHelp.BOTTOM_APP_APPNAME + "=?" + " where " + deskHelp.BOTTOM_APP_POSITION + "=?",
+                    new String[]{xyAppInfoInDesk.appPackageName, xyAppInfoInDesk.appName, xyAppInfoInDesk.appBottomPosition});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sd != null) {
+                sd.close();
+            }
+        }
     }
 
     private String getString(Cursor cs, String index) {

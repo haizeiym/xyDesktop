@@ -41,5 +41,9 @@ public class XYViewHolder {
      * 联系人名字
      */
     public TextView contactName;
+    /**
+     * 下方APP
+     */
+    public TextView loveAppName;
 }
 

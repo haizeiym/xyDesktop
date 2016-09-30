@@ -30,9 +30,15 @@ public class ItemView {
     }
 
     //点击应用
-    public String[] itemAll = {XYContant.OPEN_APP, XYContant.ADD_DESK_ONE, XYContant.ADD_DESK_TWO, XYContant.ADD_DESK_THREE, XYContant.ADD_DESK_FOUR, XYContant.DELE_APP, XYContant.XFNAME};
+    public String[] itemAll = {XYContant.OPEN_APP, XYContant.APP_INFO, XYContant.DESK_APP, XYContant.BOTTOM_APP, XYContant.DELE_APP, XYContant.XFNAME};
+    //放到那个屏幕
+    public String[] deskApp = {XYContant.ADD_DESK_ONE, XYContant.ADD_DESK_TWO, XYContant.ADD_DESK_THREE, XYContant.ADD_DESK_FOUR};
+    //底部APP
+    public String[] bottomApp = {XYContant.BOTTOM_ONE, XYContant.BOTTOM_TWO, XYContant.BOTTOM_THREE, XYContant.BOTTOM_FOUR, XYContant.BOTTOM_FIVE};
     //长按应用
     public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT, XYContant.DELE_APP};
+    //点击菜单
+    public String[] menu_click = {XYContant.ALL_APP_IN_MENU, XYContant.APP_SET_IN_MENU, XYContant.CONTACT_NAME_SET};
 
     public void showLongView(Context context, String[] item, final ViewI viewI) {
         final Dialog alertDialog = new Dialog(context);

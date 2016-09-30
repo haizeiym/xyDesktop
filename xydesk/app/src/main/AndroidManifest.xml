@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="xydesk.xy.xydesk">
 
-    <uses-permission android:name="android.permission.DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,7 +12,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
@@ -36,6 +35,8 @@
         </activity>
         <activity android:name="xydesk.xy.appAll.ui.AllAppShowUI" />
         <activity android:name="xydesk.xy.appAll.ui.NameSetUI" />
+        <activity android:name="xydesk.xy.set.SetUI"/>
+        <activity android:name="xydesk.xy.set.VoiceSetUI"/>
         <activity android:name="xydesk.xy.contact.AddContactNameUI" />
         <!--
                 <receiver android:name="xydesk.xy.appAll.ui.AllAppShowUI$AppInstallReciver">

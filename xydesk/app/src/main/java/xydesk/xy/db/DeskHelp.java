@@ -31,6 +31,12 @@ public class DeskHelp extends SQLiteOpenHelper {
     public final String CONTACT_NAME = "contact_name";
     public final String CONTACT_NUMBER = "contact_number";
 
+    //底部APP
+    public final String BOTTOM_APP_TABLENAME = "bottomAppName";
+    public final String BOTTOM_APP_PACKNAME = "app_package_name";
+    public final String BOTTOM_APP_APPNAME = "app_name";
+    public final String BOTTOM_APP_POSITION = "app_position";
+
     public DeskHelp(Context context) {
         super(context, "xyDesk.db", null, 1);
     }
@@ -63,6 +69,12 @@ public class DeskHelp extends SQLiteOpenHelper {
                 _ID +
                 CONTACT_NAME + TEXT +
                 CONTACT_NUMBER + TEXT_);
+        //底部APP
+        db.execSQL(CREATE + BOTTOM_APP_TABLENAME + " (" +
+                _ID +
+                BOTTOM_APP_POSITION + TEXT +
+                BOTTOM_APP_PACKNAME + TEXT +
+                BOTTOM_APP_APPNAME + TEXT_);
     }
 
     @Override
