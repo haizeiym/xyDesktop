@@ -28,12 +28,12 @@ public class TwoAppFragment extends XYBaseFragment {
     public static TwoAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
-    @Override
-    public void createInit() {
+    public TwoAppFragment() {
         if (instance == null) {
-            instance = this;
+            instance = TwoAppFragment.this;
         }
         xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
+        initHandler();
     }
 
     @Override
@@ -41,10 +41,12 @@ public class TwoAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         setAdapter();
+        Utils.getInstance().toast(getActivity(), "第二屏，当前屏幕共" + AppUtils.two_xyAppInfoInDesks.size() + "项");
         return view;
     }
 
     private void setAdapter() {
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
         fragmentApp.setAdapter(xyFragmentAdapter);
         fragmentApp.setOnItemClickListener(this);
         fragmentApp.setOnItemLongClickListener(this);
@@ -73,17 +75,11 @@ public class TwoAppFragment extends XYBaseFragment {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast("删除成功");
+                        Utils.getInstance().toast(getActivity(), "删除成功");
                         break;
                 }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Utils.getInstance().toast("当前屏幕共" + AppUtils.two_xyAppInfoInDesks.size() + "项");
     }
 
     @Override
@@ -98,6 +94,7 @@ public class TwoAppFragment extends XYBaseFragment {
                 }
                 AppUtils.two_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.TWO_FRAGMENT);
                 xyFragmentAdapter.refresh(AppUtils.two_xyAppInfoInDesks);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_FRAGMENT);
                 break;
         }
     }

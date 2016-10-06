@@ -27,12 +27,12 @@ public class ThreeAppFragment extends XYBaseFragment {
     public static ThreeAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
-    @Override
-    public void createInit() {
+    public ThreeAppFragment() {
         if (instance == null) {
-            instance = this;
+            instance = ThreeAppFragment.this;
         }
         xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.three_xyAppInfoInDesks);
+        initHandler();
     }
 
     @Override
@@ -40,10 +40,12 @@ public class ThreeAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         setAdapter();
+        Utils.getInstance().toast(getActivity(), "第三屏，当前屏幕共" + AppUtils.three_xyAppInfoInDesks.size() + "项");
         return view;
     }
 
     private void setAdapter() {
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.three_xyAppInfoInDesks);
         fragmentApp.setAdapter(xyFragmentAdapter);
         fragmentApp.setOnItemClickListener(this);
         fragmentApp.setOnItemLongClickListener(this);
@@ -72,17 +74,11 @@ public class ThreeAppFragment extends XYBaseFragment {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast("删除成功");
+                        Utils.getInstance().toast(getActivity(), "删除成功");
                         break;
                 }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Utils.getInstance().toast("当前屏幕共" + AppUtils.three_xyAppInfoInDesks.size() + "项");
     }
 
     @Override
@@ -97,6 +93,7 @@ public class ThreeAppFragment extends XYBaseFragment {
                 }
                 AppUtils.three_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.THREE_FRAGMENT);
                 xyFragmentAdapter.refresh(AppUtils.three_xyAppInfoInDesks);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_FRAGMENT);
                 break;
         }
     }

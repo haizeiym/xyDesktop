@@ -36,7 +36,7 @@ public class ItemView {
     //底部APP
     public String[] bottomApp = {XYContant.BOTTOM_ONE, XYContant.BOTTOM_TWO, XYContant.BOTTOM_THREE, XYContant.BOTTOM_FOUR, XYContant.BOTTOM_FIVE};
     //长按应用
-    public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT, XYContant.DELE_APP};
+    public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT/*, XYContant.DELE_APP*/};
     //点击菜单
     public String[] menu_click = {XYContant.ALL_APP_IN_MENU, XYContant.APP_SET_IN_MENU, XYContant.CONTACT_NAME_SET};
 

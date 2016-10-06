@@ -96,10 +96,10 @@ public class NameSetUI extends XYBaseActivity {
                         xyxfNameSetModel.set_contact_number = name_set;
                         deskDB.addSetContactName(xyxfNameSetModel);
                     }
-                    Utils.getInstance().toast("已添加成功");
+                    Utils.getInstance().toast(instance,"已添加成功");
                     finish();
                 } else {
-                    Utils.getInstance().toast("名称为空");
+                    Utils.getInstance().toast(instance,"名称为空");
                 }
                 break;
             case R.id.cancle:

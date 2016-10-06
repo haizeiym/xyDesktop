@@ -29,4 +29,9 @@ public class FragmentViewAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         return fragments.get(position);
     }
+
+    public void refreshFragment(List<XYBaseFragment> fragments) {
+        this.fragments = fragments;
+        notifyDataSetChanged();
+    }
 }

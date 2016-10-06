@@ -11,7 +11,6 @@ import java.util.List;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.model.XYXFNameSetModel;
-import xydesk.xy.utils.Utils;
 
 /**
  * Created by haizeiym
@@ -135,7 +134,7 @@ public class DeskDB {
     //添加语音设置的APP名称
     public void addSetAppName(XYXFNameSetModel xyxfNameSetModel) {
         if (isExistAppName(xyxfNameSetModel.set_app_name)) {
-            Utils.getInstance().toast("名称已被占用");
+            /*Utils.getInstance().toast("名称已被占用");*/
             return;
         }
         SQLiteDatabase sd = null;
@@ -223,7 +222,7 @@ public class DeskDB {
     //添加语音设置的联系人的名字
     public void addSetContactName(XYXFNameSetModel xyxfNameSetModel) {
         if (isExistContactName(xyxfNameSetModel.set_contact_name)) {
-            Utils.getInstance().toast("名称已被占用");
+            /*Utils.getInstance().toast("名称已被占用");*/
             return;
         }
         SQLiteDatabase sd = null;
@@ -320,8 +319,8 @@ public class DeskDB {
             for (int i = 0; i < 5; i++) {
                 contentValues = new ContentValues();
                 contentValues.put(deskHelp.BOTTOM_APP_POSITION, i + 1 + "");
-                contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, "   ");
-                contentValues.put(deskHelp.BOTTOM_APP_APPNAME, "   ");
+                contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, "心阳");
+                contentValues.put(deskHelp.BOTTOM_APP_APPNAME, "心阳");
                 sd.insert(deskHelp.BOTTOM_APP_TABLENAME, null, contentValues);
             }
         } catch (Exception e) {
@@ -366,10 +365,17 @@ public class DeskDB {
     //根据位置更新底部APP
     public void updateBottomApp(XYAppInfoInDesk xyAppInfoInDesk) {
         SQLiteDatabase sd = null;
+        ContentValues contentValues;
         try {
             sd = deskHelp.getWritableDatabase();
+            contentValues = new ContentValues();
+            contentValues.put(deskHelp.BOTTOM_APP_POSITION, xyAppInfoInDesk.appBottomPosition);
+            contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, xyAppInfoInDesk.appPackageName);
+            contentValues.put(deskHelp.BOTTOM_APP_APPNAME, xyAppInfoInDesk.appName);
+            sd.update(deskHelp.BOTTOM_APP_TABLENAME, contentValues, deskHelp.BOTTOM_APP_POSITION + "=?", new String[]{xyAppInfoInDesk.appBottomPosition});
+            /*//问题代码
             sd.rawQuery("update " + deskHelp.BOTTOM_APP_TABLENAME + " set " + deskHelp.BOTTOM_APP_PACKNAME + "=?" + "," + deskHelp.BOTTOM_APP_APPNAME + "=?" + " where " + deskHelp.BOTTOM_APP_POSITION + "=?",
-                    new String[]{xyAppInfoInDesk.appPackageName, xyAppInfoInDesk.appName, xyAppInfoInDesk.appBottomPosition});
+                    new String[]{xyAppInfoInDesk.appPackageName, xyAppInfoInDesk.appName, xyAppInfoInDesk.appBottomPosition});*/
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

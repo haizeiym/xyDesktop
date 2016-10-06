@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import xydesk.xy.MyApplication;
 import xydesk.xy.model.XYAllAppModel;
 
 /**
@@ -48,8 +47,8 @@ public class Utils {
     }
 
     //Toast工具
-    public void toast(String content) {
-        final Toast toast = Toast.makeText(MyApplication.myInstance.getApplicationContext(), content, Toast.LENGTH_SHORT);
+    public void toast(Context context, String content) {
+        final Toast toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
         toast.show();
         Timer timer = new Timer();
         TimerTask t = new TimerTask() {

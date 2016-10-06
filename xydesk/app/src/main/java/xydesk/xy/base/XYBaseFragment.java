@@ -16,12 +16,7 @@ import android.widget.AdapterView;
 public abstract class XYBaseFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     public XYBaseFragment instanceFragment;
 
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            setHandler(msg);
-        }
-    };
+    public Handler handler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +41,16 @@ public abstract class XYBaseFragment extends Fragment implements AdapterView.OnI
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         longpressItem(view, position);
         return true;
+    }
+
+    //初始化Handler
+    public void initHandler() {
+        handler =  new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                setHandler(msg);
+            }
+        };
     }
 
     //初始化试图

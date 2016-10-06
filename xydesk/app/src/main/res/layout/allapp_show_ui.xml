@@ -4,13 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/app_info"
+    <ListView
+        android:id="@+id/all_app"
         android:layout_width="match_parent"
-        android:layout_height="69dp"
-        android:layout_gravity="center"
-        android:layout_margin="9dp"
-        android:background="@android:color/holo_blue_light"
-        android:gravity="center"
-        android:text=" " />
+        android:layout_height="match_parent"
+        android:divider="#000000" />
+
 </LinearLayout>

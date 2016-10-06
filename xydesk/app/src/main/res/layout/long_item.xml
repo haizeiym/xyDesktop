@@ -4,13 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/item_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
     <TextView
-        android:id="@+id/app_info"
+        android:id="@+id/long_item"
         android:layout_width="match_parent"
         android:layout_height="69dp"
-        android:layout_gravity="center"
-        android:layout_margin="9dp"
-        android:background="@android:color/holo_blue_light"
         android:gravity="center"
-        android:text=" " />
+        android:text="长按Item" />
+
 </LinearLayout>

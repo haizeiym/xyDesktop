@@ -83,7 +83,7 @@ public class VoiceData {
                 if (isExist) {
                     AppUtils.getInstance().openApp(activity, appAll.get(name));
                 } else {
-                    Utils.getInstance().toast("没有此应用");
+                    Utils.getInstance().toast(activity,"没有此应用");
                 }
             }
         }

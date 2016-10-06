@@ -27,12 +27,12 @@ public class FourAppFragment extends XYBaseFragment {
     public static FourAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
-    @Override
-    public void createInit() {
+    public FourAppFragment() {
         if (instance == null) {
-            instance = this;
+            instance = FourAppFragment.this;
         }
-        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.four_xyAppInfoInDesks);
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
+        initHandler();
     }
 
     @Override
@@ -40,10 +40,12 @@ public class FourAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         setAdapter();
+        Utils.getInstance().toast(getActivity(), "第四屏，当前屏幕共" + AppUtils.four_xyAppInfoInDesks.size() + "项");
         return view;
     }
 
     private void setAdapter() {
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
         fragmentApp.setAdapter(xyFragmentAdapter);
         fragmentApp.setOnItemClickListener(this);
         fragmentApp.setOnItemLongClickListener(this);
@@ -64,7 +66,7 @@ public class FourAppFragment extends XYBaseFragment {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast("删除成功");
+                        Utils.getInstance().toast(getActivity(), "删除成功");
                         break;
                 }
             }
@@ -80,12 +82,6 @@ public class FourAppFragment extends XYBaseFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Utils.getInstance().toast("当前屏幕共" + AppUtils.four_xyAppInfoInDesks.size() + "项");
-    }
-
-    @Override
     public void setHandler(Message msg) {
         switch (msg.what) {
             case XYContant.DELETER_APP:
@@ -97,6 +93,7 @@ public class FourAppFragment extends XYBaseFragment {
                 }
                 AppUtils.four_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.FOUR_FRAGMENT);
                 xyFragmentAdapter.refresh(AppUtils.four_xyAppInfoInDesks);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_FRAGMENT);
                 break;
         }
     }

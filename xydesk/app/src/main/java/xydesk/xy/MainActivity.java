@@ -50,11 +50,15 @@ public class MainActivity extends XYBaseActivity {
     GridView loveApp;
     LoveAppAdapter loveAppAdapter;
     public List<XYBaseFragment> fragments = new ArrayList<>();
+    public OneAppFragment oneAppFragment;
+    public TwoAppFragment twoAppFragment;
+    public ThreeAppFragment threeAppFragment;
+    public FourAppFragment fourAppFragment;
     VoiceUtils voiceUtils;
     DeskDB deskDB;
     FragmentViewAdapter adapter;
     public static MainActivity instance;
-    private List<XYAppInfoInDesk> bottomList = new ArrayList<>();
+    public List<XYAppInfoInDesk> bottomList = new ArrayList<>();
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -72,11 +76,23 @@ public class MainActivity extends XYBaseActivity {
                     if (FourAppFragment.instance != null) {
                         FourAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
                     }
-                    Utils.getInstance().toast("应用已删除");
+                    Utils.getInstance().toast(instance, "应用已删除");
                     break;
                 case XYContant.REFRESH_BOTTOM_APP:
                     bottomList = deskDB.bottomAllApp();
                     loveAppAdapter.refresh(bottomList);
+                    break;
+                case XYContant.REFRESH_FRAGMENT:
+                    if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).isEmpty()) {
+                        fragments.remove(twoAppFragment);
+                    }
+                    if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).isEmpty()) {
+                        fragments.remove(threeAppFragment);
+                    }
+                    if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).isEmpty()) {
+                        fragments.remove(fourAppFragment);
+                    }
+                    adapter.refreshFragment(fragments);
                     break;
             }
         }
@@ -85,13 +101,23 @@ public class MainActivity extends XYBaseActivity {
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         instance = this;
+        ButterKnife.bind(this);
         deskDB = new DeskDB(instance);
-        fragments.add(new OneAppFragment());
-        fragments.add(new TwoAppFragment());
-        fragments.add(new ThreeAppFragment());
-        fragments.add(new FourAppFragment());
+        oneAppFragment = new OneAppFragment();
+        twoAppFragment = new TwoAppFragment();
+        threeAppFragment = new ThreeAppFragment();
+        fourAppFragment = new FourAppFragment();
+        fragments.add(oneAppFragment);
+        if (!AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).isEmpty()) {
+            fragments.add(twoAppFragment);
+        }
+        if (!AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).isEmpty()) {
+            fragments.add(threeAppFragment);
+        }
+        if (!AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).isEmpty()) {
+            fragments.add(fourAppFragment);
+        }
         AppUtils.getInstance().PingApp(instance);
         /**Home键监听*/
         initHomeListen();
@@ -124,8 +150,8 @@ public class MainActivity extends XYBaseActivity {
     public void setAdapter() {
         bottomList = deskDB.bottomAllApp();
         loveAppAdapter = new LoveAppAdapter(instance, bottomList);
-        adapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
         loveApp.setAdapter(loveAppAdapter);
+        adapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
         addApp.setAdapter(adapter);
     }
 
@@ -166,10 +192,11 @@ public class MainActivity extends XYBaseActivity {
 
     @OnClick({R.id.all_app, R.id.up_ping, R.id.down_ping})
     public void onClick(View view) {
+        int allFragment = fragments.size();
         switch (view.getId()) {
             case R.id.up_ping:
                 int cup = addApp.getCurrentItem();
-                if (cup > 0 && cup < 4) {
+                if (cup >= 0 && cup < allFragment) {
                     addApp.setCurrentItem(cup - 1);
                 } else {
                     addApp.setCurrentItem(0);
@@ -177,10 +204,10 @@ public class MainActivity extends XYBaseActivity {
                 break;
             case R.id.down_ping:
                 int cdown = addApp.getCurrentItem();
-                if (cdown >= 0 && cdown < 3) {
+                if (cdown >= 0 && cdown < allFragment) {
                     addApp.setCurrentItem(cdown + 1);
                 } else {
-                    addApp.setCurrentItem(3);
+                    addApp.setCurrentItem(allFragment - 1);
                 }
                 break;
             case R.id.all_app:
@@ -216,7 +243,7 @@ public class MainActivity extends XYBaseActivity {
                         VoiceData.getInstance().openApp(instance, lastRec);
                     } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
                         if (ContactManUtils.allContact.isEmpty()) {
-                            Utils.getInstance().toast("暂无联系人");
+                            Utils.getInstance().toast(instance, "暂无联系人");
                             return;
                         }
                         String number = deskDB.getContactNum(lastRec);
@@ -238,13 +265,13 @@ public class MainActivity extends XYBaseActivity {
                         if (isHave) {
                             ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
                         } else {
-                            Utils.getInstance().toast("无此联系人");
+                            Utils.getInstance().toast(instance, "无此联系人");
                         }
                     } else {
-                        Utils.getInstance().toast("无法识别开头语请说打开或拨打");
+                        Utils.getInstance().toast(instance, "无法识别开头语请说打开或拨打");
                     }
                 } else {
-                    Utils.getInstance().toast("语句太短");
+                    Utils.getInstance().toast(instance, "语句太短");
                 }
             }
         });

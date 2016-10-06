@@ -26,6 +26,10 @@ public class OneAppFragment extends XYBaseFragment {
     public static OneAppFragment instance;
     XYFragmentAdapter xyFragmentAdapter;
 
+    public OneAppFragment() {
+        initHandler();
+    }
+
     @Override
     public void createInit() {
         if (instance == null) {
@@ -39,6 +43,7 @@ public class OneAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         setAdapter();
+        Utils.getInstance().toast(getActivity(), "第一屏，当前屏幕共" + AppUtils.one_xyAppInfoInDesks.size() + "项");
         return view;
     }
 
@@ -63,20 +68,14 @@ public class OneAppFragment extends XYBaseFragment {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
                         handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast("删除成功");
+                        Utils.getInstance().toast(getActivity(), "删除成功");
                         break;
-                    case XYContant.DELE_APP:
+                   /* case XYContant.DELE_APP:
                         AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
-                        break;
+                        break;*/
                 }
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Utils.getInstance().toast("当前屏幕共" + AppUtils.one_xyAppInfoInDesks.size() + "项");
     }
 
     @Override

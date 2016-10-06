@@ -48,7 +48,7 @@ public class VoiceUtils {
             @Override
             public void onInit(int code) {
                 if (code != ErrorCode.SUCCESS) {
-                    Utils.getInstance().toast("初始化失败，错误码：" + code);
+                    Utils.getInstance().toast(context, "初始化失败，错误码：" + code);
                 }
             }
         };
@@ -60,13 +60,13 @@ public class VoiceUtils {
 
     public void startVoice(VoiceI voiceI) {
         if (!Utils.getInstance().isNetAvailable(context)) {
-            Utils.getInstance().toast("网络不可用");
+            Utils.getInstance().toast(context, "网络不可用");
             return;
         }
         this.voiceI = voiceI;
         if (!isClickDouble) {
             isClickDouble = true;
-            Utils.getInstance().toast("开始说话");
+            Utils.getInstance().toast(context, "开始说话");
             Timer timer = new Timer();
             TimerTask t = new TimerTask() {
                 @Override
@@ -74,7 +74,7 @@ public class VoiceUtils {
                     mIatResults.clear();
                     ret = mIat.startListening(mRecognizerListener);
                     if (ret != ErrorCode.SUCCESS) {
-                        Utils.getInstance().toast("听写失败,错误码：" + ret);
+                        Utils.getInstance().toast(context, "听写失败,错误码：" + ret);
                     }
                 }
             };
@@ -124,7 +124,7 @@ public class VoiceUtils {
             // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
             // 如果使用本地功能（语记）需要提示用户开启语记的录音权限。
             if (error.getErrorCode() == 10118) {
-                Utils.getInstance().toast("说话声音太小");
+                Utils.getInstance().toast(context, "说话声音太小");
             }
         }
 

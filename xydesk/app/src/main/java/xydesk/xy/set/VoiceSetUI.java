@@ -10,6 +10,7 @@ import xydesk.xy.base.XYBaseActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
 import xydesk.xy.model.XYAppInfoInDesk;
+import xydesk.xy.utils.Utils;
 import xydesk.xy.xydesk.R;
 
 /**
@@ -38,6 +39,8 @@ public class VoiceSetUI extends XYBaseActivity {
             xyAppInfoInDesk.appPackageName = XYContant.F;
             deskDB.updateBottomApp(xyAppInfoInDesk);
             MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_BOTTOM_APP);
+            Utils.getInstance().toast(instance,"设置成功");
+            finish();
         }
     };
 }

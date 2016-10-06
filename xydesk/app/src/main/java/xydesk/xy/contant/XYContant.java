@@ -16,6 +16,8 @@ public class XYContant {
 
     //刷新底部APP
     public static final int REFRESH_BOTTOM_APP = BASE + 103;
+    //刷新Fragment
+    public static final int REFRESH_FRAGMENT = BASE + 104;
 
     /**
      * 点击Item

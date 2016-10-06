@@ -63,6 +63,7 @@
             android:id="@+id/love_app"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
             android:background="@android:color/transparent"
             android:numColumns="5" />
 
