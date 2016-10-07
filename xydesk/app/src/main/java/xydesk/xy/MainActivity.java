@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -25,11 +24,8 @@ import xydesk.xy.contact.AddContactNameUI;
 import xydesk.xy.contact.ContactManUtils;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
-import xydesk.xy.fragmentf.FourAppFragment;
 import xydesk.xy.fragmentf.FragmentViewAdapter;
-import xydesk.xy.fragmentf.OneAppFragment;
-import xydesk.xy.fragmentf.ThreeAppFragment;
-import xydesk.xy.fragmentf.TwoAppFragment;
+import xydesk.xy.fragmentf.AppFragment;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.i.VoiceI;
 import xydesk.xy.model.XYAppInfoInDesk;
@@ -38,6 +34,7 @@ import xydesk.xy.set.VoiceSetUI;
 import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
+import xydesk.xy.view.NoPreloadViewPager;
 import xydesk.xy.voice.VoiceData;
 import xydesk.xy.voice.VoiceUtils;
 import xydesk.xy.xydesk.R;
@@ -45,80 +42,67 @@ import xydesk.xy.xydesk.R;
 public class MainActivity extends XYBaseActivity {
 
     @Bind(R.id.add_app)
-    ViewPager addApp;
+    NoPreloadViewPager addApp;
     @Bind(R.id.love_app)
     GridView loveApp;
     LoveAppAdapter loveAppAdapter;
     public List<XYBaseFragment> fragments = new ArrayList<>();
-    public OneAppFragment oneAppFragment;
-    public TwoAppFragment twoAppFragment;
-    public ThreeAppFragment threeAppFragment;
-    public FourAppFragment fourAppFragment;
-    VoiceUtils voiceUtils;
-    DeskDB deskDB;
-    FragmentViewAdapter adapter;
+    public AppFragment oneAppFragment, twoAppFragment, threeAppFragment, fourAppFragment;
+    private VoiceUtils voiceUtils;
+    private DeskDB deskDB;
+    private FragmentViewAdapter fragmentAdapter;
     public static MainActivity instance;
     public List<XYAppInfoInDesk> bottomList = new ArrayList<>();
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case XYContant.DELETER_APP:
-                    if (OneAppFragment.instance != null) {
-                        OneAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    }
-                    if (TwoAppFragment.instance != null) {
-                        TwoAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    }
-                    if (ThreeAppFragment.instance != null) {
-                        ThreeAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    }
-                    if (FourAppFragment.instance != null) {
-                        FourAppFragment.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
-                    }
-                    Utils.getInstance().toast(instance, "应用已删除");
-                    break;
                 case XYContant.REFRESH_BOTTOM_APP:
                     bottomList = deskDB.bottomAllApp();
                     loveAppAdapter.refresh(bottomList);
                     break;
                 case XYContant.REFRESH_FRAGMENT:
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).isEmpty()) {
-                        fragments.remove(twoAppFragment);
-                    }
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).isEmpty()) {
-                        fragments.remove(threeAppFragment);
-                    }
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).isEmpty()) {
-                        fragments.remove(fourAppFragment);
-                    }
-                    adapter.refreshFragment(fragments);
+                    String whatWhere = (String) msg.obj;
+                    removeFragment(whatWhere);
                     break;
             }
         }
     };
+
+    //移除fragment
+    private void removeFragment(String whatWhere) {
+        switch (whatWhere) {
+            case XYContant.ONE_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT).size() == 0) {
+                    fragments.remove(oneAppFragment);
+                }
+                break;
+            case XYContant.TWO_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).size() == 0) {
+                    fragments.remove(twoAppFragment);
+                }
+                break;
+
+            case XYContant.THREE_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).size() == 0) {
+                    fragments.remove(threeAppFragment);
+                }
+                break;
+
+            case XYContant.FOUR_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).size() == 0) {
+                    fragments.remove(fourAppFragment);
+                }
+                break;
+        }
+        fragmentAdapter.refreshFragment(fragments);
+    }
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_main);
         instance = this;
         ButterKnife.bind(this);
-        deskDB = new DeskDB(instance);
-        oneAppFragment = new OneAppFragment();
-        twoAppFragment = new TwoAppFragment();
-        threeAppFragment = new ThreeAppFragment();
-        fourAppFragment = new FourAppFragment();
-        fragments.add(oneAppFragment);
-        if (!AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).isEmpty()) {
-            fragments.add(twoAppFragment);
-        }
-        if (!AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).isEmpty()) {
-            fragments.add(threeAppFragment);
-        }
-        if (!AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).isEmpty()) {
-            fragments.add(fourAppFragment);
-        }
-        AppUtils.getInstance().PingApp(instance);
         /**Home键监听*/
         initHomeListen();
     }
@@ -130,20 +114,41 @@ public class MainActivity extends XYBaseActivity {
         ContactManUtils.getPeopleInPhone(instance);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     //初始化数据
     @Override
     public void initData() {
+        deskDB = new DeskDB(instance);
         AppUtils.getInstance().getAllAppList(instance);
         AppUtils.getInstance().getAppU(instance);
         VoiceData.getInstance().addSysApp(instance);
         voiceUtils = new VoiceUtils(instance);
         deskDB.addAupdateBottomApp(instance);
         loveApp.setOnItemClickListener(bottomItemClick);
+        addFragment();
+    }
+
+    //初始化时添加fragment
+    private void addFragment() {
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT);
+        oneAppFragment = new AppFragment(xyAppInfoInDeskList_one, 1, XYContant.ONE_FRAGMENT);
+        twoAppFragment = new AppFragment(xyAppInfoInDeskList_two, 2, XYContant.TWO_FRAGMENT);
+        threeAppFragment = new AppFragment(xyAppInfoInDeskList_three, 3, XYContant.THREE_FRAGMENT);
+        fourAppFragment = new AppFragment(xyAppInfoInDeskList_four, 4, XYContant.FOUR_FRAGMENT);
+        if (xyAppInfoInDeskList_one.size() > 0) {
+            fragments.add(oneAppFragment);
+        }
+        if (xyAppInfoInDeskList_two.size() > 0) {
+            fragments.add(twoAppFragment);
+        }
+        if (xyAppInfoInDeskList_three.size() > 0) {
+            fragments.add(threeAppFragment);
+        }
+        if (xyAppInfoInDeskList_four.size() > 0) {
+            fragments.add(fourAppFragment);
+        }
     }
 
     @Override
@@ -151,8 +156,8 @@ public class MainActivity extends XYBaseActivity {
         bottomList = deskDB.bottomAllApp();
         loveAppAdapter = new LoveAppAdapter(instance, bottomList);
         loveApp.setAdapter(loveAppAdapter);
-        adapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
-        addApp.setAdapter(adapter);
+        fragmentAdapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
+        addApp.setAdapter(fragmentAdapter);
     }
 
     AdapterView.OnItemClickListener bottomItemClick = new AdapterView.OnItemClickListener() {
@@ -176,14 +181,6 @@ public class MainActivity extends XYBaseActivity {
             }
         }
     };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == XYContant.DELETER_APP) {
-            handler.sendEmptyMessage(XYContant.DELETER_APP);
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -1,11 +1,12 @@
 package xydesk.xy.fragmentf;
 
-import android.content.Intent;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+
+import java.util.List;
 
 import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
@@ -20,19 +21,21 @@ import xydesk.xy.xydesk.R;
 
 /**
  * Created by haizeiym
- * on 2016/8/8
+ * on 2016/7/28
  */
-public class FourAppFragment extends XYBaseFragment {
-    GridView fragmentApp;
-    public static FourAppFragment instance;
-    XYFragmentAdapter xyFragmentAdapter;
+public class AppFragment extends XYBaseFragment {
+    private GridView fragmentApp;
+    private XYFragmentAdapter xyFragmentAdapter;
+    private List<XYAppInfoInDesk> xyAppInfoInDeskList;
+    private int position;
+    private String whatFragment;
 
-    public FourAppFragment() {
-        if (instance == null) {
-            instance = FourAppFragment.this;
-        }
-        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
+    public AppFragment(List<XYAppInfoInDesk> xyAppInfoInDeskList, int position, String whatFragment) {
         initHandler();
+        this.xyAppInfoInDeskList = xyAppInfoInDeskList;
+        this.position = position;
+        this.whatFragment = whatFragment;
+        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
     }
 
     @Override
@@ -40,12 +43,11 @@ public class FourAppFragment extends XYBaseFragment {
         View view = inflater.inflate(R.layout.base_fragment, container, false);
         fragmentApp = (GridView) view.findViewById(R.id.app_list);
         setAdapter();
-        Utils.getInstance().toast(getActivity(), "第四屏，当前屏幕共" + AppUtils.four_xyAppInfoInDesks.size() + "项");
+        Utils.getInstance().toast(getActivity(), "第" + position + "屏，当前屏幕共" + xyAppInfoInDeskList.size() + "项");
         return view;
     }
 
     private void setAdapter() {
-        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, AppUtils.two_xyAppInfoInDesks);
         fragmentApp.setAdapter(xyFragmentAdapter);
         fragmentApp.setOnItemClickListener(this);
         fragmentApp.setOnItemLongClickListener(this);
@@ -53,7 +55,7 @@ public class FourAppFragment extends XYBaseFragment {
 
     @Override
     public void itemClick(View view, int position) {
-        AppUtils.getInstance().openApp(getActivity(), AppUtils.four_xyAppInfoInDesks.get(position).appPackageName);
+        AppUtils.getInstance().openApp(getActivity(), xyAppInfoInDeskList.get(position).appPackageName);
     }
 
     @Override
@@ -61,7 +63,7 @@ public class FourAppFragment extends XYBaseFragment {
         ItemView.getInstance().showLongView(getActivity(), ItemView.getInstance().itemLong, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                XYAppInfoInDesk xyAllAppModel = AppUtils.four_xyAppInfoInDesks.get(position);
+                XYAppInfoInDesk xyAllAppModel = xyAppInfoInDeskList.get(position);
                 switch ((String) view.getTag()) {
                     case XYContant.DELE_APP_IN_FRAGMENT:
                         AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
@@ -74,14 +76,6 @@ public class FourAppFragment extends XYBaseFragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == XYContant.DELETER_APP) {
-            handler.sendEmptyMessage(XYContant.DELETER_APP);
-        }
-    }
-
-    @Override
     public void setHandler(Message msg) {
         switch (msg.what) {
             case XYContant.DELETER_APP:
@@ -91,9 +85,14 @@ public class FourAppFragment extends XYBaseFragment {
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";
                 }
-                AppUtils.four_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(getActivity(), XYContant.FOUR_FRAGMENT);
-                xyFragmentAdapter.refresh(AppUtils.four_xyAppInfoInDesks);
-                MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_FRAGMENT);
+                xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
+                xyFragmentAdapter.refresh(xyAppInfoInDeskList);
+                if (xyAppInfoInDeskList.size() == 0) {
+                    Message message = MainActivity.instance.handler.obtainMessage();
+                    message.what = XYContant.REFRESH_FRAGMENT;
+                    message.obj = whatFragment;
+                    MainActivity.instance.handler.sendMessage(message);
+                }
                 break;
         }
     }

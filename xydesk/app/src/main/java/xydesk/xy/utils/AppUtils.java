@@ -1,6 +1,5 @@
 package xydesk.xy.utils;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.lang.reflect.Method;
@@ -33,11 +31,6 @@ public class AppUtils {
     }
 
     public static Map<String, String> allAppName = new HashMap<>();
-    public static List<XYAppInfoInDesk> one_xyAppInfoInDesks = new ArrayList<>();
-    public static List<XYAppInfoInDesk> two_xyAppInfoInDesks = new ArrayList<>();
-    public static List<XYAppInfoInDesk> three_xyAppInfoInDesks = new ArrayList<>();
-    public static List<XYAppInfoInDesk> four_xyAppInfoInDesks = new ArrayList<>();
-
     private AppUtils() {
 
     }
@@ -115,7 +108,7 @@ public class AppUtils {
         return packageManager.queryIntentActivities(intent, 0);
     }
 
-    //根据包名获取图标
+    /*//根据包名获取图标(影响效率，加载时会比较慢)
     public Bitmap getIconFromPackName(Context context, String packageName) {
         Bitmap icon = null;
         for (XYAllAppModel xyAllAppModel : getAllAppList(context)) {
@@ -125,7 +118,7 @@ public class AppUtils {
             }
         }
         return icon;
-    }
+    }*/
 
     //常用APP
     public void getAppU(Context context) {
@@ -157,18 +150,6 @@ public class AppUtils {
     public List<XYAppInfoInDesk> getAllApp(Context context, String parentPoint) {
         DeskDB deskDB = new DeskDB(context);
         return deskDB.getAllApp(parentPoint);
-    }
-
-    //屏幕APP
-    public void PingApp(Activity activity) {
-        one_xyAppInfoInDesks.clear();
-        two_xyAppInfoInDesks.clear();
-        three_xyAppInfoInDesks.clear();
-        four_xyAppInfoInDesks.clear();
-        one_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.ONE_FRAGMENT);
-        two_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.TWO_FRAGMENT);
-        three_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.THREE_FRAGMENT);
-        four_xyAppInfoInDesks = AppUtils.getInstance().getAllApp(activity, XYContant.FOUR_FRAGMENT);
     }
 
     //强制停止应用程序

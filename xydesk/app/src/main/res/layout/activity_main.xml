@@ -47,7 +47,7 @@
             android:text="下一屏" />
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager
+    <xydesk.xy.view.NoPreloadViewPager
         android:id="@+id/add_app"
         android:layout_width="match_parent"
         android:layout_height="0dp"

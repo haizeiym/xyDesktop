@@ -18,10 +18,7 @@ import xydesk.xy.appAll.adapter.AllAppAdapter;
 import xydesk.xy.base.XYBaseActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
-import xydesk.xy.fragmentf.FourAppFragment;
-import xydesk.xy.fragmentf.OneAppFragment;
-import xydesk.xy.fragmentf.ThreeAppFragment;
-import xydesk.xy.fragmentf.TwoAppFragment;
+import xydesk.xy.fragmentf.AppFragment;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.model.XYAllAppModel;
 import xydesk.xy.model.XYAppInfoInDesk;
@@ -45,9 +42,8 @@ public class AllAppShowUI extends XYBaseActivity {
     private PinyinComparator pinyinComparator;
     //汉字转拼音的类
     private CharacterParser characterParser;
-    AllAppAdapter adapter;
-    List<XYAllAppModel> xyModels;
-    DeskDB deskDB;
+    private AllAppAdapter adapter;
+    private DeskDB deskDB;
     //要删除app的包名
     private String delePackageName;
 
@@ -67,8 +63,7 @@ public class AllAppShowUI extends XYBaseActivity {
     }
 
     private void setAppData() {
-        xyModels = AppUtils.getInstance().getAllAppList(instance);
-        xyAllAppModelList = Utils.getInstance().filledChar(xyModels, characterParser);
+        xyAllAppModelList = Utils.getInstance().filledChar(AppUtils.getInstance().getAllAppList(instance), characterParser);
         Collections.sort(xyAllAppModelList, pinyinComparator);
     }
 
@@ -102,16 +97,16 @@ public class AllAppShowUI extends XYBaseActivity {
                             public void click(View view, int itemPosition) {
                                 switch ((String) view.getTag()) {
                                     case XYContant.ADD_DESK_ONE:
-                                        addAppToDesk(xyAllAppModel, XYContant.ONE_FRAGMENT, OneAppFragment.instance.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.ONE_FRAGMENT, MainActivity.instance.oneAppFragment.handler);
                                         break;
                                     case XYContant.ADD_DESK_TWO:
-                                        addAppToDesk(xyAllAppModel, XYContant.TWO_FRAGMENT, TwoAppFragment.instance.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.TWO_FRAGMENT, MainActivity.instance.twoAppFragment.handler);
                                         break;
                                     case XYContant.ADD_DESK_THREE:
-                                        addAppToDesk(xyAllAppModel, XYContant.THREE_FRAGMENT, ThreeAppFragment.instance.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.THREE_FRAGMENT, MainActivity.instance.threeAppFragment.handler);
                                         break;
                                     case XYContant.ADD_DESK_FOUR:
-                                        addAppToDesk(xyAllAppModel, XYContant.FOUR_FRAGMENT, FourAppFragment.instance.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.FOUR_FRAGMENT, MainActivity.instance.fourAppFragment.handler);
                                         break;
                                 }
                             }
@@ -158,34 +153,10 @@ public class AllAppShowUI extends XYBaseActivity {
 
     //添加到那个FRAGMENT
     private void addAppToDesk(XYAllAppModel xyAllAppModel, String whatWhere, Handler handler) {
-        switch (whatWhere) {
-            case XYContant.ONE_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.oneAppFragment)) {
-                    MainActivity.instance.fragments.add(MainActivity.instance.oneAppFragment);
-                }
-                break;
-            case XYContant.TWO_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.twoAppFragment)) {
-                    MainActivity.instance.fragments.add(MainActivity.instance.twoAppFragment);
-                }
-                break;
-
-            case XYContant.THREE_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.threeAppFragment)) {
-                    MainActivity.instance.fragments.add(MainActivity.instance.threeAppFragment);
-                }
-                break;
-
-            case XYContant.FOUR_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.fourAppFragment)) {
-                    MainActivity.instance.fragments.add(MainActivity.instance.fourAppFragment);
-                }
-                break;
-        }
         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
             Utils.getInstance().toast(instance, "桌面已添加");
         } else {
-            if (AppUtils.two_xyAppInfoInDesks.size() >= 16) {
+            if (pingLeangth(whatWhere) >= 16) {
                 Utils.getInstance().toast(instance, "屏幕空间不足");
             } else {
                 XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
@@ -197,7 +168,65 @@ public class AllAppShowUI extends XYBaseActivity {
                 Utils.getInstance().toast(instance, "应用已添加到桌面");
             }
         }
-        MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_FRAGMENT);
+        addFragment(whatWhere);
+    }
+
+    //屏幕APP数量
+    private int pingLeangth(String whatWhere) {
+        int l = 0;
+        switch (whatWhere) {
+            case XYContant.ONE_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT).size();
+                break;
+            case XYContant.TWO_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT).size();
+                break;
+
+            case XYContant.THREE_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT).size();
+                break;
+
+            case XYContant.FOUR_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT).size();
+                break;
+        }
+        return l;
+    }
+
+    //添加屏幕
+    private void addFragment(String whatWhere) {
+        switch (whatWhere) {
+            case XYContant.ONE_FRAGMENT:
+                if (!MainActivity.instance.fragments.contains(MainActivity.instance.oneAppFragment)) {
+                    MainActivity.instance.oneAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT), 1, XYContant.ONE_FRAGMENT);
+                    MainActivity.instance.fragments.add(MainActivity.instance.oneAppFragment);
+                }
+                break;
+            case XYContant.TWO_FRAGMENT:
+                if (!MainActivity.instance.fragments.contains(MainActivity.instance.twoAppFragment)) {
+                    MainActivity.instance.twoAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT), 2, XYContant.TWO_FRAGMENT);
+                    MainActivity.instance.fragments.add(MainActivity.instance.twoAppFragment);
+                }
+                break;
+
+            case XYContant.THREE_FRAGMENT:
+                if (!MainActivity.instance.fragments.contains(MainActivity.instance.threeAppFragment)) {
+                    MainActivity.instance.threeAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT), 3, XYContant.THREE_FRAGMENT);
+                    MainActivity.instance.fragments.add(MainActivity.instance.threeAppFragment);
+                }
+                break;
+
+            case XYContant.FOUR_FRAGMENT:
+                if (!MainActivity.instance.fragments.contains(MainActivity.instance.fourAppFragment)) {
+                    MainActivity.instance.fourAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT), 4, XYContant.FOUR_FRAGMENT);
+                    MainActivity.instance.fragments.add(MainActivity.instance.fourAppFragment);
+                }
+                break;
+        }
+        Message msg = MainActivity.instance.handler.obtainMessage();
+        msg.what = XYContant.REFRESH_FRAGMENT;
+        msg.obj = whatWhere;
+        MainActivity.instance.handler.sendMessage(msg);
     }
 
     //添加到托盘位置
