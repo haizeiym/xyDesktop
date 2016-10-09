@@ -38,7 +38,7 @@ public class ItemView {
     //长按应用
     public String[] itemLong = {XYContant.DELE_APP_IN_FRAGMENT/*, XYContant.DELE_APP*/};
     //点击菜单
-    public String[] menu_click = {XYContant.ALL_APP_IN_MENU, XYContant.APP_SET_IN_MENU, XYContant.CONTACT_NAME_SET};
+    public String[] menu_click = {XYContant.ALL_APP_IN_MENU, XYContant.APP_SET_IN_MENU, XYContant.CONTACT_NAME_SET, /*XYContant.REFRESH_FRAGMENT_IN_MENU*/};
 
     public void showLongView(Context context, String[] item, final ViewI viewI) {
         final Dialog alertDialog = new Dialog(context);

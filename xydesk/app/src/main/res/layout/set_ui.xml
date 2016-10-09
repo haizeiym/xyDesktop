@@ -13,4 +13,14 @@
         android:background="@android:color/holo_blue_light"
         android:gravity="center"
         android:text=" " />
+
+    <TextView
+        android:id="@+id/app_to_info"
+        android:layout_width="match_parent"
+        android:layout_height="69dp"
+        android:layout_gravity="center"
+        android:layout_margin="9dp"
+        android:background="@android:color/holo_blue_light"
+        android:gravity="center"
+        android:text="应用详情界面" />
 </LinearLayout>

@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.iflytek.cloud.SpeechUtility;
 
+import im.fir.sdk.FIR;
+
 /**
  * Created by haizeiym
  * on 2016/8/25
@@ -25,5 +27,6 @@ public class MyApplication extends Application {
         // 以下语句用于设置日志开关（默认开启），设置成false时关闭语音云SDK日志打印
         // Setting.setShowLog(false);
         super.onCreate();
+        FIR.init(this);
     }
 }

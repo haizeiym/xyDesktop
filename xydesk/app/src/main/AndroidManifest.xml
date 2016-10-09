@@ -35,8 +35,8 @@
         </activity>
         <activity android:name="xydesk.xy.appAll.ui.AllAppShowUI" />
         <activity android:name="xydesk.xy.appAll.ui.NameSetUI" />
-        <activity android:name="xydesk.xy.set.SetUI"/>
-        <activity android:name="xydesk.xy.set.VoiceSetUI"/>
+        <activity android:name="xydesk.xy.set.SetUI" />
+        <activity android:name="xydesk.xy.set.VoiceSetUI" />
         <activity android:name="xydesk.xy.contact.AddContactNameUI" />
         <!--
                 <receiver android:name="xydesk.xy.appAll.ui.AllAppShowUI$AppInstallReciver">
@@ -57,6 +57,9 @@
         <meta-data
             android:name="IFLYTEK_CHANNEL"
             android:value="xydesk" />
+        <meta-data
+            android:name="BUG_HD_SDK_GENERAL_KEY"
+            android:value="9dded4cd4890285f02a5fdfbe81722a0" />
     </application>
 
 </manifest>

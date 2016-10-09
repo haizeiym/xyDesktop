@@ -21,10 +21,6 @@ public class XYFragmentAdapter extends XYBaseAdapter {
     Context context;
     List<XYAppInfoInDesk> xyAppInfoInDesks;
 
-    public XYFragmentAdapter() {
-
-    }
-
     public XYFragmentAdapter(Context context, List<XYAppInfoInDesk> xyAppInfoInDesks) {
         this.context = context;
         this.xyAppInfoInDesks = xyAppInfoInDesks;

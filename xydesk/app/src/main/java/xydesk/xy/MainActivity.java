@@ -24,8 +24,8 @@ import xydesk.xy.contact.AddContactNameUI;
 import xydesk.xy.contact.ContactManUtils;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
-import xydesk.xy.fragmentf.FragmentViewAdapter;
 import xydesk.xy.fragmentf.AppFragment;
+import xydesk.xy.fragmentf.FragmentViewAdapter;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.i.VoiceI;
 import xydesk.xy.model.XYAppInfoInDesk;
@@ -63,39 +63,52 @@ public class MainActivity extends XYBaseActivity {
                     break;
                 case XYContant.REFRESH_FRAGMENT:
                     String whatWhere = (String) msg.obj;
-                    removeFragment(whatWhere);
+                    raFragment(whatWhere);
                     break;
             }
         }
     };
 
-    //移除fragment
-    private void removeFragment(String whatWhere) {
+    //移除,添加fragment
+    private void raFragment(String whatWhere) {
         switch (whatWhere) {
             case XYContant.ONE_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT).size() == 0) {
                     fragments.remove(oneAppFragment);
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT).size() > 0 && !fragments.contains(oneAppFragment)) {
+                    fragments.add(oneAppFragment);
+                    oneAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT));
                 }
                 break;
+
             case XYContant.TWO_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).size() == 0) {
                     fragments.remove(twoAppFragment);
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
+                    fragments.add(twoAppFragment);
+                    twoAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT));
                 }
                 break;
 
             case XYContant.THREE_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).size() == 0) {
                     fragments.remove(threeAppFragment);
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).size() > 0 && !fragments.contains(threeAppFragment)) {
+                    fragments.add(threeAppFragment);
+                    threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT));
                 }
                 break;
 
             case XYContant.FOUR_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).size() == 0) {
                     fragments.remove(fourAppFragment);
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
+                    fragments.add(fourAppFragment);
+                    fourAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT));
                 }
                 break;
         }
-        fragmentAdapter.refreshFragment(fragments);
+        refreshAdapter();
     }
 
     @Override
@@ -124,11 +137,11 @@ public class MainActivity extends XYBaseActivity {
         voiceUtils = new VoiceUtils(instance);
         deskDB.addAupdateBottomApp(instance);
         loveApp.setOnItemClickListener(bottomItemClick);
-        addFragment();
+        initFragment();
     }
 
     //初始化时添加fragment
-    private void addFragment() {
+    private void initFragment() {
         List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT);
@@ -137,9 +150,7 @@ public class MainActivity extends XYBaseActivity {
         twoAppFragment = new AppFragment(xyAppInfoInDeskList_two, 2, XYContant.TWO_FRAGMENT);
         threeAppFragment = new AppFragment(xyAppInfoInDeskList_three, 3, XYContant.THREE_FRAGMENT);
         fourAppFragment = new AppFragment(xyAppInfoInDeskList_four, 4, XYContant.FOUR_FRAGMENT);
-        if (xyAppInfoInDeskList_one.size() > 0) {
-            fragments.add(oneAppFragment);
-        }
+        fragments.add(oneAppFragment);
         if (xyAppInfoInDeskList_two.size() > 0) {
             fragments.add(twoAppFragment);
         }
@@ -211,23 +222,40 @@ public class MainActivity extends XYBaseActivity {
                 ItemView.getInstance().showLongView(instance, ItemView.getInstance().menu_click, new ViewI() {
                     @Override
                     public void click(View view, int itemPosition) {
-                        Intent intent = new Intent();
                         switch ((String) view.getTag()) {
                             case XYContant.ALL_APP_IN_MENU:
-                                intent.setClass(instance, AllAppShowUI.class);
+                                Intent intentAllAppInMenu = new Intent();
+                                intentAllAppInMenu.setClass(instance, AllAppShowUI.class);
+                                startActivity(intentAllAppInMenu);
                                 break;
                             case XYContant.APP_SET_IN_MENU:
-                                intent.setClass(instance, VoiceSetUI.class);
+                                Intent intentAppSetInMenu = new Intent();
+                                intentAppSetInMenu.setClass(instance, VoiceSetUI.class);
+                                startActivity(intentAppSetInMenu);
                                 break;
                             case XYContant.CONTACT_NAME_SET:
-                                intent.setClass(instance, AddContactNameUI.class);
+                                Intent intentContactNameSet = new Intent();
+                                intentContactNameSet.setClass(instance, AddContactNameUI.class);
+                                startActivity(intentContactNameSet);
+                                break;
+                            case XYContant.REFRESH_FRAGMENT_IN_MENU:
+                                refreshFragment();
                                 break;
                         }
-                        startActivity(intent);
                     }
                 });
                 break;
         }
+    }
+
+    //刷新界面
+    private void refreshFragment() {
+        refreshAdapter();
+    }
+
+    //刷新fragment
+    private void refreshAdapter() {
+        fragmentAdapter.refreshFragment(fragments);
     }
 
     //语音初始化
@@ -239,15 +267,18 @@ public class MainActivity extends XYBaseActivity {
                     if (lastRec.contains("打开") && !lastRec.contains("拨打")) {
                         VoiceData.getInstance().openApp(instance, lastRec);
                     } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
+                        //有无联系人
                         if (ContactManUtils.allContact.isEmpty()) {
                             Utils.getInstance().toast(instance, "暂无联系人");
                             return;
                         }
                         String number = deskDB.getContactNum(lastRec);
+                        //直接拨打
                         if (!number.equals(XYContant.F)) {
                             ContactManUtils.callPhone(instance, number);
                             return;
                         }
+                        //是否为别名，拨打别名
                         boolean isHave = false;
                         String num = "";
                         for (String name : ContactManUtils.allContact.keySet()) {
@@ -273,6 +304,7 @@ public class MainActivity extends XYBaseActivity {
             }
         });
     }
+
 
     //桌面默认
     private void initHomeListen() {

@@ -66,7 +66,7 @@ public class VoiceUtils {
         this.voiceI = voiceI;
         if (!isClickDouble) {
             isClickDouble = true;
-            Utils.getInstance().toast(context, "开始说话");
+            Utils.getInstance().playOgg(context);
             Timer timer = new Timer();
             TimerTask t = new TimerTask() {
                 @Override
@@ -78,7 +78,7 @@ public class VoiceUtils {
                     }
                 }
             };
-            timer.schedule(t, 39);
+            timer.schedule(t, 679);
         }
     }
 
@@ -124,14 +124,14 @@ public class VoiceUtils {
             // 错误码：10118(您没有说话)，可能是录音机权限被禁，需要提示用户打开应用的录音权限。
             // 如果使用本地功能（语记）需要提示用户开启语记的录音权限。
             if (error.getErrorCode() == 10118) {
-                Utils.getInstance().toast(context, "说话声音太小");
+                Utils.getInstance().toast(context, "请查看权限是否打开");
             }
         }
 
         @Override
         public void onEndOfSpeech() {
             // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
-//            Utils.getInstance().playOgg(context);
+            Utils.getInstance().playOgg(context);
             isClickDouble = false;
         }
 

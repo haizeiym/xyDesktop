@@ -1,15 +1,13 @@
 package xydesk.xy.utils;
 
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.provider.Settings;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +29,7 @@ public class AppUtils {
     }
 
     public static Map<String, String> allAppName = new HashMap<>();
+
     private AppUtils() {
 
     }
@@ -152,17 +151,11 @@ public class AppUtils {
         return deskDB.getAllApp(parentPoint);
     }
 
-    //强制停止应用程序
-    public void forceStopPackage(String pkgName, Context context) throws Exception {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        Method method = Class.forName("android.app.ActivityManager").getMethod("forceStopPackage", String.class);
-        method.invoke(am, pkgName);
-    }
-
-    public void appIsSave(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("bottomName", 1);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isSave", true);
-        editor.commit();
+    //跳转至应用详情界面
+    public void toAppInfo(String pkgName, Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", pkgName, null));
+        context.startActivity(intent);
     }
 }

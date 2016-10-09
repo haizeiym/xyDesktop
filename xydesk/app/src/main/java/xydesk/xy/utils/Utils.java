@@ -1,18 +1,21 @@
 package xydesk.xy.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -94,30 +97,23 @@ public class Utils {
     }
 
     //音频播放
-    public void playOgg(Context context) {
-//
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public void playOgg(final Context context) {
         try {
-            AssetFileDescriptor fileDescriptor = context.getAssets().openFd("start_end.ogg");
-            final MediaPlayer mediaPlayer = new MediaPlayer();
-            try {
-                mediaPlayer.setDataSource(
-                        fileDescriptor.getFileDescriptor(),
-                        fileDescriptor.getStartOffset(),
-                        fileDescriptor.getLength());
-                mediaPlayer.setOnPreparedListener(preparedListener);
-                mediaPlayer.prepareAsync();
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
+            SoundPool.Builder spd = new SoundPool.Builder();
+            final SoundPool sp = spd.build();
+            final Map<Integer, Integer> map = new HashMap<>();
+            map.put(1, sp.load(context.getAssets().openFd("start_end.ogg"), 1));
+            Timer timer = new Timer();
+            TimerTask t = new TimerTask() {
+                @Override
+                public void run() {
+                    sp.play(map.get(1), 9, 9, 0, 2, 1f);
+                }
+            };
+            timer.schedule(t, 379);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private MediaPlayer.OnPreparedListener preparedListener = new MediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            mp.start();
-        }
-    };
 }

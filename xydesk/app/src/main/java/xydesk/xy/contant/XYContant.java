@@ -78,4 +78,6 @@ public class XYContant {
     public static final String APP_SET_IN_MENU = "语音助手设置";
     //联系人别名设置
     public static final String CONTACT_NAME_SET = "联系人别名设置";
+    //刷新fragment
+    public static final String REFRESH_FRAGMENT_IN_MENU = "刷新";
 }

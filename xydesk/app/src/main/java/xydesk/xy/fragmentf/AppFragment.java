@@ -86,7 +86,7 @@ public class AppFragment extends XYBaseFragment {
                     AppUtils.getInstance().delePackageName = "";
                 }
                 xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
-                xyFragmentAdapter.refresh(xyAppInfoInDeskList);
+                refreshData(xyAppInfoInDeskList);
                 if (xyAppInfoInDeskList.size() == 0) {
                     Message message = MainActivity.instance.handler.obtainMessage();
                     message.what = XYContant.REFRESH_FRAGMENT;
@@ -95,5 +95,10 @@ public class AppFragment extends XYBaseFragment {
                 }
                 break;
         }
+    }
+
+    //数据刷新
+    public void refreshData(List<XYAppInfoInDesk> xyAppInfoInDeskList) {
+        xyFragmentAdapter.refresh(xyAppInfoInDeskList);
     }
 }

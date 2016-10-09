@@ -18,7 +18,6 @@ import xydesk.xy.appAll.adapter.AllAppAdapter;
 import xydesk.xy.base.XYBaseActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
-import xydesk.xy.fragmentf.AppFragment;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.model.XYAllAppModel;
 import xydesk.xy.model.XYAppInfoInDesk;
@@ -178,6 +177,7 @@ public class AllAppShowUI extends XYBaseActivity {
             case XYContant.ONE_FRAGMENT:
                 l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT).size();
                 break;
+
             case XYContant.TWO_FRAGMENT:
                 l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT).size();
                 break;
@@ -189,40 +189,13 @@ public class AllAppShowUI extends XYBaseActivity {
             case XYContant.FOUR_FRAGMENT:
                 l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT).size();
                 break;
+            
         }
         return l;
     }
 
     //添加屏幕
     private void addFragment(String whatWhere) {
-        switch (whatWhere) {
-            case XYContant.ONE_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.oneAppFragment)) {
-                    MainActivity.instance.oneAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT), 1, XYContant.ONE_FRAGMENT);
-                    MainActivity.instance.fragments.add(MainActivity.instance.oneAppFragment);
-                }
-                break;
-            case XYContant.TWO_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.twoAppFragment)) {
-                    MainActivity.instance.twoAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT), 2, XYContant.TWO_FRAGMENT);
-                    MainActivity.instance.fragments.add(MainActivity.instance.twoAppFragment);
-                }
-                break;
-
-            case XYContant.THREE_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.threeAppFragment)) {
-                    MainActivity.instance.threeAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT), 3, XYContant.THREE_FRAGMENT);
-                    MainActivity.instance.fragments.add(MainActivity.instance.threeAppFragment);
-                }
-                break;
-
-            case XYContant.FOUR_FRAGMENT:
-                if (!MainActivity.instance.fragments.contains(MainActivity.instance.fourAppFragment)) {
-                    MainActivity.instance.fourAppFragment = new AppFragment(AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT), 4, XYContant.FOUR_FRAGMENT);
-                    MainActivity.instance.fragments.add(MainActivity.instance.fourAppFragment);
-                }
-                break;
-        }
         Message msg = MainActivity.instance.handler.obtainMessage();
         msg.what = XYContant.REFRESH_FRAGMENT;
         msg.obj = whatWhere;
