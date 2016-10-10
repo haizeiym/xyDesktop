@@ -39,7 +39,7 @@ public class VoiceSetUI extends XYBaseActivity {
             xyAppInfoInDesk.appPackageName = XYContant.F;
             deskDB.updateBottomApp(xyAppInfoInDesk);
             MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_BOTTOM_APP);
-            Utils.getInstance().toast(instance,"设置成功");
+            Utils.getInstance().toast(instance, "语音已添加到托盘");
             finish();
         }
     };

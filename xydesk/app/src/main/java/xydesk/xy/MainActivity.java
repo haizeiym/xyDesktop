@@ -53,6 +53,7 @@ public class MainActivity extends XYBaseActivity {
     private FragmentViewAdapter fragmentAdapter;
     public static MainActivity instance;
     public List<XYAppInfoInDesk> bottomList = new ArrayList<>();
+
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -293,20 +294,21 @@ public class MainActivity extends XYBaseActivity {
                         if (isHave) {
                             ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
                         } else {
-                            Utils.getInstance().toast(instance, "无此联系人");
+                            Utils.getInstance().toast(instance, "没有找到您要的联系人");
                         }
                     } else {
-                        Utils.getInstance().toast(instance, "无法识别开头语请说打开或拨打");
+                        Utils.getInstance().toast(instance, "没听懂您说的请说打开或拨打");
                     }
                 } else {
-                    Utils.getInstance().toast(instance, "语句太短");
+                    Utils.getInstance().toast(instance, "说的太少了，我听不懂");
                 }
             }
         });
     }
 
-
-    //桌面默认
+    /************************************
+     * 桌面默认
+     ************************************************/
     private void initHomeListen() {
         //注册广播
         IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);

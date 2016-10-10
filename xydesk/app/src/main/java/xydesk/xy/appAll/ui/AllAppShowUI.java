@@ -153,7 +153,7 @@ public class AllAppShowUI extends XYBaseActivity {
     //添加到那个FRAGMENT
     private void addAppToDesk(XYAllAppModel xyAllAppModel, String whatWhere, Handler handler) {
         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
-            Utils.getInstance().toast(instance, "桌面已添加");
+            Utils.getInstance().toast(instance, "桌面已存在此图标无需重复操作");
         } else {
             if (pingLeangth(whatWhere) >= 16) {
                 Utils.getInstance().toast(instance, "屏幕空间不足");
@@ -168,6 +168,14 @@ public class AllAppShowUI extends XYBaseActivity {
             }
         }
         addFragment(whatWhere);
+    }
+
+    //添加屏幕
+    private void addFragment(String whatWhere) {
+        Message msg = MainActivity.instance.handler.obtainMessage();
+        msg.what = XYContant.REFRESH_FRAGMENT;
+        msg.obj = whatWhere;
+        MainActivity.instance.handler.sendMessage(msg);
     }
 
     //屏幕APP数量
@@ -189,17 +197,9 @@ public class AllAppShowUI extends XYBaseActivity {
             case XYContant.FOUR_FRAGMENT:
                 l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT).size();
                 break;
-            
+
         }
         return l;
-    }
-
-    //添加屏幕
-    private void addFragment(String whatWhere) {
-        Message msg = MainActivity.instance.handler.obtainMessage();
-        msg.what = XYContant.REFRESH_FRAGMENT;
-        msg.obj = whatWhere;
-        MainActivity.instance.handler.sendMessage(msg);
     }
 
     //添加到托盘位置
