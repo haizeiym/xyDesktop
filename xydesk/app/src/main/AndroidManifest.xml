@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
@@ -60,6 +61,13 @@
         <meta-data
             android:name="BUG_HD_SDK_GENERAL_KEY"
             android:value="9dded4cd4890285f02a5fdfbe81722a0" />
+        <!--开机自启动-->
+        <receiver android:name="xydesk.xy.servce.OpenPhone">
+            <intent-filter>
+                !-- 系统启动完成后会调用-->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

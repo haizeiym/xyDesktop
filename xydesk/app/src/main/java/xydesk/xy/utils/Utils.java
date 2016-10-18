@@ -2,6 +2,8 @@ package xydesk.xy.utils;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
@@ -115,5 +117,28 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    /*//版本名
+    public static String getVersionName(Context context) {
+        return getPackageInfo(context).versionName;
+    }
+    */
+    //版本号
+    public String getVersionCode(Context context) {
+        return getPackageInfo(context).versionName;
+    }
+
+    private PackageInfo getPackageInfo(Context context) {
+        PackageInfo pi = null;
+        try {
+            PackageManager pm = context.getPackageManager();
+            pi = pm.getPackageInfo(context.getPackageName(),
+                    PackageManager.GET_CONFIGURATIONS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pi;
     }
 }

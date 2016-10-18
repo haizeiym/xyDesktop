@@ -65,20 +65,24 @@ public class VoiceUtils {
         }
         this.voiceI = voiceI;
         if (!isClickDouble) {
-            isClickDouble = true;
-            Utils.getInstance().playOgg(context);
-            Timer timer = new Timer();
-            TimerTask t = new TimerTask() {
-                @Override
-                public void run() {
-                    mIatResults.clear();
-                    ret = mIat.startListening(mRecognizerListener);
-                    if (ret != ErrorCode.SUCCESS) {
-                        Utils.getInstance().toast(context, "听写失败,错误码：" + ret);
+            try {
+                isClickDouble = true;
+                Utils.getInstance().playOgg(context);
+                Timer timer = new Timer();
+                TimerTask t = new TimerTask() {
+                    @Override
+                    public void run() {
+                        mIatResults.clear();
+                        ret = mIat.startListening(mRecognizerListener);
+                        if (ret != ErrorCode.SUCCESS) {
+                            Utils.getInstance().toast(context, "听写失败,错误码：" + ret);
+                        }
                     }
-                }
-            };
-            timer.schedule(t, 679);
+                };
+                timer.schedule(t, 679);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -30,12 +30,20 @@ public class AppFragment extends XYBaseFragment {
     private int position;
     private String whatFragment;
 
+    public AppFragment() {
+    }
+
     public AppFragment(List<XYAppInfoInDesk> xyAppInfoInDeskList, int position, String whatFragment) {
         initHandler();
         this.xyAppInfoInDeskList = xyAppInfoInDeskList;
         this.position = position;
         this.whatFragment = whatFragment;
         xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
+    }
+
+    @Override
+    public void createInit() {
+        xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
     }
 
     @Override
@@ -55,7 +63,13 @@ public class AppFragment extends XYBaseFragment {
 
     @Override
     public void itemClick(View view, int position) {
-        AppUtils.getInstance().openApp(getActivity(), xyAppInfoInDeskList.get(position).appPackageName);
+        try {
+            AppUtils.getInstance().openApp(getActivity(), xyAppInfoInDeskList.get(position).appPackageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utils.getInstance().toast(getActivity(), "異常退出");
+            System.exit(0);
+        }
     }
 
     @Override
@@ -63,13 +77,19 @@ public class AppFragment extends XYBaseFragment {
         ItemView.getInstance().showLongView(getActivity(), ItemView.getInstance().itemLong, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                XYAppInfoInDesk xyAllAppModel = xyAppInfoInDeskList.get(position);
-                switch ((String) view.getTag()) {
-                    case XYContant.DELE_APP_IN_FRAGMENT:
-                        AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
-                        handler.sendEmptyMessage(XYContant.DELETER_APP);
-                        Utils.getInstance().toast(getActivity(), "删除成功");
-                        break;
+                try {
+                    XYAppInfoInDesk xyAllAppModel = xyAppInfoInDeskList.get(position);
+                    switch ((String) view.getTag()) {
+                        case XYContant.DELE_APP_IN_FRAGMENT:
+                            AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
+                            handler.sendEmptyMessage(XYContant.DELETER_APP);
+                            Utils.getInstance().toast(getActivity(), "删除成功");
+                            break;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utils.getInstance().toast(getActivity(), "異常退出");
+                    System.exit(0);
                 }
             }
         });

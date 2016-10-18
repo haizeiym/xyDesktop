@@ -1,6 +1,7 @@
 package xydesk.xy;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,8 +12,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -26,12 +31,14 @@ import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
 import xydesk.xy.fragmentf.AppFragment;
 import xydesk.xy.fragmentf.FragmentViewAdapter;
+import xydesk.xy.i.ResponseHandler;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.i.VoiceI;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.set.LoveAppAdapter;
 import xydesk.xy.set.VoiceSetUI;
 import xydesk.xy.utils.AppUtils;
+import xydesk.xy.utils.AsyncHttpUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
 import xydesk.xy.view.NoPreloadViewPager;
@@ -126,6 +133,7 @@ public class MainActivity extends XYBaseActivity {
         super.onResume();
         //更新联系人
         ContactManUtils.getPeopleInPhone(instance);
+        getVersion();
     }
 
     //初始化数据
@@ -139,6 +147,33 @@ public class MainActivity extends XYBaseActivity {
         deskDB.addAupdateBottomApp(instance);
         loveApp.setOnItemClickListener(bottomItemClick);
         initFragment();
+    }
+
+    //獲取版本號
+    private void getVersion() {
+        //请求数据
+        AsyncHttpUtils.get(AsyncHttpUtils.URL, new ResponseHandler() {
+            @Override
+            public void onSuccess(byte[] result) {
+                try {
+                    JSONObject jsonObject = new JSONObject(new String(result));
+                    JSONObject jsonObjectdesk = new JSONObject(jsonObject.get("desktop").toString());
+                    if (!jsonObjectdesk.get("version").toString().equals(Utils.getInstance().getVersionCode(instance))) {
+                        Utils.getInstance().toast(instance, "版本已过期，请升级至最新版本");
+                        Timer timer = new Timer();
+                        TimerTask t = new TimerTask() {
+                            @Override
+                            public void run() {
+                                System.exit(0);
+                            }
+                        };
+                        timer.schedule(t, 3000);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     //初始化时添加fragment
@@ -264,43 +299,47 @@ public class MainActivity extends XYBaseActivity {
         voiceUtils.startVoice(new VoiceI() {
             @Override
             public void voiceResult(String lastRec) {
-                if (lastRec.length() > 2) {
-                    if (lastRec.contains("打开") && !lastRec.contains("拨打")) {
-                        VoiceData.getInstance().openApp(instance, lastRec);
-                    } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
-                        //有无联系人
-                        if (ContactManUtils.allContact.isEmpty()) {
-                            Utils.getInstance().toast(instance, "暂无联系人");
-                            return;
-                        }
-                        String number = deskDB.getContactNum(lastRec);
-                        //直接拨打
-                        if (!number.equals(XYContant.F)) {
-                            ContactManUtils.callPhone(instance, number);
-                            return;
-                        }
-                        //是否为别名，拨打别名
-                        boolean isHave = false;
-                        String num = "";
-                        for (String name : ContactManUtils.allContact.keySet()) {
-                            if (lastRec.contains(name)) {
-                                isHave = true;
-                                num = name;
-                                break;
-                            } else {
-                                isHave = false;
+                try {
+                    if (lastRec.length() > 2) {
+                        if (lastRec.contains("打开") && !lastRec.contains("拨打")) {
+                            VoiceData.getInstance().openApp(instance, lastRec);
+                        } else if (lastRec.contains("拨打") && !lastRec.contains("打开")) {
+                            //有无联系人
+                            if (ContactManUtils.allContact.isEmpty()) {
+                                Utils.getInstance().toast(instance, "暂无联系人");
+                                return;
                             }
-                        }
-                        if (isHave) {
-                            ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
+                            String number = deskDB.getContactNum(lastRec);
+                            //直接拨打
+                            if (!number.equals(XYContant.F)) {
+                                ContactManUtils.callPhone(instance, number);
+                                return;
+                            }
+                            //是否为别名，拨打别名
+                            boolean isHave = false;
+                            String num = "";
+                            for (String name : ContactManUtils.allContact.keySet()) {
+                                if (lastRec.contains(name)) {
+                                    isHave = true;
+                                    num = name;
+                                    break;
+                                } else {
+                                    isHave = false;
+                                }
+                            }
+                            if (isHave) {
+                                ContactManUtils.callPhone(instance, ContactManUtils.allContact.get(num));
+                            } else {
+                                Utils.getInstance().toast(instance, "没有找到您要的联系人");
+                            }
                         } else {
-                            Utils.getInstance().toast(instance, "没有找到您要的联系人");
+                            Utils.getInstance().toast(instance, "没听懂您说的请说打开或拨打");
                         }
                     } else {
-                        Utils.getInstance().toast(instance, "没听懂您说的请说打开或拨打");
+                        Utils.getInstance().toast(instance, "说的太少了，我听不懂");
                     }
-                } else {
-                    Utils.getInstance().toast(instance, "说的太少了，我听不懂");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -313,6 +352,15 @@ public class MainActivity extends XYBaseActivity {
         //注册广播
         IntentFilter homeFilter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         registerReceiver(mHomeKeyEventReceiver, homeFilter);
+    }
+
+    //小米默认桌面自弹出
+    private void xiaomi() {
+        Intent paramIntent = new Intent("android.intent.action.MAIN");
+        paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
+        paramIntent.addCategory("android.intent.category.DEFAULT");
+        paramIntent.addCategory("android.intent.category.HOME");
+        startActivity(paramIntent);
     }
 
     /**
