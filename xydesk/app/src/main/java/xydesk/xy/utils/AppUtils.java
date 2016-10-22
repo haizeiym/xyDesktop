@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.Settings;
 
@@ -38,13 +40,15 @@ public class AppUtils {
         private static final AppUtils instance = new AppUtils();
     }
 
-    public final String APP_PACKAGE = "xydesk.xy.xydesk";
     private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
     public String delePackageName = "";
+    //所有APP的图标集合
+    public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
         allAppName.clear();
+        allAppIcon.clear();
         List<XYAllAppModel> xyModels = new ArrayList<>();
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -52,6 +56,7 @@ public class AppUtils {
             for (int i = 0; i < apps.size(); i++) {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
+                String APP_PACKAGE = "xydesk.xy.xydesk";
                 if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
                     String p = resolveInfo.activityInfo.packageName;
                     String n = resolveInfo.loadLabel(packageManager).toString();
@@ -62,6 +67,7 @@ public class AppUtils {
                     xyModel.appName = n;
                     allAppName.put(n, p);
                     xyModel.appIcon = resolveInfo.loadIcon(packageManager);
+                    allAppIcon.put(p, xyModel.appIcon);
                     xyModels.add(xyModel);
                 }
             }
@@ -81,7 +87,7 @@ public class AppUtils {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DELETE);
         intent.setData(uri);
-        MainActivity.instance.startActivityForResult(intent, XYContant.DELETER_APP);
+        MainActivity.instance.startActivityForResult(intent, XYContant.XYContants.DELETER_APP);
     }
 
     //根据包名打开APP
@@ -107,18 +113,6 @@ public class AppUtils {
         return packageManager.queryIntentActivities(intent, 0);
     }
 
-    /*//根据包名获取图标(影响效率，加载时会比较慢)
-    public Bitmap getIconFromPackName(Context context, String packageName) {
-        Bitmap icon = null;
-        for (XYAllAppModel xyAllAppModel : getAllAppList(context)) {
-            if (packageName.equals(xyAllAppModel.appPackageName)) {
-                icon = Utils.getInstance().drawableToBitmap(xyAllAppModel.appIcon);
-                break;
-            }
-        }
-        return icon;
-    }*/
-
     //常用APP
     public void getAppU(Context context) {
         DeskDB deskDB = new DeskDB(context);
@@ -128,7 +122,7 @@ public class AppUtils {
                     if (!deskDB.isExistApp(appPackageName)) {
                         XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
                         xyAppInfoInDesk.appName = xyAllAppModel.appName;
-                        xyAppInfoInDesk.appPonitParents = XYContant.ONE_FRAGMENT;
+                        xyAppInfoInDesk.appPonitParents = XYContant.WharFragment.ONE_FRAGMENT;
                         xyAppInfoInDesk.appPackageName = xyAllAppModel.appPackageName;
                         deskDB.addAppInfo(xyAppInfoInDesk);
                     } else {

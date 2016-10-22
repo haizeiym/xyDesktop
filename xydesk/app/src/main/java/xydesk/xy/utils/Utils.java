@@ -39,7 +39,7 @@ public class Utils {
         private static final Utils instance = new Utils();
     }
 
-    //DrawableToBitmap
+   /* //DrawableToBitmap
     public Bitmap drawableToBitmap(Drawable drawable) {
         Bitmap bitmap = Bitmap.createBitmap(
                 drawable.getIntrinsicWidth(),
@@ -49,7 +49,7 @@ public class Utils {
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         drawable.draw(canvas);
         return bitmap;
-    }
+    }*/
 
     //Toast工具
     public void toast(Context context, String content) {
@@ -98,7 +98,7 @@ public class Utils {
         return (info != null && info.isAvailable());
     }
 
-    //音频播放
+    /*//音频播放
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void playOgg(final Context context) {
         try {
@@ -117,8 +117,7 @@ public class Utils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
+    }*/
 
     /*//版本名
     public static String getVersionName(Context context) {

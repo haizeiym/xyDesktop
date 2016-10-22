@@ -19,7 +19,7 @@ import xydesk.xy.utils.Utils;
  * on 2016/8/30
  */
 public class VoiceData {
-    static VoiceData instance;
+    private static VoiceData instance;
 
     public static VoiceData getInstance() {
         if (instance == null) {
@@ -64,12 +64,12 @@ public class VoiceData {
         //打开应用
         DeskDB deskDB = new DeskDB(activity);
         String packageName = deskDB.getAppPackageName(userString);
-        if (!packageName.equals(XYContant.F)) {
+        if (!packageName.equals(XYContant.XYContants.F)) {
             AppUtils.getInstance().openApp(activity, packageName);
         } else {
             Map<String, String> appAll = AppUtils.allAppName;
             if (!appAll.isEmpty()) {
-                String name = XYContant.F;
+                String name = XYContant.XYContants.F;
                 boolean isExist = false;
                 for (String s : appAll.keySet()) {
                     if (userString.contains("打开" + s)) {
@@ -83,7 +83,7 @@ public class VoiceData {
                 if (isExist) {
                     AppUtils.getInstance().openApp(activity, appAll.get(name));
                 } else {
-                    Utils.getInstance().toast(activity,"没有此应用");
+                    Utils.getInstance().toast(activity, "没有此应用");
                 }
             }
         }

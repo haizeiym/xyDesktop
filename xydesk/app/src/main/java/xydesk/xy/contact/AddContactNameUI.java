@@ -50,8 +50,8 @@ public class AddContactNameUI extends XYBaseActivity {
     @Override
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(instance, NameSetUI.class);
-        intent.putExtra(XYContant.IS_VOICE, false);
-        intent.putExtra(XYContant.NAME_SET, allContactNum.get(position));
+        intent.putExtra(XYContant.VoiceSet.IS_VOICE, false);
+        intent.putExtra(XYContant.VoiceSet.NAME_SET, allContactNum.get(position));
         startActivity(intent);
     }
 

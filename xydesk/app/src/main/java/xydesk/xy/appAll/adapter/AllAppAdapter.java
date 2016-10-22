@@ -23,8 +23,8 @@ import xydesk.xy.xydesk.R;
  * 获取所有app列表
  */
 public class AllAppAdapter extends XYBaseAdapter implements SectionIndexer {
-    Context context;
-    public List<XYAllAppModel> xyAllAppModelList;
+    private Context context;
+    private List<XYAllAppModel> xyAllAppModelList;
 
     public AllAppAdapter(Context context, List<XYAllAppModel> xyAllAppModelList) {
         this.context = context;
@@ -64,7 +64,7 @@ public class AllAppAdapter extends XYBaseAdapter implements SectionIndexer {
         }
         XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
         holder.app_name.setText(xyAllAppModel.appName);
-        holder.app_icon.setImageBitmap(Utils.getInstance().drawableToBitmap(xyAllAppModel.appIcon));
+        holder.app_icon.setImageDrawable(xyAllAppModel.appIcon);
     }
 
     @Override

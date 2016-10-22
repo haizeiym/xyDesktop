@@ -27,7 +27,7 @@ public class NameSetUI extends XYBaseActivity {
     TextView appXfnameSet;
     VoiceUtils voiceUtils;
     DeskDB deskDB;
-    String name_set = XYContant.F;
+    String name_set = XYContant.XYContants.F;
     boolean isVoice = false;
     @Bind(R.id.name_set)
     EditText nameSet;
@@ -40,9 +40,9 @@ public class NameSetUI extends XYBaseActivity {
         deskDB = new DeskDB(instance);
         nameSet.addTextChangedListener(textWatcher);
         //修改联系人名称，或是修改APP名称
-        isVoice = getIntent().getBooleanExtra(XYContant.IS_VOICE, false);
+        isVoice = getIntent().getBooleanExtra(XYContant.VoiceSet.IS_VOICE, false);
         //获取出来的名称（APP名称或是联系人名称）
-        name_set = getIntent().getStringExtra(XYContant.NAME_SET);
+        name_set = getIntent().getStringExtra(XYContant.VoiceSet.NAME_SET);
     }
 
     TextWatcher textWatcher = new TextWatcher() {
@@ -79,13 +79,13 @@ public class NameSetUI extends XYBaseActivity {
             case R.id.sure:
                 String btn = appXfnameSet.getText().toString();
                 String edt = nameSet.getText().toString();
-                String name = XYContant.F;
+                String name = XYContant.XYContants.F;
                 if (edt.isEmpty() && !btn.equals("点击添加语音名称")) {
                     name = btn;
                 } else if (!edt.isEmpty() && btn.equals("点击添加语音名称")) {
                     name = edt;
                 }
-                if ((!name.equals("点击添加语音名称") || !edt.isEmpty()) && !name.equals(XYContant.F)) {
+                if ((!name.equals("点击添加语音名称") || !edt.isEmpty()) && !name.equals(XYContant.XYContants.F)) {
                     XYXFNameSetModel xyxfNameSetModel = new XYXFNameSetModel();
                     if (isVoice) {
                         xyxfNameSetModel.set_app_name = "打开" + name;

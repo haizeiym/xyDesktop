@@ -52,24 +52,24 @@ public class MainActivity extends XYBaseActivity {
     NoPreloadViewPager addApp;
     @Bind(R.id.love_app)
     GridView loveApp;
-    LoveAppAdapter loveAppAdapter;
-    public List<XYBaseFragment> fragments = new ArrayList<>();
+    private LoveAppAdapter loveAppAdapter;
+    private List<XYBaseFragment> fragments = new ArrayList<>();
     public AppFragment oneAppFragment, twoAppFragment, threeAppFragment, fourAppFragment;
     private VoiceUtils voiceUtils;
     private DeskDB deskDB;
     private FragmentViewAdapter fragmentAdapter;
     public static MainActivity instance;
-    public List<XYAppInfoInDesk> bottomList = new ArrayList<>();
+    private List<XYAppInfoInDesk> bottomList = new ArrayList<>();
 
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case XYContant.REFRESH_BOTTOM_APP:
+                case XYContant.XYContants.REFRESH_BOTTOM_APP:
                     bottomList = deskDB.bottomAllApp();
                     loveAppAdapter.refresh(bottomList);
                     break;
-                case XYContant.REFRESH_FRAGMENT:
+                case XYContant.XYContants.REFRESH_FRAGMENT:
                     String whatWhere = (String) msg.obj;
                     raFragment(whatWhere);
                     break;
@@ -80,39 +80,39 @@ public class MainActivity extends XYBaseActivity {
     //移除,添加fragment
     private void raFragment(String whatWhere) {
         switch (whatWhere) {
-            case XYContant.ONE_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT).size() == 0) {
+            case XYContant.WharFragment.ONE_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() == 0) {
                     fragments.remove(oneAppFragment);
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT).size() > 0 && !fragments.contains(oneAppFragment)) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() > 0 && !fragments.contains(oneAppFragment)) {
                     fragments.add(oneAppFragment);
-                    oneAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.ONE_FRAGMENT));
+                    oneAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT));
                 }
                 break;
 
-            case XYContant.TWO_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).size() == 0) {
+            case XYContant.WharFragment.TWO_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() == 0) {
                     fragments.remove(twoAppFragment);
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
                     fragments.add(twoAppFragment);
-                    twoAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.TWO_FRAGMENT));
+                    twoAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT));
                 }
                 break;
 
-            case XYContant.THREE_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).size() == 0) {
+            case XYContant.WharFragment.THREE_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() == 0) {
                     fragments.remove(threeAppFragment);
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT).size() > 0 && !fragments.contains(threeAppFragment)) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() > 0 && !fragments.contains(threeAppFragment)) {
                     fragments.add(threeAppFragment);
-                    threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.THREE_FRAGMENT));
+                    threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT));
                 }
                 break;
 
-            case XYContant.FOUR_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).size() == 0) {
+            case XYContant.WharFragment.FOUR_FRAGMENT:
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() == 0) {
                     fragments.remove(fourAppFragment);
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
                     fragments.add(fourAppFragment);
-                    fourAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.FOUR_FRAGMENT));
+                    fourAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT));
                 }
                 break;
         }
@@ -149,7 +149,7 @@ public class MainActivity extends XYBaseActivity {
         initFragment();
     }
 
-    //獲取版本號
+    //获取版本号
     private void getVersion() {
         //请求数据
         AsyncHttpUtils.get(AsyncHttpUtils.URL, new ResponseHandler() {
@@ -178,14 +178,14 @@ public class MainActivity extends XYBaseActivity {
 
     //初始化时添加fragment
     private void initFragment() {
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT);
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT);
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT);
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT);
-        oneAppFragment = new AppFragment(xyAppInfoInDeskList_one, 1, XYContant.ONE_FRAGMENT);
-        twoAppFragment = new AppFragment(xyAppInfoInDeskList_two, 2, XYContant.TWO_FRAGMENT);
-        threeAppFragment = new AppFragment(xyAppInfoInDeskList_three, 3, XYContant.THREE_FRAGMENT);
-        fourAppFragment = new AppFragment(xyAppInfoInDeskList_four, 4, XYContant.FOUR_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.TWO_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.THREE_FRAGMENT);
+        List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);
+        oneAppFragment = AppFragment.newInstance(xyAppInfoInDeskList_one, 1, XYContant.WharFragment.ONE_FRAGMENT);
+        twoAppFragment = AppFragment.newInstance(xyAppInfoInDeskList_two, 2, XYContant.WharFragment.TWO_FRAGMENT);
+        threeAppFragment = AppFragment.newInstance(xyAppInfoInDeskList_three, 3, XYContant.WharFragment.THREE_FRAGMENT);
+        fourAppFragment = AppFragment.newInstance(xyAppInfoInDeskList_four, 4, XYContant.WharFragment.FOUR_FRAGMENT);
         fragments.add(oneAppFragment);
         if (xyAppInfoInDeskList_two.size() > 0) {
             fragments.add(twoAppFragment);
@@ -207,7 +207,7 @@ public class MainActivity extends XYBaseActivity {
         addApp.setAdapter(fragmentAdapter);
     }
 
-    AdapterView.OnItemClickListener bottomItemClick = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener bottomItemClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             boolean isVoice = false;
@@ -259,22 +259,22 @@ public class MainActivity extends XYBaseActivity {
                     @Override
                     public void click(View view, int itemPosition) {
                         switch ((String) view.getTag()) {
-                            case XYContant.ALL_APP_IN_MENU:
+                            case XYContant.ClickMenu.ALL_APP_IN_MENU:
                                 Intent intentAllAppInMenu = new Intent();
                                 intentAllAppInMenu.setClass(instance, AllAppShowUI.class);
                                 startActivity(intentAllAppInMenu);
                                 break;
-                            case XYContant.APP_SET_IN_MENU:
+                            case XYContant.ClickMenu.APP_SET_IN_MENU:
                                 Intent intentAppSetInMenu = new Intent();
                                 intentAppSetInMenu.setClass(instance, VoiceSetUI.class);
                                 startActivity(intentAppSetInMenu);
                                 break;
-                            case XYContant.CONTACT_NAME_SET:
+                            case XYContant.ClickMenu.CONTACT_NAME_SET:
                                 Intent intentContactNameSet = new Intent();
                                 intentContactNameSet.setClass(instance, AddContactNameUI.class);
                                 startActivity(intentContactNameSet);
                                 break;
-                            case XYContant.REFRESH_FRAGMENT_IN_MENU:
+                            case XYContant.ClickMenu.REFRESH_FRAGMENT_IN_MENU:
                                 refreshFragment();
                                 break;
                         }
@@ -311,7 +311,7 @@ public class MainActivity extends XYBaseActivity {
                             }
                             String number = deskDB.getContactNum(lastRec);
                             //直接拨打
-                            if (!number.equals(XYContant.F)) {
+                            if (!number.equals(XYContant.XYContants.F)) {
                                 ContactManUtils.callPhone(instance, number);
                                 return;
                             }
@@ -354,14 +354,14 @@ public class MainActivity extends XYBaseActivity {
         registerReceiver(mHomeKeyEventReceiver, homeFilter);
     }
 
-    //小米默认桌面自弹出
+    /*//小米默认桌面自弹出
     private void xiaomi() {
         Intent paramIntent = new Intent("android.intent.action.MAIN");
         paramIntent.setComponent(new ComponentName("android", "com.android.internal.app.ResolverActivity"));
         paramIntent.addCategory("android.intent.category.DEFAULT");
         paramIntent.addCategory("android.intent.category.HOME");
         startActivity(paramIntent);
-    }
+    }*/
 
     /**
      * 监听是否点击了home键将客户端推到后台

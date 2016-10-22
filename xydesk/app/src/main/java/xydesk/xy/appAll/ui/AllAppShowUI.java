@@ -7,6 +7,7 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -78,10 +79,10 @@ public class AllAppShowUI extends XYBaseActivity {
             public void click(View view, int itemPosition) {
                 final XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
                 switch ((String) view.getTag()) {
-                    case XYContant.OPEN_APP:
+                    case XYContant.ClickItem.OPEN_APP:
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
                         break;
-                    case XYContant.APP_INFO:
+                    case XYContant.ClickItem.APP_INFO:
                         Intent intentSet = new Intent(instance, SetUI.class);
                         Bundle bundle = new Bundle();
                         bundle.putString("appVersion", xyAllAppModel.appVersion);
@@ -90,59 +91,59 @@ public class AllAppShowUI extends XYBaseActivity {
                         intentSet.putExtra("appInfo", bundle);
                         startActivity(intentSet);
                         break;
-                    case XYContant.DESK_APP:
+                    case XYContant.ClickItem.DESK_APP:
                         ItemView.getInstance().showLongView(instance, ItemView.getInstance().deskApp, new ViewI() {
                             @Override
                             public void click(View view, int itemPosition) {
                                 switch ((String) view.getTag()) {
-                                    case XYContant.ADD_DESK_ONE:
-                                        addAppToDesk(xyAllAppModel, XYContant.ONE_FRAGMENT, MainActivity.instance.oneAppFragment.handler);
+                                    case XYContant.ClickItem.ADD_DESK_ONE:
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.ONE_FRAGMENT, MainActivity.instance.oneAppFragment.handler);
                                         break;
-                                    case XYContant.ADD_DESK_TWO:
-                                        addAppToDesk(xyAllAppModel, XYContant.TWO_FRAGMENT, MainActivity.instance.twoAppFragment.handler);
+                                    case XYContant.ClickItem.ADD_DESK_TWO:
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.TWO_FRAGMENT, MainActivity.instance.twoAppFragment.handler);
                                         break;
-                                    case XYContant.ADD_DESK_THREE:
-                                        addAppToDesk(xyAllAppModel, XYContant.THREE_FRAGMENT, MainActivity.instance.threeAppFragment.handler);
+                                    case XYContant.ClickItem.ADD_DESK_THREE:
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.THREE_FRAGMENT, MainActivity.instance.threeAppFragment.handler);
                                         break;
-                                    case XYContant.ADD_DESK_FOUR:
-                                        addAppToDesk(xyAllAppModel, XYContant.FOUR_FRAGMENT, MainActivity.instance.fourAppFragment.handler);
+                                    case XYContant.ClickItem.ADD_DESK_FOUR:
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.FOUR_FRAGMENT, MainActivity.instance.fourAppFragment.handler);
                                         break;
                                 }
                             }
                         });
                         break;
-                    case XYContant.BOTTOM_APP:
+                    case XYContant.ClickItem.BOTTOM_APP:
                         ItemView.getInstance().showLongView(instance, ItemView.getInstance().bottomApp, new ViewI() {
                             @Override
                             public void click(View view, int itemPosition) {
                                 switch ((String) view.getTag()) {
-                                    case XYContant.BOTTOM_ONE:
+                                    case XYContant.ClickItem.BOTTOM_ONE:
                                         addAppToBottom(xyAllAppModel, "1");
                                         break;
-                                    case XYContant.BOTTOM_TWO:
+                                    case XYContant.ClickItem.BOTTOM_TWO:
                                         addAppToBottom(xyAllAppModel, "2");
                                         break;
-                                    case XYContant.BOTTOM_THREE:
+                                    case XYContant.ClickItem.BOTTOM_THREE:
                                         addAppToBottom(xyAllAppModel, "3");
                                         break;
-                                    case XYContant.BOTTOM_FOUR:
+                                    case XYContant.ClickItem.BOTTOM_FOUR:
                                         addAppToBottom(xyAllAppModel, "4");
                                         break;
-                                    case XYContant.BOTTOM_FIVE:
+                                    case XYContant.ClickItem.BOTTOM_FIVE:
                                         addAppToBottom(xyAllAppModel, "5");
                                         break;
                                 }
                             }
                         });
                         break;
-                    case XYContant.DELE_APP:
+                    case XYContant.ClickItem.DELE_APP:
                         delePackageName = xyAllAppModel.appPackageName;
                         AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
                         break;
-                    case XYContant.XFNAME:
+                    case XYContant.ClickItem.XFNAME:
                         Intent intent = new Intent(instance, NameSetUI.class);
-                        intent.putExtra(XYContant.IS_VOICE, true);
-                        intent.putExtra(XYContant.NAME_SET, xyAllAppModel.appPackageName);
+                        intent.putExtra(XYContant.VoiceSet.IS_VOICE, true);
+                        intent.putExtra(XYContant.VoiceSet.NAME_SET, xyAllAppModel.appPackageName);
                         startActivity(intent);
                         break;
                 }
@@ -155,7 +156,8 @@ public class AllAppShowUI extends XYBaseActivity {
         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
             Utils.getInstance().toast(instance, "桌面已存在此图标无需重复操作");
         } else {
-            if (pingLeangth(whatWhere) >= 16) {
+            int i = pingLeangth(whatWhere).size();
+            if (i >= 16) {
                 Utils.getInstance().toast(instance, "屏幕空间不足");
             } else {
                 XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
@@ -163,7 +165,9 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appName = xyAllAppModel.appName;
                 xyAppInfoInDesk.appPonitParents = whatWhere;
                 deskDB.addAppInfo(xyAppInfoInDesk);
-                handler.sendEmptyMessage(XYContant.ADD_APP);
+                if (i != 0) {
+                    handler.sendEmptyMessage(XYContant.XYContants.ADD_APP);
+                }
                 Utils.getInstance().toast(instance, "应用已添加到桌面");
             }
         }
@@ -173,29 +177,29 @@ public class AllAppShowUI extends XYBaseActivity {
     //添加屏幕
     private void addFragment(String whatWhere) {
         Message msg = MainActivity.instance.handler.obtainMessage();
-        msg.what = XYContant.REFRESH_FRAGMENT;
+        msg.what = XYContant.XYContants.REFRESH_FRAGMENT;
         msg.obj = whatWhere;
         MainActivity.instance.handler.sendMessage(msg);
     }
 
     //屏幕APP数量
-    private int pingLeangth(String whatWhere) {
-        int l = 0;
+    private List<XYAppInfoInDesk> pingLeangth(String whatWhere) {
+        List<XYAppInfoInDesk> l = new ArrayList<>();
         switch (whatWhere) {
-            case XYContant.ONE_FRAGMENT:
-                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.ONE_FRAGMENT).size();
+            case XYContant.WharFragment.ONE_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);
                 break;
 
-            case XYContant.TWO_FRAGMENT:
-                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.TWO_FRAGMENT).size();
+            case XYContant.WharFragment.TWO_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.TWO_FRAGMENT);
                 break;
 
-            case XYContant.THREE_FRAGMENT:
-                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.THREE_FRAGMENT).size();
+            case XYContant.WharFragment.THREE_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.THREE_FRAGMENT);
                 break;
 
-            case XYContant.FOUR_FRAGMENT:
-                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.FOUR_FRAGMENT).size();
+            case XYContant.WharFragment.FOUR_FRAGMENT:
+                l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);
                 break;
 
         }
@@ -209,25 +213,25 @@ public class AllAppShowUI extends XYBaseActivity {
         xyAppInfoInDesk.appName = xyAllAppModel.appName;
         xyAppInfoInDesk.appBottomPosition = position;
         deskDB.updateBottomApp(xyAppInfoInDesk);
-        MainActivity.instance.handler.sendEmptyMessage(XYContant.REFRESH_BOTTOM_APP);
+        MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.REFRESH_BOTTOM_APP);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == XYContant.DELETER_APP) {
-            handler.sendEmptyMessage(XYContant.DELETER_APP);
+        if (requestCode == XYContant.XYContants.DELETER_APP) {
+            handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
         }
     }
 
     @Override
     public void handler(Message msg) {
         switch (msg.what) {
-            case XYContant.DELETER_APP:
+            case XYContant.XYContants.DELETER_APP:
                 setAppData();
                 adapter.refresh(xyAllAppModelList);
                 deskDB.deleApp(delePackageName);
-                MainActivity.instance.handler.sendEmptyMessage(XYContant.DELETER_APP);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }
     }

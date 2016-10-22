@@ -174,7 +174,7 @@ public class DeskDB {
     public String getAppPackageName(String appName) {
         SQLiteDatabase sd = null;
         Cursor cs = null;
-        String packageName = XYContant.F;
+        String packageName = XYContant.XYContants.F;
         try {
             sd = deskHelp.getReadableDatabase();
             cs = sd.rawQuery("select * from " + deskHelp.TABLE_APP_NAME_SET_NAME + " where " + deskHelp.APP_SET_NAME + "=?", new String[]{appName});
@@ -284,7 +284,7 @@ public class DeskDB {
     public String getContactNum(String contactName) {
         SQLiteDatabase sd = null;
         Cursor cs = null;
-        String packageName = XYContant.F;
+        String packageName = XYContant.XYContants.F;
         try {
             sd = deskHelp.getReadableDatabase();
             cs = sd.rawQuery("select * from " + deskHelp.TABLE_CONTACT_NAME_SET_NAME + " where " + deskHelp.CONTACT_NAME + "=?", new String[]{contactName});

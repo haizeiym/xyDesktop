@@ -35,8 +35,8 @@ public class XYViewHolder {
      */
     //应用名称
     public TextView fragment_app_name;
-    /*//应用图标
-    public ImageView fragment_app_icon;*/
+    //应用图标
+    public ImageView fragment_app_icon;
     /**
      * 联系人名字
      */
