@@ -24,7 +24,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="xydesk.xy.MainActivity">
+        <activity
+            android:name="xydesk.xy.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,11 +36,22 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="xydesk.xy.appAll.ui.AllAppShowUI" />
-        <activity android:name="xydesk.xy.appAll.ui.NameSetUI" />
-        <activity android:name="xydesk.xy.set.SetUI" />
-        <activity android:name="xydesk.xy.set.VoiceSetUI" />
-        <activity android:name="xydesk.xy.contact.AddContactNameUI" />
+
+        <activity
+            android:name="xydesk.xy.appAll.ui.AllAppShowUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="xydesk.xy.appAll.ui.NameSetUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="xydesk.xy.set.SetUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="xydesk.xy.set.VoiceSetUI"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="xydesk.xy.contact.AddContactNameUI"
+            android:screenOrientation="portrait" />
         <!--
                 <receiver android:name="xydesk.xy.appAll.ui.AllAppShowUI$AppInstallReciver">
                     <intent-filter>

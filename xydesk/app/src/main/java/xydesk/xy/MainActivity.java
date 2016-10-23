@@ -1,7 +1,6 @@
 package xydesk.xy;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -83,7 +82,7 @@ public class MainActivity extends XYBaseActivity {
                     if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() == 0) {
                         fragments.remove(fourAppFragment);
                     }
-
+                    refreshAdapter();
                     break;
             }
         }
@@ -92,13 +91,6 @@ public class MainActivity extends XYBaseActivity {
     //添加fragment
     private void raFragment(String whatWhere) {
         switch (whatWhere) {
-            case XYContant.WharFragment.ONE_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() > 0 && !fragments.contains(oneAppFragment)) {
-                    fragments.add(oneAppFragment);
-                    oneAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT));
-                }
-                break;
-
             case XYContant.WharFragment.TWO_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
                     fragments.add(twoAppFragment);

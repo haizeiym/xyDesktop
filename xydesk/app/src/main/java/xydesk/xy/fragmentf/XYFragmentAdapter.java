@@ -22,7 +22,7 @@ import xydesk.xy.xydesk.R;
 class XYFragmentAdapter extends XYBaseAdapter {
     private Context context;
     private List<XYAppInfoInDesk> xyAppInfoInDesks;
-    public XYFragmentAdapter(){}
+
     XYFragmentAdapter(Context context, List<XYAppInfoInDesk> xyAppInfoInDesks) {
         this.context = context;
         this.xyAppInfoInDesks = xyAppInfoInDesks;
