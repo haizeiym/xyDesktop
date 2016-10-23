@@ -19,6 +19,8 @@ public class XYContant {
         int REFRESH_BOTTOM_APP = BASE + 103;
         //刷新Fragment
         int REFRESH_FRAGMENT = BASE + 104;
+        //删除Fragment
+        int DELE_FRAGMENT = BASE + 105;
     }
 
     /**

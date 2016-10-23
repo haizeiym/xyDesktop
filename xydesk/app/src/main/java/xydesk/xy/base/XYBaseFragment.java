@@ -14,7 +14,7 @@ import android.widget.AdapterView;
  * on 2016/7/27
  */
 public abstract class XYBaseFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
-    public XYBaseFragment instanceFragment;
+    private XYBaseFragment instanceFragment;
 
     public Handler handler;
 

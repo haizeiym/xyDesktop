@@ -165,9 +165,10 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appName = xyAllAppModel.appName;
                 xyAppInfoInDesk.appPonitParents = whatWhere;
                 deskDB.addAppInfo(xyAppInfoInDesk);
-                if (i != 0) {
-                    handler.sendEmptyMessage(XYContant.XYContants.ADD_APP);
-                }
+                Message m = handler.obtainMessage();
+                m.what = XYContant.XYContants.ADD_APP;
+                m.obj = whatWhere;
+                handler.sendMessage(m);
                 Utils.getInstance().toast(instance, "应用已添加到桌面");
             }
         }

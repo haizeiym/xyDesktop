@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
-import java.io.Serializable;
 import java.util.List;
 
 import xydesk.xy.MainActivity;
@@ -34,20 +33,11 @@ public class AppFragment extends XYBaseFragment {
 
     public AppFragment() {
         initHandler();
-        xyFragmentAdapter = new XYFragmentAdapter();
     }
 
-    /*public AppFragment(List<XYAppInfoInDesk> xyAppInfoInDeskList, int position, String whatFragment) {
-        this.xyAppInfoInDeskList = xyAppInfoInDeskList;
-        this.position = position;
-        this.whatFragment = whatFragment;
-        xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
-    }*/
-
-    public static AppFragment newInstance(List<XYAppInfoInDesk> xyAppInfoInDeskList, int position, String whatFragment) {
+    public static AppFragment newInstance(int position, String whatFragment) {
         AppFragment appFragment = new AppFragment();
         Bundle args = new Bundle();
-        args.putSerializable(XYContant.ValuesToFragment.KEY_LIST, (Serializable) xyAppInfoInDeskList);
         args.putInt(XYContant.ValuesToFragment.KEY_INT, position);
         args.putString(XYContant.ValuesToFragment.KEY_WHAT, whatFragment);
         appFragment.setArguments(args);
@@ -58,13 +48,11 @@ public class AppFragment extends XYBaseFragment {
     public void createInit() {
         Bundle bundle = getArguments();
         if (bundle != null) {
-            xyAppInfoInDeskList = (List<XYAppInfoInDesk>) bundle.getSerializable(XYContant.ValuesToFragment.KEY_LIST);
             position = bundle.getInt(XYContant.ValuesToFragment.KEY_INT);
             whatFragment = bundle.getString(XYContant.ValuesToFragment.KEY_WHAT);
-            xyFragmentAdapter = null;
+            xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
             xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
         }
-       /* xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);*/
     }
 
     @Override
@@ -103,7 +91,10 @@ public class AppFragment extends XYBaseFragment {
                     switch ((String) view.getTag()) {
                         case XYContant.LongPressItem.DELE_APP_IN_FRAGMENT:
                             AppUtils.getInstance().deleAtFragment(getActivity(), xyAllAppModel.appPackageName);
-                            handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
+                            Message m = handler.obtainMessage();
+                            m.what = XYContant.XYContants.DELETER_APP;
+                            m.obj = whatFragment;
+                            handler.sendMessage(m);
                             Utils.getInstance().toast(getActivity(), "删除成功");
                             break;
                     }
@@ -126,13 +117,11 @@ public class AppFragment extends XYBaseFragment {
                     deskDB.deleApp(AppUtils.getInstance().delePackageName);
                     AppUtils.getInstance().delePackageName = "";
                 }
-                xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
+                String w = (String) msg.obj;
+                xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), w);
                 refreshData(xyAppInfoInDeskList);
                 if (xyAppInfoInDeskList.size() == 0) {
-                    Message message = MainActivity.instance.handler.obtainMessage();
-                    message.what = XYContant.XYContants.REFRESH_FRAGMENT;
-                    message.obj = whatFragment;
-                    MainActivity.instance.handler.sendMessage(message);
+                    MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELE_FRAGMENT);
                 }
                 break;
         }
@@ -140,9 +129,8 @@ public class AppFragment extends XYBaseFragment {
 
     //数据刷新
     public void refreshData(List<XYAppInfoInDesk> xyAppInfoInDeskList) {
-        xyFragmentAdapter.refresh(xyAppInfoInDeskList);
-        if (xyAppInfoInDeskList.size() == 1 && !whatFragment.isEmpty()) {
-            handler.sendEmptyMessage(XYContant.XYContants.ADD_APP);
+        if (xyFragmentAdapter != null) {
+            xyFragmentAdapter.refresh(xyAppInfoInDeskList);
         }
     }
 }
