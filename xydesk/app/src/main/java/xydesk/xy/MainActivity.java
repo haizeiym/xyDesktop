@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.umeng.analytics.AnalyticsConfig;
+import com.umeng.analytics.MobclickAgent;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -104,6 +107,7 @@ public class MainActivity extends XYBaseActivity {
                     threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT));
                 }
                 break;
+
             case XYContant.WharFragment.FOUR_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
                     fragments.add(fourAppFragment);
@@ -121,10 +125,16 @@ public class MainActivity extends XYBaseActivity {
         ButterKnife.bind(this);
         /**Home键监听*/
         initHomeListen();
+        //友盟日志加密
+        ymLogJm();
+    }
+
+    private void ymLogJm() {
+        MobclickAgent.enableEncrypt(true);//6.0.0版本及以后
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         //更新联系人
         ContactManUtils.getPeopleInPhone(instance);

@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.umeng.analytics.MobclickAgent;
+
 
 /**
  * Created by haizeiym
@@ -52,11 +54,23 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
 
     @Override
     public void onClick(View v) {
-        
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         onItemClick(view, position);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

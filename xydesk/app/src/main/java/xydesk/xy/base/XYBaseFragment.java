@@ -44,7 +44,7 @@ public abstract class XYBaseFragment extends Fragment implements AdapterView.OnI
     }
 
     //初始化Handler
-    public void initHandler() {
+    protected void initHandler() {
         handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {

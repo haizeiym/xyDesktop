@@ -74,6 +74,13 @@
         <meta-data
             android:name="BUG_HD_SDK_GENERAL_KEY"
             android:value="9dded4cd4890285f02a5fdfbe81722a0" />
+        <!--友盟-->
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="580d762dbbea834f740022a7" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="xydesk" />
         <!--开机自启动-->
         <receiver android:name="xydesk.xy.servce.OpenPhone">
             <intent-filter>

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.List;
 
 import xydesk.xy.MainActivity;
@@ -132,5 +134,17 @@ public class AppFragment extends XYBaseFragment {
         if (xyFragmentAdapter != null) {
             xyFragmentAdapter.refresh(xyAppInfoInDeskList);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("AppFragment"); //统计页面，"MainScreen"为页面名称，可自定义
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("AppFragment");
     }
 }
