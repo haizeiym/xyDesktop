@@ -35,7 +35,7 @@ class XYFragmentAdapter extends XYBaseAdapter {
 
     @Override
     public View setHolderViewInit(XYViewHolder holder, int position, ViewGroup parent) {
-        View convertView = LayoutInflater.from(context).inflate(R.layout.gridview_app_item, parent, false);
+        View convertView = View.inflate(context, R.layout.gridview_app_item, null);
         holder.fragment_app_name = (TextView) convertView.findViewById(R.id.app_name);
         holder.fragment_app_icon = (ImageView) convertView.findViewById(R.id.app_icon);
         return convertView;
