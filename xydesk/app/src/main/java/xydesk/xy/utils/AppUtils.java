@@ -40,7 +40,6 @@ public class AppUtils {
     }
 
     private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
-    public String delePackageName = "";
     //所有APP的图标集合
     public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
 
@@ -77,16 +76,15 @@ public class AppUtils {
     }
 
     //App删除
-    public void delApp(String packageName) {
+    public void delApp(Context context, String packageName) {
         if (packageName.isEmpty()) {
             return;
         }
-        delePackageName = packageName;
         Uri uri = Uri.parse("package:" + packageName);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DELETE);
         intent.setData(uri);
-        MainActivity.instance.startActivityForResult(intent, XYContant.XYContants.DELETER_APP);
+        context.startActivity(intent);
     }
 
     //根据包名打开APP

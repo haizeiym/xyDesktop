@@ -84,6 +84,32 @@ public class MainActivity extends XYBaseActivity {
                     }
                     refreshAdapter();
                     break;
+                case XYContant.XYContants.DELETER_APP:
+                    if (fragments.contains(oneAppFragment)) {
+                        Message msgOne = oneAppFragment.handler.obtainMessage();
+                        msgOne.what = XYContant.XYContants.DELETER_APP;
+                        msgOne.obj = XYContant.WharFragment.ONE_FRAGMENT;
+                        oneAppFragment.handler.sendMessage(msgOne);
+                    }
+                    if (fragments.contains(twoAppFragment)) {
+                        Message msgTwo = twoAppFragment.handler.obtainMessage();
+                        msgTwo.what = XYContant.XYContants.DELETER_APP;
+                        msgTwo.obj = XYContant.WharFragment.TWO_FRAGMENT;
+                        twoAppFragment.handler.sendMessage(msgTwo);
+                    }
+                    if (fragments.contains(threeAppFragment)) {
+                        Message msgThr = threeAppFragment.handler.obtainMessage();
+                        msgThr.what = XYContant.XYContants.DELETER_APP;
+                        msgThr.obj = XYContant.WharFragment.THREE_FRAGMENT;
+                        threeAppFragment.handler.sendMessage(msgThr);
+                    }
+                    if (fragments.contains(fourAppFragment)) {
+                        Message msgFou = fourAppFragment.handler.obtainMessage();
+                        msgFou.what = XYContant.XYContants.DELETER_APP;
+                        msgFou.obj = XYContant.WharFragment.FOUR_FRAGMENT;
+                        fourAppFragment.handler.sendMessage(msgFou);
+                    }
+                    break;
             }
         }
     };
@@ -374,4 +400,10 @@ public class MainActivity extends XYBaseActivity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(instance);
+    }
 }

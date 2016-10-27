@@ -44,13 +44,13 @@ public class AllAppShowUI extends XYBaseActivity {
     private CharacterParser characterParser;
     private AllAppAdapter adapter;
     private DeskDB deskDB;
-    //要删除app的包名
-    private String delePackageName;
+    public static AllAppShowUI staticInstance;
 
     @Override
     public void initView() {
         setContentView(R.layout.allsome_show_ui);
         ButterKnife.bind(this);
+        staticInstance = AllAppShowUI.this;
         pinyinComparator = new PinyinComparator();
         characterParser = CharacterParser.getInstance();
         deskDB = new DeskDB(instance);
@@ -137,8 +137,7 @@ public class AllAppShowUI extends XYBaseActivity {
                         });
                         break;
                     case XYContant.ClickItem.DELE_APP:
-                        delePackageName = xyAllAppModel.appPackageName;
-                        AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
+                        AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
                     case XYContant.ClickItem.XFNAME:
                         Intent intent = new Intent(instance, NameSetUI.class);
@@ -218,20 +217,11 @@ public class AllAppShowUI extends XYBaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == XYContant.XYContants.DELETER_APP) {
-            handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
-        }
-    }
-
-    @Override
     public void handler(Message msg) {
+        setAppData();
+        adapter.refresh(xyAllAppModelList);
         switch (msg.what) {
             case XYContant.XYContants.DELETER_APP:
-                setAppData();
-                adapter.refresh(xyAllAppModelList);
-                deskDB.deleApp(delePackageName);
                 MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }

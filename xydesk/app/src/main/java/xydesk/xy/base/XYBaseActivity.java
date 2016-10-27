@@ -52,7 +52,7 @@ public abstract class XYBaseActivity extends FragmentActivity implements View.On
 
     @Override
     public void onClick(View v) {
-        
+
     }
 
     @Override

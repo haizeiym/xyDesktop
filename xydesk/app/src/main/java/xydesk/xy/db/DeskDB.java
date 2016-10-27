@@ -17,7 +17,7 @@ import xydesk.xy.model.XYXFNameSetModel;
  * on 2016/8/8
  */
 public class DeskDB {
-    DeskHelp deskHelp;
+    private DeskHelp deskHelp;
 
     public DeskDB(Context context) {
         deskHelp = new DeskHelp(context);
@@ -97,7 +97,7 @@ public class DeskDB {
     }
 
     //记录已删除的APP
-    public void addDeleApp(String appPackageName) {
+    private void addDeleApp(String appPackageName) {
         if (!isExistApp(appPackageName)) {
             SQLiteDatabase sd = deskHelp.getWritableDatabase();
             ContentValues cv = new ContentValues();
