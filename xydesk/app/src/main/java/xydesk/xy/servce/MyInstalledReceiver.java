@@ -3,11 +3,9 @@ package xydesk.xy.servce;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Message;
 
 import xydesk.xy.appAll.ui.AllAppShowUI;
 import xydesk.xy.contant.XYContant;
-import xydesk.xy.db.DeskDB;
 import xydesk.xy.utils.AppUtils;
 
 /**
@@ -23,8 +21,7 @@ public class MyInstalledReceiver extends BroadcastReceiver {
                 AllAppShowUI.staticInstance.handler.sendEmptyMessage(XYContant.XYContants.ADD_APP);
             } else if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) { // uninstall
                 String packageName = intent.getDataString().substring(8, intent.getDataString().length());
-                DeskDB deskDB = new DeskDB(context);
-                deskDB.deleApp(packageName);
+                AppUtils.getInstance().deleAtFragment(context, packageName);
                 AllAppShowUI.staticInstance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
             }
         }

@@ -83,6 +83,7 @@ public class MainActivity extends XYBaseActivity {
                         fragments.remove(fourAppFragment);
                     }
                     refreshAdapter();
+                    upPing();
                     break;
                 case XYContant.XYContants.DELETER_APP:
                     if (fragments.contains(oneAppFragment)) {
@@ -257,23 +258,12 @@ public class MainActivity extends XYBaseActivity {
 
     @OnClick({R.id.all_app, R.id.up_ping, R.id.down_ping})
     public void onClick(View view) {
-        int allFragment = fragments.size();
         switch (view.getId()) {
             case R.id.up_ping:
-                int cup = addApp.getCurrentItem();
-                if (cup >= 0 && cup < allFragment) {
-                    addApp.setCurrentItem(cup - 1);
-                } else {
-                    addApp.setCurrentItem(0);
-                }
+                upPing();
                 break;
             case R.id.down_ping:
-                int cdown = addApp.getCurrentItem();
-                if (cdown >= 0 && cdown < allFragment) {
-                    addApp.setCurrentItem(cdown + 1);
-                } else {
-                    addApp.setCurrentItem(allFragment - 1);
-                }
+                downPing();
                 break;
             case R.id.all_app:
                 ItemView.getInstance().showLongView(instance, ItemView.getInstance().menu_click, new ViewI() {
@@ -302,6 +292,26 @@ public class MainActivity extends XYBaseActivity {
                     }
                 });
                 break;
+        }
+    }
+
+    private void upPing() {
+        int allFragment = fragments.size();
+        int cup = addApp.getCurrentItem();
+        if (cup >= 0 && cup < allFragment) {
+            addApp.setCurrentItem(cup - 1);
+        } else {
+            addApp.setCurrentItem(0);
+        }
+    }
+
+    private void downPing() {
+        int allFragment = fragments.size();
+        int cdown = addApp.getCurrentItem();
+        if (cdown >= 0 && cdown < allFragment) {
+            addApp.setCurrentItem(cdown + 1);
+        } else {
+            addApp.setCurrentItem(allFragment - 1);
         }
     }
 
