@@ -29,8 +29,6 @@ public class AppUtils {
         return UtilsInstance.instance;
     }
 
-    public static Map<String, String> allAppName = new HashMap<>();
-
     private AppUtils() {
 
     }
@@ -39,14 +37,23 @@ public class AppUtils {
         private static final AppUtils instance = new AppUtils();
     }
 
-    private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
+    //用于根据名字查询包名
+    public static Map<String, String> allAppName = new HashMap<>();
+    //用于根据包名查询名字
+    public static Map<String, String> allAppNameFromPackageName = new HashMap<>();
     //所有APP的图标集合
     public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
+
+    private final String[] uApp = {"com.tencent.mobileqq", "com.tencent.mm", "com.hyphenate.chatuidemo", "com.czy.alarm", "com.google.android.marvin.talkback8"};
+
+//    //所有APP的图标集合
+//    public static HashMap<String, String> allAppName = new HashMap<>();
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
         allAppName.clear();
         allAppIcon.clear();
+        allAppNameFromPackageName.clear();
         List<XYAllAppModel> xyModels = new ArrayList<>();
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -64,6 +71,7 @@ public class AppUtils {
                     xyModel.appPackageName = p;
                     xyModel.appName = n;
                     allAppName.put(n, p);
+                    allAppNameFromPackageName.put(p, n);
                     xyModel.appIcon = resolveInfo.loadIcon(packageManager);
                     allAppIcon.put(p, xyModel.appIcon);
                     xyModels.add(xyModel);

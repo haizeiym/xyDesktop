@@ -1,6 +1,7 @@
 package xydesk.xy.appAll.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -222,6 +223,28 @@ public class AllAppShowUI extends XYBaseActivity {
         adapter.refresh(xyAllAppModelList);
         switch (msg.what) {
             case XYContant.XYContants.DELETER_APP:
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
+                break;
+            case XYContant.XYContants.ADD_APP:
+                String packageName = (String) msg.obj;
+                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                String appName = AppUtils.allAppNameFromPackageName.get(packageName);
+                String wharFragment = XYContant.XYContants.F;
+                xyAppInfoInDesk.appPackageName = packageName;
+                xyAppInfoInDesk.appName = appName;
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.ONE_FRAGMENT;
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.TWO_FRAGMENT;
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.THREE_FRAGMENT;
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.FOUR_FRAGMENT;
+                } else {
+                    Utils.getInstance().toast(instance, "屏幕已经没有空间了。。。");
+                }
+                xyAppInfoInDesk.appPonitParents = wharFragment;
+                deskDB.addAppInfo(xyAppInfoInDesk);
                 MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }
