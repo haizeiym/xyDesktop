@@ -44,10 +44,10 @@ public class AppUtils {
     //所有APP的图标集合
     public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
 
-    private final String[] uApp = {"com.tencent.mobileqq", "com.tencent.mm", "com.hyphenate.chatuidemo", "com.czy.alarm", "com.google.android.marvin.talkback8"};
+    //底部APP
+    public static String[][] bottomApp = {{"1", "com.ca.tongxunlu", "心阳通讯"}, {"2", "com.hyphenate.chatuidemo", "心阳零距离"}, {"3", "", "语音"}, {"4", "com.czy.alarm", "心阳时钟"}, {"5", "com.google.android.marvin.talkback8", "心阳读屏"}};
 
-//    //所有APP的图标集合
-//    public static HashMap<String, String> allAppName = new HashMap<>();
+    private final String[] uApp = {"com.tencent.mobileqq", "com.tencent.mm"};
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
@@ -61,21 +61,21 @@ public class AppUtils {
             for (int i = 0; i < apps.size(); i++) {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
-                String APP_PACKAGE = "xydesk.xy.xydesk";
-                if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
-                    String p = resolveInfo.activityInfo.packageName;
-                    String n = resolveInfo.loadLabel(packageManager).toString();
-                    PackageInfo packageInfo = packageManager.getPackageInfo(p, 0);
-                    xyModel.appVersion = packageInfo.versionName + ": " + packageInfo.versionCode;
-                    xyModel.activityMainName = resolveInfo.activityInfo.name;
-                    xyModel.appPackageName = p;
-                    xyModel.appName = n;
-                    allAppName.put(n, p);
-                    allAppNameFromPackageName.put(p, n);
-                    xyModel.appIcon = resolveInfo.loadIcon(packageManager);
-                    allAppIcon.put(p, xyModel.appIcon);
-                    xyModels.add(xyModel);
-                }
+                //String APP_PACKAGE = "xydesk.xy.xydesk";
+                String p = resolveInfo.activityInfo.packageName;
+                String n = resolveInfo.loadLabel(packageManager).toString();
+                PackageInfo packageInfo = packageManager.getPackageInfo(p, 0);
+                xyModel.appVersion = packageInfo.versionName + ": " + packageInfo.versionCode;
+                xyModel.activityMainName = resolveInfo.activityInfo.name;
+                xyModel.appPackageName = p;
+                xyModel.appName = n;
+                allAppName.put(n, p);
+                allAppNameFromPackageName.put(p, n);
+                xyModel.appIcon = resolveInfo.loadIcon(packageManager);
+                allAppIcon.put(p, xyModel.appIcon);
+                xyModels.add(xyModel);
+                /*if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();

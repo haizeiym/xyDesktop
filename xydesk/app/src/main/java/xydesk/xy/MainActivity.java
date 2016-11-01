@@ -200,7 +200,6 @@ public class MainActivity extends XYBaseActivity {
 
     //初始化时添加fragment
     private void initFragment() {
-        /*List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);*/
         List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.TWO_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.THREE_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);

@@ -11,6 +11,7 @@ import java.util.List;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.model.XYXFNameSetModel;
+import xydesk.xy.utils.AppUtils;
 
 /**
  * Created by haizeiym
@@ -25,6 +26,11 @@ public class DeskDB {
 
     //添加app信息
     public void addAppInfo(XYAppInfoInDesk xyAppInfoInDesk) {
+        for (String[] strings : AppUtils.bottomApp) {
+            if (strings[1].equals(xyAppInfoInDesk.appPackageName)) {
+                return;
+            }
+        }
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
         if (!isExits(xyAppInfoInDesk.appPackageName)) {
             ContentValues cv = new ContentValues();
@@ -316,11 +322,11 @@ public class DeskDB {
         ContentValues contentValues;
         try {
             sd = deskHelp.getWritableDatabase();
-            for (int i = 0; i < 5; i++) {
+            for (String[] aBottomApp : AppUtils.bottomApp) {
                 contentValues = new ContentValues();
-                contentValues.put(deskHelp.BOTTOM_APP_POSITION, i + 1 + "");
-                contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, "心阳");
-                contentValues.put(deskHelp.BOTTOM_APP_APPNAME, "心阳");
+                contentValues.put(deskHelp.BOTTOM_APP_POSITION, aBottomApp[0]);
+                contentValues.put(deskHelp.BOTTOM_APP_PACKNAME, aBottomApp[1]);
+                contentValues.put(deskHelp.BOTTOM_APP_APPNAME, aBottomApp[2]);
                 sd.insert(deskHelp.BOTTOM_APP_TABLENAME, null, contentValues);
             }
         } catch (Exception e) {

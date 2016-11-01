@@ -232,19 +232,25 @@ public class AllAppShowUI extends XYBaseActivity {
                 String wharFragment = XYContant.XYContants.F;
                 xyAppInfoInDesk.appPackageName = packageName;
                 xyAppInfoInDesk.appName = appName;
+                String ping = "";
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.ONE_FRAGMENT;
+                    ping = "一";
                 } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.TWO_FRAGMENT;
+                    ping = "二";
                 } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.THREE_FRAGMENT;
+                    ping = "三";
                 } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.FOUR_FRAGMENT;
+                    ping = "四";
                 } else {
                     Utils.getInstance().toast(instance, "屏幕已经没有空间了。。。");
                 }
                 xyAppInfoInDesk.appPonitParents = wharFragment;
                 deskDB.addAppInfo(xyAppInfoInDesk);
+                Utils.getInstance().toast(instance, "已添加" + appName + "至" + ping + "屏");
                 MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }
