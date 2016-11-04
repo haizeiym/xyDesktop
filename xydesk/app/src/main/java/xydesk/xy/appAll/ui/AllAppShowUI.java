@@ -52,6 +52,7 @@ public class AllAppShowUI extends XYBaseActivity {
     private AllAppAdapter adapter;
     private DeskDB deskDB;
     public static AllAppShowUI staticInstance;
+    private List<XYAllAppModel> filterDateList = new ArrayList<>();
 
     @Override
     public void initView() {
@@ -86,7 +87,12 @@ public class AllAppShowUI extends XYBaseActivity {
         ItemView.getInstance().showLongView(instance, ItemView.getInstance().itemAll, new ViewI() {
             @Override
             public void click(View view, int itemPosition) {
-                final XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
+                final XYAllAppModel xyAllAppModel;
+                if (filterDateList.size() != 0) {
+                    xyAllAppModel = filterDateList.get(position);
+                } else {
+                    xyAllAppModel = xyAllAppModelList.get(position);
+                }
                 switch ((String) view.getTag()) {
                     case XYContant.ClickItem.OPEN_APP:
                         AppUtils.getInstance().openApp(instance, xyAllAppModel.appPackageName);
@@ -189,16 +195,17 @@ public class AllAppShowUI extends XYBaseActivity {
      * @param filterStr
      */
     private void filterData(String filterStr) {
-        List<XYAllAppModel> filterDateList = new ArrayList<>();
+        List<XYAllAppModel> tempList = new ArrayList<>();
         if (TextUtils.isEmpty(filterStr)) {
             filterDateList = xyAllAppModelList;
         } else {
             for (XYAllAppModel sortModel : xyAllAppModelList) {
                 String name = sortModel.appName;
                 if (name.toUpperCase().indexOf(filterStr.toUpperCase()) != -1 || characterParser.getSelling(name).toUpperCase().startsWith(filterStr.toUpperCase())) {
-                    filterDateList.add(sortModel);
+                    tempList.add(sortModel);
                 }
             }
+            filterDateList = tempList;
         }
         // 根据a-z进行排序
         Collections.sort(filterDateList, pinyinComparator);
