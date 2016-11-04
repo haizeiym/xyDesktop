@@ -1,11 +1,15 @@
 package xydesk.xy.appAll.ui;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -38,6 +42,8 @@ import xydesk.xy.xydesk.R;
 public class AllAppShowUI extends XYBaseActivity {
     @Bind(R.id.all_app)
     ListView allApp;
+    @Bind(R.id.seach_name)
+    EditText seachName;
     private List<XYAllAppModel> xyAllAppModelList;
     //根据拼音来排列ListView里面的数据类
     private PinyinComparator pinyinComparator;
@@ -71,6 +77,8 @@ public class AllAppShowUI extends XYBaseActivity {
     @Override
     public void setAdapter() {
         allApp.setAdapter(adapter);
+        seachName.addTextChangedListener(textWatcher);
+        seachName.setOnClickListener(clickListener);
     }
 
     @OnItemClick(R.id.all_app)
@@ -174,6 +182,60 @@ public class AllAppShowUI extends XYBaseActivity {
         }
         addFragment(whatWhere);
     }
+
+    /**
+     * 根据输入框中的值来过滤数据并更新ListView
+     *
+     * @param filterStr
+     */
+    private void filterData(String filterStr) {
+        List<XYAllAppModel> filterDateList = new ArrayList<>();
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList = xyAllAppModelList;
+        } else {
+            for (XYAllAppModel sortModel : xyAllAppModelList) {
+                String name = sortModel.appName;
+                if (name.toUpperCase().indexOf(filterStr.toUpperCase()) != -1 || characterParser.getSelling(name).toUpperCase().startsWith(filterStr.toUpperCase())) {
+                    filterDateList.add(sortModel);
+                }
+            }
+        }
+        // 根据a-z进行排序
+        Collections.sort(filterDateList, pinyinComparator);
+        adapter.refresh(filterDateList);
+        //刷新之后隐藏键盘
+        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).
+                hideSoftInputFromWindow(AllAppShowUI.this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    //EidtTextView监听
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            filterData(s.toString());
+        }
+    };
+    //点击监听显示键盘
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.seach_name:
+                    ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(seachName, 0);
+                    break;
+            }
+        }
+    };
 
     //添加屏幕
     private void addFragment(String whatWhere) {

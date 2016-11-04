@@ -39,6 +39,7 @@
 
         <activity
             android:name="xydesk.xy.appAll.ui.AllAppShowUI"
+            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait" />
         <activity
             android:name="xydesk.xy.appAll.ui.NameSetUI"
