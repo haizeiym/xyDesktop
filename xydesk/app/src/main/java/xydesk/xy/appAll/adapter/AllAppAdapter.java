@@ -52,16 +52,16 @@ public class AllAppAdapter extends XYBaseAdapter implements SectionIndexer {
         //根据position获取分类的首字母的Char ascii值
         int section = getSectionForPosition(position);
         //如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
-        if (position == getPositionForSection(section)) {
+        /*if (position == getPositionForSection(section)) {
             holder.chart_index.setVisibility(View.VISIBLE);
             holder.chart_line.setVisibility(View.VISIBLE);
             holder.item_lineTwo.setVisibility(View.GONE);
             holder.chart_index.setText(xyAllAppModelList.get(position).sortLetters);
-        } else {
-            holder.chart_line.setVisibility(View.GONE);
-            holder.chart_index.setVisibility(View.GONE);
-            holder.item_lineTwo.setVisibility(View.VISIBLE);
-        }
+        } else {*/
+        holder.chart_line.setVisibility(View.GONE);
+        holder.chart_index.setVisibility(View.GONE);
+        holder.item_lineTwo.setVisibility(View.VISIBLE);
+        /*}*/
         XYAllAppModel xyAllAppModel = xyAllAppModelList.get(position);
         holder.app_name.setText(xyAllAppModel.appName);
         holder.app_icon.setImageDrawable(xyAllAppModel.appIcon);
