@@ -195,10 +195,10 @@ public class AllAppShowUI extends XYBaseActivity {
      * @param filterStr
      */
     private void filterData(String filterStr) {
-        List<XYAllAppModel> tempList = new ArrayList<>();
         if (TextUtils.isEmpty(filterStr)) {
             filterDateList = xyAllAppModelList;
         } else {
+            List<XYAllAppModel> tempList = new ArrayList<>();
             for (XYAllAppModel sortModel : xyAllAppModelList) {
                 String name = sortModel.appName;
                 if (name.toUpperCase().indexOf(filterStr.toUpperCase()) != -1 || characterParser.getSelling(name).toUpperCase().startsWith(filterStr.toUpperCase())) {

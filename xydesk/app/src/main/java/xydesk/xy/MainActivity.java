@@ -294,8 +294,8 @@ public class MainActivity extends XYBaseActivity {
                                 intentContactNameSet.setClass(instance, AddContactNameUI.class);
                                 startActivity(intentContactNameSet);
                                 break;
-                            case XYContant.ClickMenu.REFRESH_FRAGMENT_IN_MENU:
-                                refreshAdapter();
+                            case XYContant.ClickMenu.SET_BUTTON:
+                                AppUtils.getInstance().openApp(instance, AppUtils.allAppName.get(XYContant.ClickMenu.SET_BUTTON));
                                 break;
                         }
                     }
