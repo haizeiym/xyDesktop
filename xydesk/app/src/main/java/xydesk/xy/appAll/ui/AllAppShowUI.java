@@ -1,6 +1,7 @@
 package xydesk.xy.appAll.ui;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,13 +45,13 @@ public class AllAppShowUI extends XYBaseActivity {
     private CharacterParser characterParser;
     private AllAppAdapter adapter;
     private DeskDB deskDB;
-    //要删除app的包名
-    private String delePackageName;
+    public static AllAppShowUI staticInstance;
 
     @Override
     public void initView() {
         setContentView(R.layout.allsome_show_ui);
         ButterKnife.bind(this);
+        staticInstance = AllAppShowUI.this;
         pinyinComparator = new PinyinComparator();
         characterParser = CharacterParser.getInstance();
         deskDB = new DeskDB(instance);
@@ -137,8 +138,7 @@ public class AllAppShowUI extends XYBaseActivity {
                         });
                         break;
                     case XYContant.ClickItem.DELE_APP:
-                        delePackageName = xyAllAppModel.appPackageName;
-                        AppUtils.getInstance().delApp(xyAllAppModel.appPackageName);
+                        AppUtils.getInstance().delApp(instance, xyAllAppModel.appPackageName);
                         break;
                     case XYContant.ClickItem.XFNAME:
                         Intent intent = new Intent(instance, NameSetUI.class);
@@ -218,20 +218,39 @@ public class AllAppShowUI extends XYBaseActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == XYContant.XYContants.DELETER_APP) {
-            handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
-        }
-    }
-
-    @Override
     public void handler(Message msg) {
+        setAppData();
+        adapter.refresh(xyAllAppModelList);
         switch (msg.what) {
             case XYContant.XYContants.DELETER_APP:
-                setAppData();
-                adapter.refresh(xyAllAppModelList);
-                deskDB.deleApp(delePackageName);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
+                break;
+            case XYContant.XYContants.ADD_APP:
+                String packageName = (String) msg.obj;
+                XYAppInfoInDesk xyAppInfoInDesk = new XYAppInfoInDesk();
+                String appName = AppUtils.allAppNameFromPackageName.get(packageName);
+                String wharFragment = XYContant.XYContants.F;
+                xyAppInfoInDesk.appPackageName = packageName;
+                xyAppInfoInDesk.appName = appName;
+                String ping = "";
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.ONE_FRAGMENT;
+                    ping = "一";
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.TWO_FRAGMENT;
+                    ping = "二";
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.THREE_FRAGMENT;
+                    ping = "三";
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() < 16) {
+                    wharFragment = XYContant.WharFragment.FOUR_FRAGMENT;
+                    ping = "四";
+                } else {
+                    Utils.getInstance().toast(instance, "屏幕已经没有空间了。。。");
+                }
+                xyAppInfoInDesk.appPonitParents = wharFragment;
+                deskDB.addAppInfo(xyAppInfoInDesk);
+                Utils.getInstance().toast(instance, "已添加" + appName + "至" + ping + "屏");
                 MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }

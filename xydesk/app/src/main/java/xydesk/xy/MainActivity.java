@@ -86,6 +86,33 @@ public class MainActivity extends XYBaseActivity {
                         fragments.remove(fourAppFragment);
                     }
                     refreshAdapter();
+                    upPing();
+                    break;
+                case XYContant.XYContants.DELETER_APP:
+                    if (fragments.contains(oneAppFragment)) {
+                        Message msgOne = oneAppFragment.handler.obtainMessage();
+                        msgOne.what = XYContant.XYContants.DELETER_APP;
+                        msgOne.obj = XYContant.WharFragment.ONE_FRAGMENT;
+                        oneAppFragment.handler.sendMessage(msgOne);
+                    }
+                    if (fragments.contains(twoAppFragment)) {
+                        Message msgTwo = twoAppFragment.handler.obtainMessage();
+                        msgTwo.what = XYContant.XYContants.DELETER_APP;
+                        msgTwo.obj = XYContant.WharFragment.TWO_FRAGMENT;
+                        twoAppFragment.handler.sendMessage(msgTwo);
+                    }
+                    if (fragments.contains(threeAppFragment)) {
+                        Message msgThr = threeAppFragment.handler.obtainMessage();
+                        msgThr.what = XYContant.XYContants.DELETER_APP;
+                        msgThr.obj = XYContant.WharFragment.THREE_FRAGMENT;
+                        threeAppFragment.handler.sendMessage(msgThr);
+                    }
+                    if (fragments.contains(fourAppFragment)) {
+                        Message msgFou = fourAppFragment.handler.obtainMessage();
+                        msgFou.what = XYContant.XYContants.DELETER_APP;
+                        msgFou.obj = XYContant.WharFragment.FOUR_FRAGMENT;
+                        fourAppFragment.handler.sendMessage(msgFou);
+                    }
                     break;
             }
         }
@@ -183,7 +210,6 @@ public class MainActivity extends XYBaseActivity {
 
     //初始化时添加fragment
     private void initFragment() {
-        /*List<XYAppInfoInDesk> xyAppInfoInDeskList_one = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);*/
         List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.TWO_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.THREE_FRAGMENT);
         List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);
@@ -241,23 +267,12 @@ public class MainActivity extends XYBaseActivity {
 
     @OnClick({R.id.all_app, R.id.up_ping, R.id.down_ping})
     public void onClick(View view) {
-        int allFragment = fragments.size();
         switch (view.getId()) {
             case R.id.up_ping:
-                int cup = addApp.getCurrentItem();
-                if (cup >= 0 && cup < allFragment) {
-                    addApp.setCurrentItem(cup - 1);
-                } else {
-                    addApp.setCurrentItem(0);
-                }
+                upPing();
                 break;
             case R.id.down_ping:
-                int cdown = addApp.getCurrentItem();
-                if (cdown >= 0 && cdown < allFragment) {
-                    addApp.setCurrentItem(cdown + 1);
-                } else {
-                    addApp.setCurrentItem(allFragment - 1);
-                }
+                downPing();
                 break;
             case R.id.all_app:
                 ItemView.getInstance().showLongView(instance, ItemView.getInstance().menu_click, new ViewI() {
@@ -286,6 +301,26 @@ public class MainActivity extends XYBaseActivity {
                     }
                 });
                 break;
+        }
+    }
+
+    private void upPing() {
+        int allFragment = fragments.size();
+        int cup = addApp.getCurrentItem();
+        if (cup >= 0 && cup < allFragment) {
+            addApp.setCurrentItem(cup - 1);
+        } else {
+            addApp.setCurrentItem(0);
+        }
+    }
+
+    private void downPing() {
+        int allFragment = fragments.size();
+        int cdown = addApp.getCurrentItem();
+        if (cdown >= 0 && cdown < allFragment) {
+            addApp.setCurrentItem(cdown + 1);
+        } else {
+            addApp.setCurrentItem(allFragment - 1);
         }
     }
 
@@ -384,4 +419,10 @@ public class MainActivity extends XYBaseActivity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(instance);
+    }
 }

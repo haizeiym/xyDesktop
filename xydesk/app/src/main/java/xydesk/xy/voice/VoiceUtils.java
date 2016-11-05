@@ -67,7 +67,7 @@ public class VoiceUtils {
         if (!isClickDouble) {
             try {
                 isClickDouble = true;
-                Utils.getInstance().toast(context, "咣");
+                Utils.getInstance().toast(context, "请说话");
                 Timer timer = new Timer();
                 TimerTask t = new TimerTask() {
                     @Override
@@ -134,7 +134,7 @@ public class VoiceUtils {
         @Override
         public void onEndOfSpeech() {
             // 此回调表示：检测到了语音的尾端点，已经进入识别过程，不再接受语音输入
-            Utils.getInstance().toast(context, "咣");
+            Utils.getInstance().toast(context, "已结束");
             isClickDouble = false;
         }
 

@@ -29,8 +29,6 @@ public class AppUtils {
         return UtilsInstance.instance;
     }
 
-    public static Map<String, String> allAppName = new HashMap<>();
-
     private AppUtils() {
 
     }
@@ -39,15 +37,23 @@ public class AppUtils {
         private static final AppUtils instance = new AppUtils();
     }
 
-    private final String[] uApp = {"com.eg.android.AlipayGphone", "com.sina.weibo", "com.tencent.mobileqq", "com.tencent.mm"};
-    public String delePackageName = "";
+    //用于根据名字查询包名
+    public static Map<String, String> allAppName = new HashMap<>();
+    //用于根据包名查询名字
+    public static Map<String, String> allAppNameFromPackageName = new HashMap<>();
     //所有APP的图标集合
     public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
+
+    //底部APP
+    public static String[][] bottomApp = {{"1", "com.ca.tongxunlu", "心阳通讯"}, {"2", "com.hyphenate.chatuidemo", "心阳零距离"}, {"3", "", "语音"}, {"4", "com.czy.alarm", "心阳时钟"}, {"5", "com.google.android.marvin.talkback8", "心阳读屏"}};
+
+    private final String[] uApp = {"com.tencent.mobileqq", "com.tencent.mm"};
 
     //获取所有APP列表
     public List<XYAllAppModel> getAllAppList(Context context) {
         allAppName.clear();
         allAppIcon.clear();
+        allAppNameFromPackageName.clear();
         List<XYAllAppModel> xyModels = new ArrayList<>();
         try {
             PackageManager packageManager = context.getPackageManager();
@@ -55,20 +61,21 @@ public class AppUtils {
             for (int i = 0; i < apps.size(); i++) {
                 XYAllAppModel xyModel = new XYAllAppModel();
                 ResolveInfo resolveInfo = apps.get(i);
-                String APP_PACKAGE = "xydesk.xy.xydesk";
-                if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
-                    String p = resolveInfo.activityInfo.packageName;
-                    String n = resolveInfo.loadLabel(packageManager).toString();
-                    PackageInfo packageInfo = packageManager.getPackageInfo(p, 0);
-                    xyModel.appVersion = packageInfo.versionName + ": " + packageInfo.versionCode;
-                    xyModel.activityMainName = resolveInfo.activityInfo.name;
-                    xyModel.appPackageName = p;
-                    xyModel.appName = n;
-                    allAppName.put(n, p);
-                    xyModel.appIcon = resolveInfo.loadIcon(packageManager);
-                    allAppIcon.put(p, xyModel.appIcon);
-                    xyModels.add(xyModel);
-                }
+                //String APP_PACKAGE = "xydesk.xy.xydesk";
+                String p = resolveInfo.activityInfo.packageName;
+                String n = resolveInfo.loadLabel(packageManager).toString();
+                PackageInfo packageInfo = packageManager.getPackageInfo(p, 0);
+                xyModel.appVersion = packageInfo.versionName + ": " + packageInfo.versionCode;
+                xyModel.activityMainName = resolveInfo.activityInfo.name;
+                xyModel.appPackageName = p;
+                xyModel.appName = n;
+                allAppName.put(n, p);
+                allAppNameFromPackageName.put(p, n);
+                xyModel.appIcon = resolveInfo.loadIcon(packageManager);
+                allAppIcon.put(p, xyModel.appIcon);
+                xyModels.add(xyModel);
+                /*if (!resolveInfo.activityInfo.packageName.equals(APP_PACKAGE)) {
+                }*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,16 +84,15 @@ public class AppUtils {
     }
 
     //App删除
-    public void delApp(String packageName) {
+    public void delApp(Context context, String packageName) {
         if (packageName.isEmpty()) {
             return;
         }
-        delePackageName = packageName;
         Uri uri = Uri.parse("package:" + packageName);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_DELETE);
         intent.setData(uri);
-        MainActivity.instance.startActivityForResult(intent, XYContant.XYContants.DELETER_APP);
+        context.startActivity(intent);
     }
 
     //根据包名打开APP

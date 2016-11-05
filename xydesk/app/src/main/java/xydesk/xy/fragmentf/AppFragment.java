@@ -114,11 +114,6 @@ public class AppFragment extends XYBaseFragment {
         switch (msg.what) {
             case XYContant.XYContants.DELETER_APP:
             case XYContant.XYContants.ADD_APP:
-                if (!AppUtils.getInstance().delePackageName.equals("")) {
-                    DeskDB deskDB = new DeskDB(getActivity());
-                    deskDB.deleApp(AppUtils.getInstance().delePackageName);
-                    AppUtils.getInstance().delePackageName = "";
-                }
                 String w = (String) msg.obj;
                 xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), w);
                 refreshData(xyAppInfoInDeskList);
