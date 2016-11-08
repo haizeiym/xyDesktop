@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -238,6 +240,11 @@ public class AllAppShowUI extends XYBaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.seach_name:
+                    //点击使EditText里的文字处于选中状态
+                    seachName.setText(seachName.getText().toString());
+                    Spannable content = seachName.getText();
+                    Selection.selectAll(content);
+                    //键盘弹出
                     ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(seachName, 0);
                     break;
             }
@@ -320,7 +327,10 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appPonitParents = wharFragment;
                 deskDB.addAppInfo(xyAppInfoInDesk);
                 Utils.getInstance().toast(instance, "已添加" + appName + "至" + ping + "屏");
-                MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
+                Message message = MainActivity.instance.handler.obtainMessage();
+                message.what = XYContant.XYContants.REFRESH_FRAGMENT;
+                message.obj = wharFragment;
+                MainActivity.instance.handler.sendMessage(message);
                 break;
         }
     }

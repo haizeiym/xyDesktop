@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import com.umeng.analytics.AnalyticsConfig;
 import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONObject;
@@ -124,6 +123,8 @@ public class MainActivity extends XYBaseActivity {
             case XYContant.WharFragment.TWO_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
                     fragments.add(twoAppFragment);
+                    refreshAdapter();
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && fragments.contains(twoAppFragment)) {
                     twoAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT));
                 }
                 break;
@@ -131,6 +132,8 @@ public class MainActivity extends XYBaseActivity {
             case XYContant.WharFragment.THREE_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() > 0 && !fragments.contains(threeAppFragment)) {
                     fragments.add(threeAppFragment);
+                    refreshAdapter();
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() > 0 && fragments.contains(threeAppFragment)) {
                     threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT));
                 }
                 break;
@@ -138,11 +141,12 @@ public class MainActivity extends XYBaseActivity {
             case XYContant.WharFragment.FOUR_FRAGMENT:
                 if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
                     fragments.add(fourAppFragment);
+                    refreshAdapter();
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && fragments.contains(fourAppFragment)) {
                     fourAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT));
                 }
                 break;
         }
-        refreshAdapter();
     }
 
     @Override
@@ -307,7 +311,7 @@ public class MainActivity extends XYBaseActivity {
     private void upPing() {
         int allFragment = fragments.size();
         int cup = addApp.getCurrentItem();
-        if (cup >= 0 && cup < allFragment) {
+        if (cup > 0 && cup <= allFragment) {
             addApp.setCurrentItem(cup - 1);
         } else {
             addApp.setCurrentItem(0);

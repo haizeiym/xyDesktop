@@ -99,6 +99,9 @@ public class AppFragment extends XYBaseFragment {
                             handler.sendMessage(m);
                             Utils.getInstance().toast(getActivity(), "删除成功");
                             break;
+                        /*case XYContant.LongPressItem.DELE_APP_IN_PHONE:
+                            AppUtils.getInstance().delApp(getActivity(), xyAllAppModel.appPackageName);
+                            break;*/
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

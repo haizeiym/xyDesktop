@@ -72,6 +72,8 @@ public class XYContant {
     public interface LongPressItem {
         //在桌面删除
         String DELE_APP_IN_FRAGMENT = "在桌面删除";
+        //删除应用
+        String DELE_APP_IN_PHONE = "卸载应用";
     }
 
     /**
