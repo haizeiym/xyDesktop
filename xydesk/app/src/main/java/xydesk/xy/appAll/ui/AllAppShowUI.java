@@ -234,6 +234,7 @@ public class AllAppShowUI extends XYBaseActivity {
             filterData(s.toString());
         }
     };
+
     //点击监听显示键盘
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -309,16 +310,16 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appPackageName = packageName;
                 xyAppInfoInDesk.appName = appName;
                 String ping = "";
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() < 16) {
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() <= 16) {
                     wharFragment = XYContant.WharFragment.ONE_FRAGMENT;
                     ping = "一";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() < 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() <= 16) {
                     wharFragment = XYContant.WharFragment.TWO_FRAGMENT;
                     ping = "二";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() < 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() <= 16) {
                     wharFragment = XYContant.WharFragment.THREE_FRAGMENT;
                     ping = "三";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() < 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() <= 16) {
                     wharFragment = XYContant.WharFragment.FOUR_FRAGMENT;
                     ping = "四";
                 } else {

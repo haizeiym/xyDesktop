@@ -2,6 +2,7 @@ package xydesk.xy.fragmentf;
 
 import android.os.Bundle;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +33,7 @@ public class AppFragment extends XYBaseFragment {
     private List<XYAppInfoInDesk> xyAppInfoInDeskList;
     private int position;
     private String whatFragment;
-
+    private boolean isOne = false;
     public AppFragment() {
         initHandler();
     }
@@ -54,6 +55,7 @@ public class AppFragment extends XYBaseFragment {
             whatFragment = bundle.getString(XYContant.ValuesToFragment.KEY_WHAT);
             xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
             xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
+            isOne = false;
         }
     }
 
@@ -138,6 +140,11 @@ public class AppFragment extends XYBaseFragment {
     public void onResume() {
         super.onResume();
         MobclickAgent.onPageStart("AppFragment"); //统计页面，"MainScreen"为页面名称，可自定义
+        if(isOne){
+            xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
+            refreshData(xyAppInfoInDeskList);
+        }
+        isOne = true;
     }
 
     @Override
