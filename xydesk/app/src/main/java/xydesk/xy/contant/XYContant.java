@@ -72,8 +72,6 @@ public class XYContant {
     public interface LongPressItem {
         //在桌面删除
         String DELE_APP_IN_FRAGMENT = "在桌面删除";
-        //删除应用
-        String DELE_APP_IN_PHONE = "卸载应用";
     }
 
     /**
@@ -96,8 +94,8 @@ public class XYContant {
         String APP_SET_IN_MENU = "语音助手设置";
         //联系人别名设置
         String CONTACT_NAME_SET = "联系人别名设置";
-        //设置
-        String SET_BUTTON = "设置";
+        //刷新fragment
+        String REFRESH_FRAGMENT_IN_MENU = "刷新";
     }
 
     /**

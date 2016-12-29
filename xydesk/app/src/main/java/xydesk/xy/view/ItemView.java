@@ -36,9 +36,9 @@ public class ItemView {
     //底部APP
     public String[] bottomApp = {XYContant.ClickItem.BOTTOM_ONE, XYContant.ClickItem.BOTTOM_TWO, XYContant.ClickItem.BOTTOM_THREE, XYContant.ClickItem.BOTTOM_FOUR, XYContant.ClickItem.BOTTOM_FIVE};
     //长按应用
-    public String[] itemLong = {XYContant.LongPressItem.DELE_APP_IN_FRAGMENT/*, XYContant.LongPressItem.DELE_APP_IN_PHONE*/};
+    public String[] itemLong = {XYContant.LongPressItem.DELE_APP_IN_FRAGMENT/*, XYContant.DELE_APP*/};
     //点击菜单
-    public String[] menu_click = {XYContant.ClickMenu.ALL_APP_IN_MENU, XYContant.ClickMenu.APP_SET_IN_MENU, XYContant.ClickMenu.CONTACT_NAME_SET, XYContant.ClickMenu.SET_BUTTON};
+    public String[] menu_click = {XYContant.ClickMenu.ALL_APP_IN_MENU, XYContant.ClickMenu.APP_SET_IN_MENU, XYContant.ClickMenu.CONTACT_NAME_SET, /*XYContant.REFRESH_FRAGMENT_IN_MENU*/};
 
     public void showLongView(Context context, String[] item, final ViewI viewI) {
         final Dialog alertDialog = new Dialog(context);

@@ -25,12 +25,12 @@ import xydesk.xy.xydesk.R;
 public class NameSetUI extends XYBaseActivity {
     @Bind(R.id.app_xfname_set)
     TextView appXfnameSet;
-    VoiceUtils voiceUtils;
-    DeskDB deskDB;
-    String name_set = XYContant.XYContants.F;
-    boolean isVoice = false;
     @Bind(R.id.name_set)
     EditText nameSet;
+    private VoiceUtils voiceUtils;
+    private DeskDB deskDB;
+    private String name_set = XYContant.XYContants.F;
+    private boolean isVoice = false;
 
     @Override
     public void initView() {
@@ -45,7 +45,7 @@ public class NameSetUI extends XYBaseActivity {
         name_set = getIntent().getStringExtra(XYContant.VoiceSet.NAME_SET);
     }
 
-    TextWatcher textWatcher = new TextWatcher() {
+    private TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -96,10 +96,10 @@ public class NameSetUI extends XYBaseActivity {
                         xyxfNameSetModel.set_contact_number = name_set;
                         deskDB.addSetContactName(xyxfNameSetModel);
                     }
-                    Utils.getInstance().toast(instance,"已添加成功");
+                    Utils.getInstance().toast(instance, "已添加成功");
                     finish();
                 } else {
-                    Utils.getInstance().toast(instance,"名称为空");
+                    Utils.getInstance().toast(instance, "名称为空");
                 }
                 break;
             case R.id.cancle:

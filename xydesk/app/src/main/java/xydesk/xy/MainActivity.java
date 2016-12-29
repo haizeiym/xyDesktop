@@ -7,11 +7,11 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-
-import com.umeng.analytics.MobclickAgent;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -25,13 +25,12 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import xydesk.xy.appAll.ui.AllAppShowUI;
 import xydesk.xy.base.XYBaseActivity;
-import xydesk.xy.base.XYBaseFragment;
 import xydesk.xy.contact.AddContactNameUI;
 import xydesk.xy.contact.ContactManUtils;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
-import xydesk.xy.fragmentf.AppFragment;
-import xydesk.xy.fragmentf.FragmentViewAdapter;
+import xydesk.xy.fragmentf.XYAPPAdapter;
+import xydesk.xy.i.GridViewScroolI;
 import xydesk.xy.i.ResponseHandler;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.i.VoiceI;
@@ -42,26 +41,28 @@ import xydesk.xy.utils.AppUtils;
 import xydesk.xy.utils.AsyncHttpUtils;
 import xydesk.xy.utils.Utils;
 import xydesk.xy.view.ItemView;
-import xydesk.xy.view.NoPreloadViewPager;
+import xydesk.xy.view.MYGestureListener;
 import xydesk.xy.voice.VoiceData;
 import xydesk.xy.voice.VoiceUtils;
 import xydesk.xy.xydesk.R;
 
 public class MainActivity extends XYBaseActivity {
 
-    @Bind(R.id.add_app)
-    NoPreloadViewPager addApp;
     @Bind(R.id.love_app)
     GridView loveApp;
+    @Bind(R.id.main_app_list)
+    GridView mainApp;
+    //手势监听
+    private MYGestureListener myGestureListener;
     private LoveAppAdapter loveAppAdapter;
-    private List<XYBaseFragment> fragments = new ArrayList<>();
-    public AppFragment oneAppFragment, twoAppFragment, threeAppFragment, fourAppFragment;
     private VoiceUtils voiceUtils;
+    private XYAPPAdapter xyappAdapter;
     private DeskDB deskDB;
-    private FragmentViewAdapter fragmentAdapter;
+    private static final int FLING_MIN_DISTANCE = 199;//移动最小距离
+    private static final int FLING_MIN_VELOCITY = 199;//移动最大速度
     public static MainActivity instance;
     private List<XYAppInfoInDesk> bottomList = new ArrayList<>();
-
+    private List<XYAppInfoInDesk> xyAppInfoInDeskList;
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -71,83 +72,14 @@ public class MainActivity extends XYBaseActivity {
                     loveAppAdapter.refresh(bottomList);
                     break;
                 case XYContant.XYContants.REFRESH_FRAGMENT:
-                    String whatWhere = (String) msg.obj;
-                    raFragment(whatWhere);
-                    break;
-                case XYContant.XYContants.DELE_FRAGMENT:
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() == 0) {
-                        fragments.remove(twoAppFragment);
-                    }
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() == 0) {
-                        fragments.remove(threeAppFragment);
-                    }
-                    if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() == 0) {
-                        fragments.remove(fourAppFragment);
-                    }
-                    refreshAdapter();
-                    upPing();
+                    downPing(false);
                     break;
                 case XYContant.XYContants.DELETER_APP:
-                    if (fragments.contains(oneAppFragment)) {
-                        Message msgOne = oneAppFragment.handler.obtainMessage();
-                        msgOne.what = XYContant.XYContants.DELETER_APP;
-                        msgOne.obj = XYContant.WharFragment.ONE_FRAGMENT;
-                        oneAppFragment.handler.sendMessage(msgOne);
-                    }
-                    if (fragments.contains(twoAppFragment)) {
-                        Message msgTwo = twoAppFragment.handler.obtainMessage();
-                        msgTwo.what = XYContant.XYContants.DELETER_APP;
-                        msgTwo.obj = XYContant.WharFragment.TWO_FRAGMENT;
-                        twoAppFragment.handler.sendMessage(msgTwo);
-                    }
-                    if (fragments.contains(threeAppFragment)) {
-                        Message msgThr = threeAppFragment.handler.obtainMessage();
-                        msgThr.what = XYContant.XYContants.DELETER_APP;
-                        msgThr.obj = XYContant.WharFragment.THREE_FRAGMENT;
-                        threeAppFragment.handler.sendMessage(msgThr);
-                    }
-                    if (fragments.contains(fourAppFragment)) {
-                        Message msgFou = fourAppFragment.handler.obtainMessage();
-                        msgFou.what = XYContant.XYContants.DELETER_APP;
-                        msgFou.obj = XYContant.WharFragment.FOUR_FRAGMENT;
-                        fourAppFragment.handler.sendMessage(msgFou);
-                    }
+                    upPing(false);
                     break;
             }
         }
     };
-
-    //添加fragment
-    private void raFragment(String whatWhere) {
-        switch (whatWhere) {
-            case XYContant.WharFragment.TWO_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && !fragments.contains(twoAppFragment)) {
-                    fragments.add(twoAppFragment);
-                    refreshAdapter();
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() > 0 && fragments.contains(twoAppFragment)) {
-                    twoAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT));
-                }
-                break;
-
-            case XYContant.WharFragment.THREE_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() > 0 && !fragments.contains(threeAppFragment)) {
-                    fragments.add(threeAppFragment);
-                    refreshAdapter();
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() > 0 && fragments.contains(threeAppFragment)) {
-                    threeAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT));
-                }
-                break;
-
-            case XYContant.WharFragment.FOUR_FRAGMENT:
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && !fragments.contains(fourAppFragment)) {
-                    fragments.add(fourAppFragment);
-                    refreshAdapter();
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0 && fragments.contains(fourAppFragment)) {
-                    fourAppFragment.refreshData(AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT));
-                }
-                break;
-        }
-    }
 
     @Override
     public void initView() {
@@ -156,16 +88,10 @@ public class MainActivity extends XYBaseActivity {
         ButterKnife.bind(this);
         /**Home键监听*/
         initHomeListen();
-        //友盟日志加密
-        ymLogJm();
-    }
-
-    private void ymLogJm() {
-        MobclickAgent.enableEncrypt(true);//6.0.0版本及以后
     }
 
     @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         //更新联系人
         ContactManUtils.getPeopleInPhone(instance);
@@ -181,8 +107,7 @@ public class MainActivity extends XYBaseActivity {
         VoiceData.getInstance().addSysApp(instance);
         voiceUtils = new VoiceUtils(instance);
         deskDB.addAupdateBottomApp(instance);
-        loveApp.setOnItemClickListener(bottomItemClick);
-        initFragment();
+        myGestureListener = new MYGestureListener(instance, null, gridViewScroolI);
     }
 
     //获取版本号
@@ -212,36 +137,67 @@ public class MainActivity extends XYBaseActivity {
         });
     }
 
-    //初始化时添加fragment
-    private void initFragment() {
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_two = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.TWO_FRAGMENT);
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_three = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.THREE_FRAGMENT);
-        List<XYAppInfoInDesk> xyAppInfoInDeskList_four = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);
-        oneAppFragment = AppFragment.newInstance(1, XYContant.WharFragment.ONE_FRAGMENT);
-        twoAppFragment = AppFragment.newInstance(2, XYContant.WharFragment.TWO_FRAGMENT);
-        threeAppFragment = AppFragment.newInstance(3, XYContant.WharFragment.THREE_FRAGMENT);
-        fourAppFragment = AppFragment.newInstance(4, XYContant.WharFragment.FOUR_FRAGMENT);
-        fragments.add(oneAppFragment);
-        if (xyAppInfoInDeskList_two.size() > 0) {
-            fragments.add(twoAppFragment);
+    //手势监听
+    private GridViewScroolI gridViewScroolI = new GridViewScroolI() {
+        @Override
+        public void scrool(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // velocityX：X轴上的移动速度（像素/秒）
+            // velocityY：Y轴上的移动速度（像素/秒）
+
+            // X轴的坐标位移大于FLING_MIN_DISTANCE，且移动速度大于FLING_MIN_VELOCITY个像素/秒
+            //上一屏
+            if (e2.getX() - e1.getX() > FLING_MIN_DISTANCE
+                    && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+                upPing(true);
+                //下一屏
+            } else if (e1.getX() - e2.getX() > FLING_MIN_DISTANCE
+                    && Math.abs(velocityX) > FLING_MIN_VELOCITY) {
+                downPing(true);
+            }
         }
-        if (xyAppInfoInDeskList_three.size() > 0) {
-            fragments.add(threeAppFragment);
+    };
+
+    //上一屏
+    private void upPing(boolean isRefresh) {
+        AppUtils.getInstance().upApp(instance, isRefresh);
+        refreshData();
+        Utils.getInstance().toast(instance, whatPing(AppUtils.nowPage));
+    }
+
+    //下一屏
+    private void downPing(boolean isToast) {
+        AppUtils.getInstance().downApp(instance);
+        refreshData();
+        if (isToast) {
+            Utils.getInstance().toast(instance, whatPing(AppUtils.nowPage));
         }
-        if (xyAppInfoInDeskList_four.size() > 0) {
-            fragments.add(fourAppFragment);
-        }
+    }
+
+    //数据刷新
+    private void refreshData() {
+        xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(instance, AppUtils.nowPage);
+        xyappAdapter.refresh(xyAppInfoInDeskList);
     }
 
     @Override
     public void setAdapter() {
+        //底部添加的APP
         bottomList = deskDB.bottomAllApp();
         loveAppAdapter = new LoveAppAdapter(instance, bottomList);
         loveApp.setAdapter(loveAppAdapter);
-        fragmentAdapter = new FragmentViewAdapter(getSupportFragmentManager(), fragments);
-        addApp.setAdapter(fragmentAdapter);
+        loveApp.setOnItemClickListener(bottomItemClick);
+
+        //屏幕中的APP
+        xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);
+        xyappAdapter = new XYAPPAdapter(MainActivity.instance, xyAppInfoInDeskList);
+        mainApp.setAdapter(xyappAdapter);
+        mainApp.setOnItemClickListener(mainAppClick);
+        mainApp.setOnItemLongClickListener(onItemLongClickListener);
+        mainApp.setOnTouchListener(myGestureListener);
+        Utils.getInstance().toast(instance, whatPing(AppUtils.nowPage));
     }
 
+    //底部APP点击事件
     private AdapterView.OnItemClickListener bottomItemClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -264,6 +220,73 @@ public class MainActivity extends XYBaseActivity {
         }
     };
 
+    //屏幕APP点击事件
+    private AdapterView.OnItemClickListener mainAppClick = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            try {
+                AppUtils.getInstance().openApp(instance, xyAppInfoInDeskList.get(position).appPackageName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utils.getInstance().toast(instance, "异常退出");
+                System.exit(0);
+            }
+        }
+    };
+
+    //屏幕APP长按事件
+    private AdapterView.OnItemLongClickListener onItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+            ItemView.getInstance().showLongView(instance, ItemView.getInstance().itemLong, new ViewI() {
+                @Override
+                public void click(View view, int itemPosition) {
+                    try {
+                        XYAppInfoInDesk xyAllAppModel = xyAppInfoInDeskList.get(position);
+                        switch ((String) view.getTag()) {
+                            case XYContant.LongPressItem.DELE_APP_IN_FRAGMENT:
+                                AppUtils.getInstance().deleAtFragment(instance, xyAllAppModel.appPackageName);
+                                Message m = handler.obtainMessage();
+                                m.what = XYContant.XYContants.DELETER_APP;
+                                handler.sendMessage(m);
+                                Utils.getInstance().toast(instance, "删除成功");
+                                break;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utils.getInstance().toast(instance, "异常退出");
+                        System.exit(0);
+                    }
+                }
+            });
+            return true;
+        }
+    };
+
+    //判断第几屏幕
+    private String whatPing(String whatF) {
+        String ping;
+        switch (whatF) {
+            case XYContant.WharFragment.ONE_FRAGMENT:
+                ping = "第一屏";
+                break;
+            case XYContant.WharFragment.TWO_FRAGMENT:
+                ping = "第二屏";
+                break;
+            case XYContant.WharFragment.THREE_FRAGMENT:
+                ping = "第三屏";
+                break;
+            case XYContant.WharFragment.FOUR_FRAGMENT:
+                ping = "第四屏";
+                break;
+            default:
+                ping = XYContant.XYContants.F;
+                break;
+        }
+        ping = ping + ",当前屏幕共" + xyAppInfoInDeskList.size() + "项";
+        return ping;
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return KeyEvent.KEYCODE_BACK != keyCode && super.onKeyDown(keyCode, event);
@@ -273,10 +296,10 @@ public class MainActivity extends XYBaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.up_ping:
-                upPing();
+                upPing(true);
                 break;
             case R.id.down_ping:
-                downPing();
+                downPing(true);
                 break;
             case R.id.all_app:
                 ItemView.getInstance().showLongView(instance, ItemView.getInstance().menu_click, new ViewI() {
@@ -298,39 +321,13 @@ public class MainActivity extends XYBaseActivity {
                                 intentContactNameSet.setClass(instance, AddContactNameUI.class);
                                 startActivity(intentContactNameSet);
                                 break;
-                            case XYContant.ClickMenu.SET_BUTTON:
-                                AppUtils.getInstance().openApp(instance, AppUtils.allAppName.get(XYContant.ClickMenu.SET_BUTTON));
+                            case XYContant.ClickMenu.REFRESH_FRAGMENT_IN_MENU:
                                 break;
                         }
                     }
                 });
                 break;
         }
-    }
-
-    private void upPing() {
-        int allFragment = fragments.size();
-        int cup = addApp.getCurrentItem();
-        if (cup > 0 && cup <= allFragment) {
-            addApp.setCurrentItem(cup - 1);
-        } else {
-            addApp.setCurrentItem(0);
-        }
-    }
-
-    private void downPing() {
-        int allFragment = fragments.size();
-        int cdown = addApp.getCurrentItem();
-        if (cdown >= 0 && cdown < allFragment) {
-            addApp.setCurrentItem(cdown + 1);
-        } else {
-            addApp.setCurrentItem(allFragment - 1);
-        }
-    }
-
-    //刷新fragment
-    private void refreshAdapter() {
-        fragmentAdapter.refreshFragment(fragments);
     }
 
     //语音初始化
@@ -416,9 +413,8 @@ public class MainActivity extends XYBaseActivity {
                 String reason = intent.getStringExtra(SYS_KEY);
                 if (reason != null && reason.equals(SYS_HOME_KEY)) {
                     //表示按了home键,程序到了后台
-                    if (addApp != null) {
-                        addApp.setCurrentItem(0);
-                    }
+                    xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.ONE_FRAGMENT);
+                    xyappAdapter.refresh(xyAppInfoInDeskList);
                 }
             }
         }

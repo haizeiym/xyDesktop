@@ -19,11 +19,11 @@ import xydesk.xy.xydesk.R;
  * Created by haizeiym
  * on 2016/8/8
  */
-class XYFragmentAdapter extends XYBaseAdapter {
+public class XYAPPAdapter extends XYBaseAdapter {
     private Context context;
     private List<XYAppInfoInDesk> xyAppInfoInDesks;
 
-    XYFragmentAdapter(Context context, List<XYAppInfoInDesk> xyAppInfoInDesks) {
+    public XYAPPAdapter(Context context, List<XYAppInfoInDesk> xyAppInfoInDesks) {
         this.context = context;
         this.xyAppInfoInDesks = xyAppInfoInDesks;
     }
@@ -35,7 +35,7 @@ class XYFragmentAdapter extends XYBaseAdapter {
 
     @Override
     public View setHolderViewInit(XYViewHolder holder, int position, ViewGroup parent) {
-        View convertView = View.inflate(context, R.layout.gridview_app_item, null);
+        View convertView = LayoutInflater.from(context).inflate(R.layout.gridview_app_item, parent, false);
         holder.fragment_app_name = (TextView) convertView.findViewById(R.id.app_name);
         holder.fragment_app_icon = (ImageView) convertView.findViewById(R.id.app_icon);
         return convertView;
@@ -48,7 +48,7 @@ class XYFragmentAdapter extends XYBaseAdapter {
         holder.fragment_app_icon.setImageDrawable(AppUtils.allAppIcon.get(xyAppInfoInDesk.appPackageName));
     }
 
-    void refresh(List<XYAppInfoInDesk> xyAppInfoInDesks) {
+    public void refresh(List<XYAppInfoInDesk> xyAppInfoInDesks) {
         this.xyAppInfoInDesks = xyAppInfoInDesks;
         notifyDataSetChanged();
     }

@@ -54,7 +54,7 @@ public class Utils {
                 toast.cancel();
             }
         };
-        timer.schedule(t, 41);
+        timer.schedule(t, 47);
     }
 
     //名称字母排序
@@ -82,7 +82,6 @@ public class Utils {
         }
         return listC;
     }
-
 
     //判断网络是否可用
     public boolean isNetAvailable(Context context) {

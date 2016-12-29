@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -114,16 +112,16 @@ public class AllAppShowUI extends XYBaseActivity {
                             public void click(View view, int itemPosition) {
                                 switch ((String) view.getTag()) {
                                     case XYContant.ClickItem.ADD_DESK_ONE:
-                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.ONE_FRAGMENT, MainActivity.instance.oneAppFragment.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.ONE_FRAGMENT);
                                         break;
                                     case XYContant.ClickItem.ADD_DESK_TWO:
-                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.TWO_FRAGMENT, MainActivity.instance.twoAppFragment.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.TWO_FRAGMENT);
                                         break;
                                     case XYContant.ClickItem.ADD_DESK_THREE:
-                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.THREE_FRAGMENT, MainActivity.instance.threeAppFragment.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.THREE_FRAGMENT);
                                         break;
                                     case XYContant.ClickItem.ADD_DESK_FOUR:
-                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.FOUR_FRAGMENT, MainActivity.instance.fourAppFragment.handler);
+                                        addAppToDesk(xyAllAppModel, XYContant.WharFragment.FOUR_FRAGMENT);
                                         break;
                                 }
                             }
@@ -168,7 +166,7 @@ public class AllAppShowUI extends XYBaseActivity {
     }
 
     //添加到那个FRAGMENT
-    private void addAppToDesk(XYAllAppModel xyAllAppModel, String whatWhere, Handler handler) {
+    private void addAppToDesk(XYAllAppModel xyAllAppModel, String whatWhere) {
         if (deskDB.isExits(xyAllAppModel.appPackageName)) {
             Utils.getInstance().toast(instance, "桌面已存在此图标无需重复操作");
         } else {
@@ -181,14 +179,10 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appName = xyAllAppModel.appName;
                 xyAppInfoInDesk.appPonitParents = whatWhere;
                 deskDB.addAppInfo(xyAppInfoInDesk);
-                Message m = handler.obtainMessage();
-                m.what = XYContant.XYContants.ADD_APP;
-                m.obj = whatWhere;
-                handler.sendMessage(m);
                 Utils.getInstance().toast(instance, "应用已添加到桌面");
             }
+            MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.REFRESH_FRAGMENT);
         }
-        addFragment(whatWhere);
     }
 
     /**
@@ -197,13 +191,13 @@ public class AllAppShowUI extends XYBaseActivity {
      * @param filterStr
      */
     private void filterData(String filterStr) {
+        List<XYAllAppModel> tempList = new ArrayList<>();
         if (TextUtils.isEmpty(filterStr)) {
             filterDateList = xyAllAppModelList;
         } else {
-            List<XYAllAppModel> tempList = new ArrayList<>();
             for (XYAllAppModel sortModel : xyAllAppModelList) {
                 String name = sortModel.appName;
-                if (name.toUpperCase().indexOf(filterStr.toUpperCase()) != -1 || characterParser.getSelling(name).toUpperCase().startsWith(filterStr.toUpperCase())) {
+                if (name.toUpperCase().contains(filterStr.toUpperCase()) || characterParser.getSelling(name).toUpperCase().startsWith(filterStr.toUpperCase())) {
                     tempList.add(sortModel);
                 }
             }
@@ -234,31 +228,18 @@ public class AllAppShowUI extends XYBaseActivity {
             filterData(s.toString());
         }
     };
-
     //点击监听显示键盘
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.seach_name:
-                    //点击使EditText里的文字处于选中状态
-                    seachName.setText(seachName.getText().toString());
-                    Spannable content = seachName.getText();
-                    Selection.selectAll(content);
-                    //键盘弹出
                     ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(seachName, 0);
                     break;
             }
         }
     };
 
-    //添加屏幕
-    private void addFragment(String whatWhere) {
-        Message msg = MainActivity.instance.handler.obtainMessage();
-        msg.what = XYContant.XYContants.REFRESH_FRAGMENT;
-        msg.obj = whatWhere;
-        MainActivity.instance.handler.sendMessage(msg);
-    }
 
     //屏幕APP数量
     private List<XYAppInfoInDesk> pingLeangth(String whatWhere) {
@@ -279,7 +260,6 @@ public class AllAppShowUI extends XYBaseActivity {
             case XYContant.WharFragment.FOUR_FRAGMENT:
                 l = AppUtils.getInstance().getAllApp(MainActivity.instance, XYContant.WharFragment.FOUR_FRAGMENT);
                 break;
-
         }
         return l;
     }
@@ -310,16 +290,16 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appPackageName = packageName;
                 xyAppInfoInDesk.appName = appName;
                 String ping = "";
-                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() <= 16) {
+                if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.ONE_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.ONE_FRAGMENT;
                     ping = "一";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() <= 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.TWO_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.TWO_FRAGMENT;
                     ping = "二";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() <= 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.THREE_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.THREE_FRAGMENT;
                     ping = "三";
-                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() <= 16) {
+                } else if (AppUtils.getInstance().getAllApp(instance, XYContant.WharFragment.FOUR_FRAGMENT).size() < 16) {
                     wharFragment = XYContant.WharFragment.FOUR_FRAGMENT;
                     ping = "四";
                 } else {
@@ -328,10 +308,7 @@ public class AllAppShowUI extends XYBaseActivity {
                 xyAppInfoInDesk.appPonitParents = wharFragment;
                 deskDB.addAppInfo(xyAppInfoInDesk);
                 Utils.getInstance().toast(instance, "已添加" + appName + "至" + ping + "屏");
-                Message message = MainActivity.instance.handler.obtainMessage();
-                message.what = XYContant.XYContants.REFRESH_FRAGMENT;
-                message.obj = wharFragment;
-                MainActivity.instance.handler.sendMessage(message);
+                MainActivity.instance.handler.sendEmptyMessage(XYContant.XYContants.DELETER_APP);
                 break;
         }
     }

@@ -2,20 +2,16 @@ package xydesk.xy.fragmentf;
 
 import android.os.Bundle;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-
-import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
 import xydesk.xy.MainActivity;
 import xydesk.xy.base.XYBaseFragment;
 import xydesk.xy.contant.XYContant;
-import xydesk.xy.db.DeskDB;
 import xydesk.xy.i.ViewI;
 import xydesk.xy.model.XYAppInfoInDesk;
 import xydesk.xy.utils.AppUtils;
@@ -29,11 +25,11 @@ import xydesk.xy.xydesk.R;
  */
 public class AppFragment extends XYBaseFragment {
     private GridView fragmentApp;
-    private XYFragmentAdapter xyFragmentAdapter;
+    private XYAPPAdapter xyFragmentAdapter;
     private List<XYAppInfoInDesk> xyAppInfoInDeskList;
     private int position;
     private String whatFragment;
-    private boolean isOne = false;
+
     public AppFragment() {
         initHandler();
     }
@@ -54,8 +50,7 @@ public class AppFragment extends XYBaseFragment {
             position = bundle.getInt(XYContant.ValuesToFragment.KEY_INT);
             whatFragment = bundle.getString(XYContant.ValuesToFragment.KEY_WHAT);
             xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
-            xyFragmentAdapter = new XYFragmentAdapter(MainActivity.instance, xyAppInfoInDeskList);
-            isOne = false;
+            xyFragmentAdapter = new XYAPPAdapter(MainActivity.instance, xyAppInfoInDeskList);
         }
     }
 
@@ -101,9 +96,6 @@ public class AppFragment extends XYBaseFragment {
                             handler.sendMessage(m);
                             Utils.getInstance().toast(getActivity(), "删除成功");
                             break;
-                        /*case XYContant.LongPressItem.DELE_APP_IN_PHONE:
-                            AppUtils.getInstance().delApp(getActivity(), xyAllAppModel.appPackageName);
-                            break;*/
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -134,22 +126,5 @@ public class AppFragment extends XYBaseFragment {
         if (xyFragmentAdapter != null) {
             xyFragmentAdapter.refresh(xyAppInfoInDeskList);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        MobclickAgent.onPageStart("AppFragment"); //统计页面，"MainScreen"为页面名称，可自定义
-        if(isOne){
-            xyAppInfoInDeskList = AppUtils.getInstance().getAllApp(getActivity(), whatFragment);
-            refreshData(xyAppInfoInDeskList);
-        }
-        isOne = true;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        MobclickAgent.onPageEnd("AppFragment");
     }
 }

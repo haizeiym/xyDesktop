@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xydesk.xy.MainActivity;
 import xydesk.xy.contant.XYContant;
 import xydesk.xy.db.DeskDB;
 import xydesk.xy.model.XYAllAppModel;
@@ -43,7 +42,8 @@ public class AppUtils {
     public static Map<String, String> allAppNameFromPackageName = new HashMap<>();
     //所有APP的图标集合
     public static HashMap<String, Drawable> allAppIcon = new HashMap<>();
-
+    //当前页
+    public static String nowPage = XYContant.WharFragment.ONE_FRAGMENT;
     //底部APP
     public static String[][] bottomApp = {{"1", "com.ca.tongxunlu", "心阳通讯"}, {"2", "com.hyphenate.chatuidemo", "心阳零距离"}, {"3", "", "语音"}, {"4", "com.czy.alarm", "心阳时钟"}, {"5", "com.google.android.marvin.talkback8", "心阳读屏"}};
 
@@ -156,5 +156,112 @@ public class AppUtils {
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", pkgName, null));
         context.startActivity(intent);
+    }
+
+    //下一屏
+    public void downApp(Context context) {
+        switch (nowPage) {
+            case XYContant.WharFragment.ONE_FRAGMENT:
+                if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                } else if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                } else if (getAllApp(context, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.FOUR_FRAGMENT;
+                } else {
+                    nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                }
+                break;
+            case XYContant.WharFragment.TWO_FRAGMENT:
+                if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                } else if (getAllApp(context, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.FOUR_FRAGMENT;
+                } else {
+                    nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                }
+                break;
+            case XYContant.WharFragment.THREE_FRAGMENT:
+                if (getAllApp(context, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0) {
+                    nowPage = XYContant.WharFragment.FOUR_FRAGMENT;
+                } else {
+                    nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                }
+                break;
+            case XYContant.WharFragment.FOUR_FRAGMENT:
+                nowPage = XYContant.WharFragment.FOUR_FRAGMENT;
+                break;
+            default:
+                nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                break;
+        }
+    }
+
+    //上一屏
+
+    /**
+     * @param isNoRefresh 类型，是否为刷新,删除
+     */
+    public void upApp(Context context, boolean isNoRefresh) {
+        switch (nowPage) {
+            case XYContant.WharFragment.ONE_FRAGMENT:
+                nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                break;
+            case XYContant.WharFragment.TWO_FRAGMENT:
+                if (isNoRefresh) {
+                    nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                } else {
+                    if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                    } else {
+                        nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                    }
+                }
+                break;
+            case XYContant.WharFragment.THREE_FRAGMENT:
+                if (isNoRefresh) {
+                    if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                    } else if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                    } else {
+                        nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                    }
+                } else {
+                    if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                    } else if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                    } else {
+                        nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                    }
+                }
+
+                break;
+            case XYContant.WharFragment.FOUR_FRAGMENT:
+                if (isNoRefresh) {
+                    if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                    } else if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                    } else {
+                        nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                    }
+                } else {
+                    if (getAllApp(context, XYContant.WharFragment.FOUR_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.FOUR_FRAGMENT;
+                    } else if (getAllApp(context, XYContant.WharFragment.THREE_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.THREE_FRAGMENT;
+                    } else if (getAllApp(context, XYContant.WharFragment.TWO_FRAGMENT).size() > 0) {
+                        nowPage = XYContant.WharFragment.TWO_FRAGMENT;
+                    } else {
+                        nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                    }
+                }
+                break;
+            default:
+                nowPage = XYContant.WharFragment.ONE_FRAGMENT;
+                break;
+        }
     }
 }

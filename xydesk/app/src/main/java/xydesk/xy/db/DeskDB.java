@@ -26,6 +26,11 @@ public class DeskDB {
 
     //添加app信息
     public void addAppInfo(XYAppInfoInDesk xyAppInfoInDesk) {
+        for (String[] strings : AppUtils.bottomApp) {
+            if (strings[1].equals(xyAppInfoInDesk.appPackageName)) {
+                return;
+            }
+        }
         SQLiteDatabase sd = deskHelp.getWritableDatabase();
         if (!isExits(xyAppInfoInDesk.appPackageName)) {
             ContentValues cv = new ContentValues();
